@@ -1,0 +1,1658 @@
+<title>Plaza Marketplace — Panamá</title>
+<style>
+  :root{
+    --bg:#FAF6EE; --surface:#FFFFFF; --soft:#F1EBDF;
+    --ink:#26231D; --muted:#7A7168; --line:#EAE3D5; --line2:#D9D0BF;
+    --accent:#E0385C; --accent-dark:#C22E4E; --accent-soft:#FBE9ED;
+    --danger:#A63A2B; --danger-soft:#F8E9E4;
+    --shadow:0 6px 20px rgba(60,50,30,.09);
+    --r:12px;
+  }
+    :root[data-theme="light"]{
+    --bg:#FAF6EE; --surface:#FFFFFF; --soft:#F1EBDF;
+    --ink:#26231D; --muted:#7A7168; --line:#EAE3D5; --line2:#D9D0BF;
+    --accent:#E0385C; --accent-dark:#C22E4E; --accent-soft:#FBE9ED;
+    --danger:#A63A2B; --danger-soft:#F8E9E4;
+    --shadow:0 6px 20px rgba(60,50,30,.09);
+  }
+  
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Avenir Next","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+    font-size:15px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{margin:0; font-weight:600; letter-spacing:-.01em; text-wrap:balance}
+  a{color:inherit}
+  button{font:inherit; cursor:pointer}
+  :focus-visible{outline:2px solid var(--ink); outline-offset:2px; border-radius:6px}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none!important; transition:none!important}
+  }
+  .num{font-variant-numeric:tabular-nums}
+  .muted{color:var(--muted)}
+
+  /* ---------- Header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background:var(--bg); border-bottom:1px solid var(--line);
+  }
+  .topbar-in{
+    max-width:1200px; margin:0 auto; padding:0 24px;
+    display:flex; align-items:center; gap:24px; height:66px;
+  }
+  .brand{display:flex; align-items:center; gap:9px; text-decoration:none; flex-shrink:0}
+  .brand svg{display:block}
+  .brand-name{font-weight:700; font-size:17px; letter-spacing:-.02em; color:var(--accent)}
+  nav.tabs{display:flex; gap:26px; flex:1; min-width:0; overflow-x:auto; justify-content:center}
+  nav.tabs a{
+    text-decoration:none; color:var(--muted); font-weight:500; font-size:14.5px;
+    padding:21px 2px 18px; border-bottom:2px solid transparent; white-space:nowrap;
+  }
+  nav.tabs a:hover{color:var(--ink)}
+  nav.tabs a.on{color:var(--ink); border-bottom-color:var(--ink); font-weight:600}
+  .btn{
+    border:1px solid var(--line2); background:var(--surface); color:var(--ink);
+    border-radius:10px; padding:9px 16px; font-weight:600; font-size:14px;
+    transition:box-shadow .12s ease, background .12s ease;
+  }
+  .btn:hover{box-shadow:var(--shadow)}
+  .btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+  .btn-primary:hover{background:var(--accent-dark); border-color:var(--accent-dark)}
+  :root[data-theme="dark"] .btn-primary, :root .btn-primary{color:#fff}
+  .btn-sm{padding:7px 13px; font-size:13.5px; border-radius:9px}
+  .btn-text{border:0; background:none; color:var(--ink); font-weight:600; font-size:13.5px; text-decoration:underline; padding:6px 4px}
+  .btn-text:hover{color:var(--accent)}
+
+  main{max-width:1200px; margin:0 auto; padding:34px 24px 80px}
+
+  .page-head{margin-bottom:26px; max-width:660px}
+  .page-head h1{font-size:30px; font-weight:700}
+  .page-head p{color:var(--muted); margin:10px 0 0; font-size:16px}
+
+  /* ---------- Filter bar ---------- */
+  .filterbar{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    padding:14px 0 22px; border-bottom:1px solid var(--line); margin-bottom:28px;
+  }
+  .filterbar select{
+    appearance:none; -webkit-appearance:none;
+    background:var(--surface); color:var(--ink);
+    border:1px solid var(--line2); border-radius:999px;
+    padding:9px 34px 9px 16px; font:inherit; font-size:13.5px; font-weight:600;
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="%23888" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>');
+    background-repeat:no-repeat; background-position:right 14px center;
+    cursor:pointer;
+  }
+  .filterbar select:hover{border-color:var(--ink)}
+  .filterbar .spacer{flex:1}
+  .count{font-size:14px; color:var(--muted); font-weight:500}
+
+  /* ---------- Card grid ---------- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:28px 22px}
+  .lcard{display:flex; flex-direction:column; gap:0; min-width:0}
+  .cover{
+    position:relative; display:block; border-radius:var(--r); overflow:hidden;
+    aspect-ratio:20/13; line-height:0; background:var(--soft);
+  }
+  .cover svg, .cover img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .25s ease}
+  .lcard:hover .cover svg, .pcard:hover .cover svg,
+  .lcard:hover .cover img, .pcard:hover .cover img{transform:scale(1.03)}
+  .badge{
+    position:absolute; top:10px; left:10px; line-height:1.4;
+    background:rgba(255,255,255,.94); color:#222;
+    font-size:12px; font-weight:600; border-radius:999px; padding:3px 10px;
+  }
+  .lc-body{padding:11px 2px 0; display:flex; flex-direction:column; gap:2px}
+  .lc-title{font-weight:600; font-size:15px; letter-spacing:-.01em}
+  .lc-title a{text-decoration:none}
+  .lc-sub, .lc-meta{font-size:13.5px; color:var(--muted)}
+  .lc-foot{display:flex; align-items:center; justify-content:space-between; margin-top:7px; gap:8px}
+  .lc-price{font-weight:700; font-size:15px}
+  .lc-price small{font-weight:500; color:var(--muted); font-size:13px}
+
+  .pcard .lc-meta{margin-top:1px}
+  .pcard .cover{aspect-ratio:20/12}
+
+  .empty{
+    border:1px dashed var(--line2); border-radius:var(--r);
+    padding:48px 24px; text-align:center; color:var(--muted);
+  }
+
+  /* ---------- Perfil ---------- */
+  .backlink{display:inline-block; margin-bottom:18px; font-weight:600; font-size:14px; text-decoration:none; color:var(--muted)}
+  .backlink:hover{color:var(--ink)}
+  .hero-cover{border-radius:16px; overflow:hidden; line-height:0; aspect-ratio:16/5; min-height:200px}
+  .hero-cover svg, .hero-cover img{width:100%; height:100%; display:block; object-fit:cover}
+  .hero-head{display:flex; justify-content:space-between; align-items:flex-start; gap:18px; flex-wrap:wrap; margin-top:24px}
+  .hero-head h1{font-size:28px; font-weight:700}
+  .hero-sub{color:var(--muted); font-size:15px; margin-top:5px}
+  .hero-desc{color:var(--ink); max-width:64ch; margin:18px 0 0; font-size:15.5px}
+  .statrow{
+    display:flex; flex-wrap:wrap; gap:0; margin-top:26px;
+    border:1px solid var(--line); border-radius:var(--r);
+  }
+  .statrow .stat{flex:1; min-width:130px; padding:16px 20px; border-left:1px solid var(--line)}
+  .statrow .stat:first-child{border-left:0}
+  .stat .v{font-size:21px; font-weight:700; font-variant-numeric:tabular-nums}
+  .stat .l{font-size:12.5px; color:var(--muted); font-weight:500; margin-top:1px}
+
+  section.block{margin-top:44px}
+  section.block > h2{font-size:21px; font-weight:700; margin-bottom:4px}
+  section.block > .sub{color:var(--muted); font-size:14.5px; margin:0 0 18px}
+
+  .local-row{
+    display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;
+    border:1px solid var(--line); border-radius:var(--r); padding:16px 20px;
+  }
+  .local-row + .local-row{margin-top:10px}
+  .local-row .t{font-weight:600; font-size:15.5px}
+  .local-row .m{font-size:13.5px; color:var(--muted); margin-top:2px}
+  .local-row .right{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  .local-row .p{font-weight:700; font-size:16px}
+  .local-row .p small{font-weight:500; color:var(--muted); font-size:13px}
+
+  .tenant-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:0; border-top:1px solid var(--line)}
+  .tenant{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:13px 4px; border-bottom:1px solid var(--line)}
+  .tenant b{font-weight:600; font-size:14px}
+  .tenant span{font-size:12.5px; color:var(--muted); white-space:nowrap}
+
+  .area-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px}
+  .area-fact{
+    border:1px solid var(--line); border-radius:12px; padding:12px 15px;
+    display:flex; flex-direction:column; gap:3px; background:var(--surface);
+  }
+  .area-fact .l{font-size:11.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+  .area-fact .v{font-size:14px; font-weight:600}
+
+  .hintbox{
+    background:var(--soft); border-radius:var(--r); padding:18px 22px;
+    font-size:14.5px; margin-top:44px;
+  }
+  .hintbox a{font-weight:600}
+
+  /* ---------- Oportunidades ---------- */
+  .cat-picker{display:flex; flex-wrap:wrap; gap:9px; margin:4px 0 30px}
+  .cat-btn{
+    border:1px solid var(--line2); background:var(--surface); color:var(--ink);
+    border-radius:999px; padding:8px 17px; font-weight:600; font-size:13.5px;
+    transition:border-color .12s ease;
+  }
+  .cat-btn:hover{border-color:var(--ink)}
+  .cat-btn.on{background:var(--ink); border-color:var(--ink); color:var(--bg)}
+  .opp-note{font-size:15px; margin:0 0 22px; color:var(--muted)}
+  .opp-note b{color:var(--ink)}
+  .opp-list{display:flex; flex-direction:column; gap:14px}
+  .opp-card{
+    display:grid; grid-template-columns:210px 1fr 175px; gap:22px; align-items:start;
+    border:1px solid var(--line); border-radius:14px; padding:16px;
+  }
+  @media (max-width:760px){ .opp-card{grid-template-columns:1fr} }
+  .opp-card.blocked{opacity:.62}
+  .opp-card .cover{aspect-ratio:20/13}
+  .opp-card h3{font-size:16.5px}
+  .opp-card h3 a{text-decoration:none}
+  .opp-zone{font-size:13.5px; color:var(--muted); margin-top:2px}
+  .opp-reasons{list-style:none; margin:12px 0 0; padding:0; display:flex; flex-direction:column; gap:6px}
+  .opp-reasons li{font-size:13.5px; display:flex; gap:9px; align-items:baseline}
+  .opp-reasons .ic{font-weight:700; width:13px; flex-shrink:0; text-align:center}
+  .ic.y{color:var(--accent)} .ic.n{color:var(--danger)} .ic.o{color:var(--muted)}
+  .score-box{display:flex; flex-direction:column; gap:9px; align-items:flex-end; padding-top:2px}
+  @media (max-width:760px){ .score-box{align-items:flex-start} }
+  .score-num{font-size:28px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1}
+  .score-num small{font-size:12px; color:var(--muted); font-weight:500}
+  .meter{width:140px; height:4px; border-radius:99px; background:var(--soft); overflow:hidden}
+  .meter i{display:block; height:100%; border-radius:99px; background:var(--accent)}
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:600; border-radius:999px; padding:4px 11px;
+  }
+  .chip.open{background:var(--accent-soft); color:var(--accent)}
+  .chip.block{background:var(--danger-soft); color:var(--danger)}
+  .chip.idle{background:var(--soft); color:var(--muted)}
+
+  /* ---------- Portada ---------- */
+  .home-hero{
+    display:grid; grid-template-columns:1.05fr .95fr; gap:44px; align-items:center;
+    padding:30px 0 46px;
+  }
+  @media (max-width:860px){ .home-hero{grid-template-columns:1fr; gap:28px} }
+  .home-hero h1{
+    font-size:clamp(30px,4.6vw,44px); font-weight:700; line-height:1.12; letter-spacing:-.02em;
+  }
+  .home-hero h1 em{font-style:normal; color:var(--accent)}
+  .home-hero .lede{color:var(--muted); font-size:17px; margin:14px 0 0; max-width:48ch}
+  .quick{
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:18px 20px; margin-top:26px;
+  }
+  .quick .q-label{font-size:13px; font-weight:700; margin-bottom:10px}
+  .quick .quickcats{display:flex; flex-wrap:wrap; gap:8px}
+  .home-alt{margin-top:16px; font-size:14px; color:var(--muted)}
+  .home-alt a{font-weight:600}
+  .mosaic{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:150px 150px; gap:12px}
+  .mosaic .cover{aspect-ratio:auto; height:100%; border-radius:14px}
+  .mosaic .cover:first-child{grid-row:1 / 3; height:100%}
+  @media (max-width:860px){ .mosaic{grid-template-rows:110px 110px} }
+  .home-stats{display:flex; gap:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); flex-wrap:wrap}
+  .home-stats .stat{flex:1; min-width:140px; padding:18px 20px; border-left:1px solid var(--line)}
+  .home-stats .stat:first-child{border-left:0; padding-left:0}
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:26px}
+  @media (max-width:760px){ .steps{grid-template-columns:1fr} }
+  .step{border:1px solid var(--line); border-radius:14px; padding:20px 22px; background:var(--surface)}
+  .step .n{
+    width:30px; height:30px; border-radius:999px; background:var(--accent); color:#fff;
+    display:grid; place-items:center; font-weight:700; font-size:14px; margin-bottom:12px;
+  }
+  .step b{font-size:15.5px; display:block; margin-bottom:5px}
+  .step p{margin:0; font-size:14px; color:var(--muted)}
+  .band{
+    display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;
+    background:var(--ink); color:var(--bg); border-radius:16px; padding:24px 28px; margin-top:44px;
+  }
+  .band b{font-size:18px}
+  .band p{margin:4px 0 0; font-size:14px; opacity:.75}
+  .band .btn{background:var(--bg); color:var(--ink); border-color:var(--bg)}
+  section.home-block{margin-top:44px}
+  section.home-block > h2{font-size:21px; font-weight:700}
+  section.home-block > .sub{color:var(--muted); font-size:14.5px; margin:4px 0 0}
+
+  /* ---------- Mapa ---------- */
+  .map-tools{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:18px}
+  .map-tools select{
+    background:var(--surface); color:var(--ink); border:1px solid var(--line2);
+    border-radius:10px; padding:9px 12px; font:inherit; font-size:14px; font-weight:600;
+  }
+  .legend{display:flex; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:6px}
+  .ldot{width:10px; height:10px; border-radius:99px; display:inline-block}
+  .ldot.ok{background:var(--accent)} .ldot.bad{background:var(--danger)} .ldot.idle{background:#B9AF9F}
+  .zmap{
+    display:grid; gap:12px;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-areas:
+      "dorado condado brisas"
+      "alfaro porras cde"
+      "obarrio sf cde"
+      "pacifica sf cde";
+  }
+  @media (max-width:720px){
+    .zmap{grid-template-columns:1fr 1fr; grid-template-areas:
+      "dorado condado" "alfaro brisas" "porras cde" "obarrio cde" "sf pacifica";}
+  }
+  .zone{
+    background:var(--surface); border:1.5px solid var(--line2); border-radius:14px;
+    padding:14px 15px 15px; min-height:110px;
+  }
+  .zone h3{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:3px}
+  .zone .zc{font-size:12px; color:var(--muted); margin-bottom:8px}
+  .zc-tags{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px}
+  .ztag{font-size:10.5px; font-weight:700; color:var(--muted); background:var(--soft); border-radius:999px; padding:2px 9px}
+  .ztag.up{color:var(--accent); background:var(--accent-soft)}
+  .zone .pins{display:flex; flex-direction:column; gap:5px}
+  .pin{
+    display:flex; align-items:center; gap:8px; text-decoration:none;
+    font-size:13.5px; font-weight:600; color:var(--ink);
+    padding:5px 9px; border-radius:9px; background:var(--soft);
+  }
+  .pin:hover{background:var(--accent-soft); color:var(--accent)}
+  .pin .ldot{flex-shrink:0}
+  .pin small{font-weight:500; color:var(--muted); margin-left:auto; white-space:nowrap; font-size:11.5px}
+  .ocean{
+    margin-top:12px; border-radius:14px; padding:13px 18px; text-align:center;
+    background:linear-gradient(180deg,#DCEAF2,#C9DEEA); color:#5A7A8C;
+    font-size:12.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  }
+  .map-note{margin-top:14px; font-size:13px; color:var(--muted)}
+
+  /* ---------- Evaluación ---------- */
+  .wiz{max-width:640px; margin:0 auto}
+  .wiz-progress{display:flex; gap:6px; margin-bottom:26px}
+  .wiz-progress i{height:4px; flex:1; border-radius:99px; background:var(--line)}
+  .wiz-progress i.done{background:var(--accent)}
+  .wiz-q{font-size:24px; font-weight:700; letter-spacing:-.015em; margin-bottom:6px}
+  .wiz-sub{color:var(--muted); font-size:14.5px; margin:0 0 22px}
+  .wopts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media (max-width:560px){ .wopts{grid-template-columns:1fr} }
+  .wopts.cols3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:560px){ .wopts.cols3{grid-template-columns:1fr 1fr} }
+  .wopt{
+    border:1.5px solid var(--line2); background:var(--surface); color:var(--ink);
+    border-radius:12px; padding:14px 16px; font-weight:600; font-size:14.5px;
+    text-align:left; transition:border-color .1s ease;
+  }
+  .wopt:hover{border-color:var(--ink)}
+  .wopt.on{border-color:var(--accent); background:var(--accent-soft); color:var(--accent)}
+  .wopt small{display:block; font-weight:500; color:var(--muted); font-size:12.5px; margin-top:2px}
+  .wiz-nav{display:flex; justify-content:space-between; gap:10px; margin-top:26px}
+  .wiz-answers{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px}
+  .wiz-answers .chip{background:var(--surface); border:1px solid var(--line2); color:var(--ink)}
+  .best{
+    border:2px solid var(--accent); border-radius:16px; position:relative;
+  }
+  .best-tag{
+    position:absolute; top:-11px; left:18px; background:var(--accent); color:#fff;
+    font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    border-radius:999px; padding:3px 12px;
+  }
+
+  /* ---------- Mi plaza (panel) ---------- */
+  .demo-chip{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700;
+    background:var(--soft); color:var(--muted); border-radius:999px; padding:4px 12px; margin-bottom:10px;
+  }
+  .miss-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  @media (max-width:760px){ .miss-grid{grid-template-columns:1fr} }
+  .miss{
+    border:1.5px solid var(--line2); border-radius:14px; background:var(--surface);
+    padding:18px 20px; display:flex; flex-direction:column; gap:10px;
+  }
+  .miss.top{border-color:var(--accent)}
+  .miss .cat{font-size:17px; font-weight:700}
+  .miss .demand{
+    font-size:13px; font-weight:600; color:var(--accent);
+    background:var(--accent-soft); border-radius:999px; padding:4px 12px; align-self:flex-start;
+  }
+  .miss ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; flex:1}
+  .miss li{font-size:13px; color:var(--muted); display:flex; gap:7px}
+  .miss li::before{content:"·"; font-weight:700}
+  .tblwrap{border:1px solid var(--line); border-radius:12px; overflow-x:auto; background:var(--surface)}
+  .tblwrap table{width:100%; border-collapse:collapse; font-size:14px; min-width:520px}
+  .tblwrap th{
+    text-align:left; font-size:11.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--muted); padding:11px 16px; border-bottom:1px solid var(--line); background:var(--soft);
+  }
+  .tblwrap td{padding:12px 16px; border-bottom:1px solid var(--line)}
+  .tblwrap tr:last-child td{border-bottom:0}
+  .chip.nueva{background:var(--accent-soft); color:var(--accent)}
+  .chip.vista{background:var(--soft); color:var(--muted)}
+
+  /* ---------- Dialog ---------- */
+  dialog{
+    border:0; border-radius:16px; padding:0;
+    background:var(--surface); color:var(--ink); max-width:430px; width:calc(100vw - 40px);
+    box-shadow:0 24px 70px rgba(0,0,0,.28);
+  }
+  dialog::backdrop{background:rgba(0,0,0,.5)}
+  .dlg-in{padding:26px 28px}
+  .dlg-in h2{font-size:20px; font-weight:700; margin-bottom:3px}
+  .dlg-sub{color:var(--muted); font-size:13.5px; margin:0 0 18px}
+  .field{margin-bottom:13px}
+  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--muted); margin-bottom:5px}
+  .field input,.field textarea,.field select{
+    width:100%; background:var(--bg); color:var(--ink);
+    border:1px solid var(--line2); border-radius:10px; padding:10px 12px; font:inherit; font-size:14px;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--ink); outline:none}
+  .field textarea{resize:vertical; min-height:72px}
+  .dlg-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:20px}
+
+  /* ---------- Toast ---------- */
+  #toast{
+    position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(8px);
+    background:var(--ink); color:var(--bg); font-weight:600; font-size:14px;
+    padding:12px 20px; border-radius:12px; box-shadow:var(--shadow);
+    opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease; z-index:60;
+    max-width:calc(100vw - 40px); text-align:center;
+  }
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  footer{
+    border-top:1px solid var(--line); padding:22px 24px 34px;
+    text-align:center; color:var(--muted); font-size:13px;
+  }
+
+  /* ---------- Puerta de acceso ---------- */
+  #gate{position:fixed; inset:0; background:var(--bg); z-index:100; display:grid; place-items:center; padding:20px}
+  .gate-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:18px;
+    box-shadow:var(--shadow); padding:34px 36px; max-width:380px; width:100%; text-align:center;
+  }
+  .gate-card .brand-name{font-size:19px}
+  .gate-card h2{font-size:21px; font-weight:700; margin:16px 0 4px}
+  .gate-card p{color:var(--muted); font-size:14px; margin:0 0 18px}
+  .gate-card input{
+    width:100%; background:var(--bg); color:var(--ink); text-align:center;
+    border:1.5px solid var(--line2); border-radius:10px; padding:11px 12px; font:inherit; font-size:15px;
+    margin-bottom:10px; letter-spacing:.06em;
+  }
+  .gate-card input:focus{border-color:var(--ink); outline:none}
+  .gate-card .btn{width:100%}
+  .gate-err{color:var(--danger); font-size:13px; font-weight:600; margin:10px 0 0; min-height:18px}
+</style>
+
+<div id="gate">
+  <div class="gate-card">
+    <span class="brand-name" style="color:var(--accent); font-weight:700">plazamarket</span>
+    <h2>Demo privada</h2>
+    <p>Este es un prototipo en desarrollo. Ingresa el código de acceso que te compartieron.</p>
+    <form id="gate-form">
+      <input id="gate-code" placeholder="Código de acceso" autocomplete="off" autofocus>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+    <p class="gate-err" id="gate-err"></p>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#/inicio" aria-label="Plaza Marketplace">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <rect x="1.5" y="9" width="23" height="15" rx="2.5" fill="var(--accent)"/>
+        <path d="M2 10 L13 2 L24 10" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="10" y="15" width="6" height="9" rx="1" fill="var(--bg)"/>
+      </svg>
+      <span class="brand-name">plazamarket</span>
+    </a>
+    <nav class="tabs" id="tabs">
+      <a href="#/explorar" data-r="explorar">Explorar locales</a>
+      <a href="#/oportunidades" data-r="oportunidades">Oportunidades</a>
+      <a href="#/evaluacion" data-r="evaluacion">Evaluación</a>
+      <a href="#/mapa" data-r="mapa">Mapa</a>
+      <a href="#/miplaza" data-r="miplaza">Mi plaza</a>
+    </nav>
+    <button class="btn" id="btn-publicar">Publica tu plaza</button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>Prototipo de demostración — los negocios, locales y precios son ilustrativos y no representan la oferta real de cada plaza · Plaza Marketplace · Panamá, 2026</footer>
+
+<dialog id="dlg-contacto">
+  <form class="dlg-in" id="form-contacto" method="dialog">
+    <h2>Solicitar información</h2>
+    <p class="dlg-sub" id="dlg-contacto-sub"></p>
+    <div class="field"><label for="c-nombre">Nombre</label><input id="c-nombre" required autocomplete="name"></div>
+    <div class="field"><label for="c-correo">Correo</label><input id="c-correo" type="email" required autocomplete="email"></div>
+    <div class="field"><label for="c-tel">Teléfono</label><input id="c-tel" type="tel" autocomplete="tel" placeholder="+507"></div>
+    <div class="field"><label for="c-tipo">Tipo de negocio que quieres abrir</label><select id="c-tipo"></select></div>
+    <div class="field"><label for="c-msg">Mensaje</label><textarea id="c-msg" placeholder="Cuéntale a la plaza sobre tu negocio…"></textarea></div>
+    <div class="dlg-actions">
+      <button type="button" class="btn" data-close>Cancelar</button>
+      <button type="submit" class="btn btn-primary">Enviar solicitud</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-plaza">
+  <form class="dlg-in" id="form-plaza" method="dialog">
+    <h2>Publica tu plaza</h2>
+    <p class="dlg-sub">Déjanos tus datos y te contactamos para crear el perfil de tu plaza con sus locales disponibles.</p>
+    <div class="field"><label for="p-nombre">Nombre de la plaza</label><input id="p-nombre" required></div>
+    <div class="field"><label for="p-ciudad">Ciudad / zona</label><input id="p-ciudad" required placeholder="p. ej. Ciudad de Panamá, Costa del Este"></div>
+    <div class="field"><label for="p-correo">Correo de contacto</label><input id="p-correo" type="email" required></div>
+    <div class="dlg-actions">
+      <button type="button" class="btn" data-close>Cancelar</button>
+      <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* ================= Acceso privado ================= */
+const CODIGO_ACCESO = "0010";
+(function(){
+  const g = document.getElementById("gate");
+  if(localStorage.getItem("pm-acceso") === CODIGO_ACCESO){ g.remove(); return; }
+  document.getElementById("gate-form").addEventListener("submit", ev=>{
+    ev.preventDefault();
+    const v = document.getElementById("gate-code").value.trim().toLowerCase();
+    if(v === CODIGO_ACCESO){ localStorage.setItem("pm-acceso", CODIGO_ACCESO); g.remove(); }
+    else document.getElementById("gate-err").textContent = "Código incorrecto. Verifica e intenta de nuevo.";
+  });
+})();
+
+/* ================= Datos de ejemplo ================= */
+
+const PLAZAS = [
+  {
+    id:"plaza-68", nombre:"Plaza 68", zona:"San Francisco",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:40, trafico:3,
+    desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
+    tenants:[{n:"Farmacia Metro Plus", cat:"Farmacia"},{n:"Pio Pio", cat:"Comida rápida"},{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Lavamático Burbujas", cat:"Lavandería"}],
+    locales:[{id:"L-7", m2:35, precio:1100, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-8", m2:110, precio:3090, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
+  },
+  {
+    id:"plaza-san-francisco", nombre:"Plaza San Francisco", zona:"San Francisco",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:2,
+    desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
+    tenants:[{n:"Farmacias Arrocha Express", cat:"Farmacia"},{n:"Licores La Cava", cat:"Licorería"},{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Coworking La Base", cat:"Coworking"},{n:"Wok & Roll", cat:"Restaurante"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"Café Unido", cat:"Café"},{n:"Athanasiou", cat:"Café"}],
+    locales:[{id:"L-19", m2:50, precio:1450, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-19", m2:50, precio:1300, nivel:"Planta baja", frente:"Interior"}]
+  },
+  {
+    id:"plaza-sf-69", nombre:"Plaza SF 69", zona:"San Francisco",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:3,
+    desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
+    tenants:[{n:"Napoli Pizza", cat:"Restaurante"},{n:"Boutique Camélia", cat:"Moda"},{n:"Pio Pio", cat:"Comida rápida"},{n:"Veterinaria Mundo Animal", cat:"Veterinaria"}],
+    locales:[{id:"L-15", m2:140, precio:4100, nivel:"Planta baja", frente:"Interior"}]
+  },
+  {
+    id:"plaza-76", nombre:"Plaza 76", zona:"San Francisco",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:40, trafico:2,
+    desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
+    tenants:[{n:"Licores La Cava", cat:"Licorería"},{n:"Óptica López", cat:"Óptica"},{n:"Subway", cat:"Comida rápida"},{n:"Boutique Camélia", cat:"Moda"}],
+    locales:[{id:"L-3", m2:140, precio:3810, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
+  },
+  {
+    id:"la-peatonal-68", nombre:"La Peatonal 68", zona:"San Francisco",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:80, trafico:2,
+    desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
+    tenants:[{n:"Centro Médico San Judas", cat:"Clínica"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"Farmacia Metro Plus", cat:"Farmacia"},{n:"Salón Élite", cat:"Salón de belleza"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Boutique Camélia", cat:"Moda"}],
+    locales:[{id:"L-3", m2:140, precio:3600, nivel:"Planta baja", frente:"Frente al estacionamiento"},{id:"L-23", m2:42, precio:1080, nivel:"Planta baja", frente:"Con terraza"}]
+  },
+  {
+    id:"city-plaza-san-francisco", nombre:"City Plaza San Francisco", zona:"San Francisco",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:120, trafico:2,
+    desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
+    tenants:[{n:"Barbería Don Juan", cat:"Barbería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Coworking La Base", cat:"Coworking"},{n:"Café Kotowa", cat:"Café"},{n:"Global Bank (agencia)", cat:"Banco"},{n:"Boutique Camélia", cat:"Moda"}],
+    locales:[]
+  },
+  {
+    id:"royal-blue-plaza", nombre:"Royal Blue Plaza", zona:"Vía Porras",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:60, trafico:2,
+    desc:"Plaza sobre Vía Porras, corredor de clínicas, oficinas y residencias con clientela fiel de la zona.",
+    tenants:[{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Boutique Camélia", cat:"Moda"},{n:"Banco General (sucursal)", cat:"Banco"},{n:"Café Kotowa", cat:"Café"},{n:"Pet Plaza", cat:"Pet shop"}],
+    locales:[{id:"L-27", m2:75, precio:2020, nivel:"Nivel 2", frente:"Junto a la entrada principal"},{id:"L-12", m2:75, precio:1940, nivel:"Nivel 2", frente:"Esquina"}]
+  },
+  {
+    id:"plaza-jolie", nombre:"Plaza Jolie", zona:"Vía Porras",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:40, trafico:2,
+    desc:"Plaza sobre Vía Porras, corredor de clínicas, oficinas y residencias con clientela fiel de la zona.",
+    tenants:[{n:"Wok & Roll", cat:"Restaurante"},{n:"Supermercado Riba Smith Express", cat:"Supermercado"},{n:"Boutique Camélia", cat:"Moda"},{n:"Coworking La Base", cat:"Coworking"},{n:"La Pulperia", cat:"Restaurante"}],
+    locales:[{id:"L-14", m2:75, precio:1620, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
+  },
+  {
+    id:"plaza-boulevard-del-este", nombre:"Plaza Boulevard del Este", zona:"Costa del Este",
+    ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:40, trafico:3,
+    desc:"Plaza en Costa del Este, zona corporativa y residencial de alto poder adquisitivo.",
+    tenants:[{n:"Farmacias Arrocha Express", cat:"Farmacia"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Kids Academy", cat:"Academia"},{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Pio Pio", cat:"Comida rápida"},{n:"Subway", cat:"Comida rápida"},{n:"Urban Style", cat:"Moda"},{n:"Coworking La Base", cat:"Coworking"}],
+    locales:[{id:"L-3", m2:110, precio:3220, nivel:"Planta baja", frente:"Frente al estacionamiento"},{id:"L-20", m2:50, precio:1480, nivel:"Planta baja", frente:"Frente a la calle"}]
+  },
+  {
+    id:"star-plaza", nombre:"Star Plaza", zona:"Costa del Este",
+    ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:40, trafico:3,
+    desc:"Plaza en Costa del Este, zona corporativa y residencial de alto poder adquisitivo.",
+    tenants:[{n:"Lavamático Burbujas", cat:"Lavandería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Farmacia Metro Plus", cat:"Farmacia"},{n:"Napoli Pizza", cat:"Restaurante"}],
+    locales:[{id:"L-9", m2:110, precio:3300, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-4", m2:90, precio:2930, nivel:"Nivel 2", frente:"Frente al estacionamiento"}]
+  },
+  {
+    id:"shi-plaza", nombre:"Shi Plaza", zona:"Costa del Este",
+    ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:60, trafico:1,
+    desc:"Plaza en Costa del Este, zona corporativa y residencial de alto poder adquisitivo.",
+    tenants:[{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Smart Fit", cat:"Gimnasio"},{n:"Do It Center Express", cat:"Ferretería"},{n:"Café Kotowa", cat:"Café"}],
+    locales:[{id:"L-17", m2:35, precio:1070, nivel:"Planta baja", frente:"Esquina"},{id:"L-10", m2:35, precio:1220, nivel:"Planta baja", frente:"Con terraza"}]
+  },
+  {
+    id:"plaza-obarrio", nombre:"Plaza Obarrio", zona:"Obarrio",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:40, trafico:2,
+    desc:"Plaza en Obarrio, en pleno distrito financiero — público de oficinas de lunes a viernes.",
+    tenants:[{n:"Pio Pio", cat:"Comida rápida"},{n:"Urban Style", cat:"Moda"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Wok & Roll", cat:"Restaurante"},{n:"Máncora Ceviches", cat:"Restaurante"}],
+    locales:[{id:"L-8", m2:110, precio:3580, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
+  },
+  {
+    id:"plaza-downtown-at-obarrio", nombre:"Plaza Downtown at Obarrio", zona:"Obarrio",
+    ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:25, trafico:1,
+    desc:"Plaza en Obarrio, en pleno distrito financiero — público de oficinas de lunes a viernes.",
+    tenants:[{n:"Do It Center Express", cat:"Ferretería"},{n:"Smart Fit", cat:"Gimnasio"},{n:"Máncora Ceviches", cat:"Restaurante"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Pet Plaza", cat:"Pet shop"},{n:"Pio Pio", cat:"Comida rápida"}],
+    locales:[{id:"L-8", m2:42, precio:1200, nivel:"Nivel 2", frente:"Esquina"}]
+  },
+  {
+    id:"plaza-61-obarrio", nombre:"Plaza 61 Obarrio", zona:"Obarrio",
+    ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:120, trafico:3,
+    desc:"Plaza en Obarrio, en pleno distrito financiero — público de oficinas de lunes a viernes.",
+    tenants:[{n:"Supermercado Riba Smith Express", cat:"Supermercado"},{n:"Do It Center Express", cat:"Ferretería"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Banco General (sucursal)", cat:"Banco"},{n:"Global Bank (agencia)", cat:"Banco"},{n:"Dry Clean Express", cat:"Lavandería"},{n:"Máncora Ceviches", cat:"Restaurante"},{n:"Parrillada El Corte", cat:"Restaurante"}],
+    locales:[{id:"L-11", m2:110, precio:3620, nivel:"Planta baja", frente:"Con terraza"}]
+  },
+  {
+    id:"central-plaza-condado-del-rey", nombre:"Central Plaza Condado del Rey", zona:"Condado del Rey",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:100, trafico:1,
+    desc:"Plaza en Condado del Rey, zona residencial en pleno crecimiento en el norte de la ciudad.",
+    tenants:[{n:"Café Kotowa", cat:"Café"},{n:"Café Unido", cat:"Café"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Athanasiou", cat:"Café"},{n:"Coworking La Base", cat:"Coworking"}],
+    locales:[{id:"L-20", m2:50, precio:1000, nivel:"Nivel 2", frente:"Con terraza"},{id:"L-18", m2:90, precio:1610, nivel:"Planta baja", frente:"Frente a la calle"}]
+  },
+  {
+    id:"condado-mall", nombre:"Condado Mall", zona:"Condado del Rey",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:3,
+    desc:"Plaza en Condado del Rey, zona residencial en pleno crecimiento en el norte de la ciudad.",
+    tenants:[{n:"Veterinaria Mundo Animal", cat:"Veterinaria"},{n:"Máncora Ceviches", cat:"Restaurante"},{n:"Napoli Pizza", cat:"Restaurante"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Smart Fit", cat:"Gimnasio"}],
+    locales:[{id:"L-25", m2:75, precio:1460, nivel:"Planta baja", frente:"Interior"}]
+  },
+  {
+    id:"plaza-altos-de-panama", nombre:"Plaza Altos de Panamá", zona:"Condado del Rey",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:40, trafico:1,
+    desc:"Plaza en Condado del Rey, zona residencial en pleno crecimiento en el norte de la ciudad.",
+    tenants:[{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Subway", cat:"Comida rápida"},{n:"Centro Médico San Judas", cat:"Clínica"},{n:"Urban Style", cat:"Moda"},{n:"Café Unido", cat:"Café"},{n:"Athanasiou", cat:"Café"}],
+    locales:[{id:"L-25", m2:35, precio:740, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-5", m2:35, precio:730, nivel:"Planta baja", frente:"Esquina"}]
+  },
+  {
+    id:"brisas-mall", nombre:"Brisas Mall", zona:"Brisas del Golf",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:3,
+    desc:"Plaza comunitaria en Brisas del Golf, área residencial densa con demanda de servicios diarios.",
+    tenants:[{n:"Salón Élite", cat:"Salón de belleza"},{n:"Subway", cat:"Comida rápida"},{n:"Kids Academy", cat:"Academia"},{n:"Do It Center Express", cat:"Ferretería"}],
+    locales:[]
+  },
+  {
+    id:"ph-premier-plaza", nombre:"PH Premier Plaza", zona:"Brisas del Golf",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:25, trafico:2,
+    desc:"Plaza comunitaria en Brisas del Golf, área residencial densa con demanda de servicios diarios.",
+    tenants:[{n:"PowerClub Express", cat:"Gimnasio"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Urban Style", cat:"Moda"},{n:"Pet Plaza", cat:"Pet shop"}],
+    locales:[{id:"L-3", m2:35, precio:610, nivel:"Nivel 2", frente:"Interior"},{id:"L-15", m2:60, precio:1030, nivel:"Nivel 2", frente:"Junto a la entrada principal"}]
+  },
+  {
+    id:"plaza-del-golf", nombre:"Plaza del Golf", zona:"Brisas del Golf",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:60, trafico:3,
+    desc:"Plaza comunitaria en Brisas del Golf, área residencial densa con demanda de servicios diarios.",
+    tenants:[{n:"Pet Plaza", cat:"Pet shop"},{n:"Café Unido", cat:"Café"},{n:"Centro Médico San Judas", cat:"Clínica"},{n:"Global Bank (agencia)", cat:"Banco"},{n:"Clínica Dental Sonrisa", cat:"Clínica"}],
+    locales:[{id:"L-8", m2:90, precio:1320, nivel:"Nivel 2", frente:"Frente a la calle"},{id:"L-26", m2:60, precio:1020, nivel:"Planta baja", frente:"Esquina"}]
+  },
+  {
+    id:"dorado-city-center", nombre:"Dorado City Center", zona:"El Dorado",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:80, trafico:2,
+    desc:"Plaza en El Dorado, corredor comercial tradicional con alto flujo vehicular y peatonal.",
+    tenants:[{n:"Café Unido", cat:"Café"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Wok & Roll", cat:"Restaurante"},{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Boutique Camélia", cat:"Moda"}],
+    locales:[{id:"L-14", m2:60, precio:1020, nivel:"Nivel 2", frente:"Interior"}]
+  },
+  {
+    id:"la-galeria-el-dorado", nombre:"La Galería El Dorado", zona:"El Dorado",
+    ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:80, trafico:2,
+    desc:"Plaza en El Dorado, corredor comercial tradicional con alto flujo vehicular y peatonal.",
+    tenants:[{n:"Lavamático Burbujas", cat:"Lavandería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Kids Academy", cat:"Academia"}],
+    locales:[{id:"L-13", m2:140, precio:2710, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-3", m2:75, precio:1390, nivel:"Planta baja", frente:"Esquina"}]
+  },
+  {
+    id:"plaza-aventura", nombre:"Plaza Aventura", zona:"Vía Ricardo J. Alfaro",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:30, trafico:1,
+    desc:"Centro comercial sobre Tumba Muerto, vía de altísimo tráfico vehicular.",
+    tenants:[{n:"PowerClub Express", cat:"Gimnasio"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"La Pulperia", cat:"Restaurante"},{n:"Coworking La Base", cat:"Coworking"},{n:"Café Unido", cat:"Café"},{n:"Veterinaria Mundo Animal", cat:"Veterinaria"}],
+    locales:[{id:"L-18", m2:75, precio:1280, nivel:"Nivel 2", frente:"Con terraza"},{id:"L-2", m2:90, precio:1410, nivel:"Planta baja", frente:"Frente al estacionamiento"},{id:"L-1", m2:42, precio:690, nivel:"Planta baja", frente:"Interior"}]
+  },
+  {
+    id:"grand-plaza-punta-pacifica", nombre:"Grand Plaza Punta Pacífica", zona:"Punta Pacífica",
+    ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:50, trafico:1,
+    desc:"Plaza en Punta Pacífica, junto a torres residenciales premium y el Pacífico.",
+    tenants:[{n:"Global Bank (agencia)", cat:"Banco"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Supermercado Riba Smith Express", cat:"Supermercado"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Centro Médico San Judas", cat:"Clínica"},{n:"PowerClub Express", cat:"Gimnasio"}],
+    locales:[{id:"L-23", m2:50, precio:1550, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-6", m2:50, precio:1640, nivel:"Planta baja", frente:"Interior"}]
+  },
+  {
+    id:"pacific-center", nombre:"Pacific Center", zona:"Punta Pacífica",
+    ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:50, trafico:2,
+    desc:"Plaza en Punta Pacífica, junto a torres residenciales premium y el Pacífico.",
+    tenants:[{n:"Urban Style", cat:"Moda"},{n:"La Pulperia", cat:"Restaurante"},{n:"PowerClub Express", cat:"Gimnasio"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Smart Fit", cat:"Gimnasio"},{n:"Mini Súper El Vecino", cat:"Supermercado"}],
+    locales:[]
+  }
+];
+
+/* Qué anclas generan tráfico para cada tipo de negocio */
+const ANCLAS = {
+  "Farmacia":        ["Supermercado","Clínica","Banco"],
+  "Café":            ["Gimnasio","Coworking","Banco","Supermercado"],
+  "Restaurante":     ["Supermercado","Gimnasio","Banco"],
+  "Gimnasio":        ["Supermercado","Farmacia"],
+  "Veterinaria":     ["Supermercado","Pet shop"],
+  "Salón de belleza":["Supermercado","Gimnasio"],
+  "Barbería":        ["Supermercado","Gimnasio"],
+  "Lavandería":      ["Supermercado","Panadería"],
+  "Clínica":         ["Farmacia","Supermercado"],
+  "Ferretería":      ["Supermercado"],
+  "Óptica":          ["Clínica","Farmacia","Supermercado"],
+  "Panadería":       ["Supermercado","Café"],
+  "Pet shop":        ["Supermercado","Veterinaria"]
+};
+/* Rubros donde la competencia puede convivir (penaliza, no descarta) */
+const COMPETENCIA_SUAVE = new Set(["Restaurante","Café"]);
+
+/* Carácter de cada zona de la ciudad */
+const ZONA_INFO = {
+  "San Francisco":"mixta",
+  "Vía Porras":"mixta",
+  "Costa del Este":"mixta",
+  "Obarrio":"oficinas",
+  "Condado del Rey":"residencial",
+  "Brisas del Golf":"residencial",
+  "El Dorado":"mixta",
+  "Vía Ricardo J. Alfaro":"mixta",
+  "Punta Pacífica":"residencial"
+};
+const CARACTER_L = {residencial:"Zona residencial", oficinas:"Zona de oficinas", mixta:"Zona mixta"};
+/* Rubros que funcionan mejor en plaza de barrio/familiar */
+const PREF_BARRIO = new Set(["Pet shop","Farmacia","Lavandería","Panadería","Ferretería","Veterinaria","Barbería","Clínica"]);
+/* Rubros cuya clientela es principalmente residencial */
+const PREF_RESIDENCIAL = new Set(["Pet shop","Farmacia","Lavandería","Panadería","Veterinaria","Ferretería","Clínica"]);
+
+/* Poder adquisitivo de cada zona */
+const ZONA_PODER = {
+  "San Francisco":"medio-alto",
+  "Vía Porras":"medio-alto",
+  "Costa del Este":"alto",
+  "Obarrio":"alto",
+  "Condado del Rey":"medio",
+  "Brisas del Golf":"medio",
+  "El Dorado":"medio",
+  "Vía Ricardo J. Alfaro":"medio",
+  "Punta Pacífica":"alto"
+};
+const PODER_L = {alto:"Alto poder adquisitivo", "medio-alto":"Poder adquisitivo medio-alto", medio:"Poder adquisitivo medio"};
+const PODER_BONUS = {alto:6, "medio-alto":3, medio:0};
+
+/* Crecimiento proyectado de cada zona */
+const ZONA_CRECIMIENTO = {
+  "San Francisco":"bajo",
+  "Vía Porras":"medio",
+  "Costa del Este":"medio",
+  "Obarrio":"bajo",
+  "Condado del Rey":"alto",
+  "Brisas del Golf":"alto",
+  "El Dorado":"medio",
+  "Vía Ricardo J. Alfaro":"medio",
+  "Punta Pacífica":"bajo"
+};
+const CRECIMIENTO_L = {alto:"Zona en crecimiento", medio:"Zona estable", bajo:"Zona consolidada"};
+
+/* Zonas vecinas de cada zona — define el radio de influencia real */
+const ZONA_VECINAS = {
+  "Vía Ricardo J. Alfaro": ["El Dorado","Condado del Rey"],
+  "El Dorado": ["Vía Ricardo J. Alfaro","Condado del Rey"],
+  "Condado del Rey": ["El Dorado","Vía Ricardo J. Alfaro","Brisas del Golf"],
+  "Brisas del Golf": ["Condado del Rey","Costa del Este"],
+  "Vía Porras": ["Obarrio","San Francisco"],
+  "Obarrio": ["Vía Porras","San Francisco","Punta Pacífica"],
+  "San Francisco": ["Obarrio","Vía Porras","Costa del Este"],
+  "Punta Pacífica": ["Obarrio","San Francisco"],
+  "Costa del Este": ["San Francisco","Brisas del Golf"]
+};
+
+/* Visibilidad desde la calle — determinística por plaza */
+const VIS_NIVELES = ["alta","media","media","baja"];
+function visibilidad(p){ return VIS_NIVELES[hashStr(p.id+"-vis") % VIS_NIVELES.length]; }
+const VIS_L = {alta:"Alta visibilidad desde la calle", media:"Visibilidad moderada desde la calle", baja:"Visibilidad limitada desde la calle"};
+
+/* Vacancia de la plaza — % de unidades vacías sobre el total */
+function vacanciaPct(p){
+  const total = p.tenants.length + p.locales.length;
+  return total ? Math.round(p.locales.length/total*100) : 0;
+}
+
+const TIPOS_NEGOCIO = Object.keys(ANCLAS);
+const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
+const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
+
+/* ================= Estado ================= */
+
+const state = {
+  filtros:{ ciudad:"", tipo:"", precioMax:0, m2Min:0, estacMin:0, orden:"precio-asc" },
+  oppCat:"",
+  mapCat:"",
+  ev:{step:0, cat:"", budget:[], m2:[], zonas:[]}
+};
+
+/* ================= Utilidades ================= */
+
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const plaza = id=>PLAZAS.find(p=>p.id===id);
+
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),3400);
+}
+
+/* Portada abstracta de cada plaza (paletas arquitectónicas suaves) */
+const PALETTES = [
+  ["#CBB9A4","#A08A6F","#6E5B45"],
+  ["#B9C6D2","#8AA2B5","#54718A"],
+  ["#D3BAB0","#B08F81","#7A5F53"],
+  ["#C9C2D4","#9E93B4","#6A6084"],
+  ["#CFC5B2","#A69A7E","#736A52"],
+  ["#B6C4CA","#87A0AB","#566F7B"],
+  ["#D6C3A8","#B39A74","#7D6A4C"]
+];
+function mulberry(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hashStr(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)}
+
+function coverSVG(p, w=400, h=260){
+  const seed = hashStr(p.id);
+  const rnd = mulberry(seed);
+  const [c1,c2,c3] = PALETTES[seed % PALETTES.length];
+  const uid = p.id + w;
+  let blobs = "";
+  for(let i=0;i<4;i++){
+    const cx = rnd()*w, cy = rnd()*h;
+    const r = h*(0.35 + rnd()*0.5);
+    const col = [c1,c2,c3][i%3];
+    const op = 0.5 + rnd()*0.35;
+    blobs += `<circle cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" r="${r.toFixed(0)}" fill="${col}" opacity="${op.toFixed(2)}"/>`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(p.nombre)}">
+    <defs>
+      <linearGradient id="g-${uid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>
+      </linearGradient>
+      <filter id="b-${uid}" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="${Math.round(h*0.16)}"/>
+      </filter>
+      <linearGradient id="o-${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset=".55" stop-color="rgba(0,0,0,0)"/><stop offset="1" stop-color="rgba(0,0,0,.22)"/>
+      </linearGradient>
+    </defs>
+    <rect width="${w}" height="${h}" fill="url(#g-${uid})"/>
+    <g filter="url(#b-${uid})">${blobs}</g>
+    <rect width="${w}" height="${h}" fill="url(#o-${uid})"/>
+  </svg>`;
+}
+
+/* Fotos incrustadas (Unsplash, referenciales) — inyectadas por el build */
+const IMAGES = {
+  "plaza-68":"%%plaza-68%%",
+  "plaza-sf-69":"%%plaza-sf-69%%",
+  "plaza-76":"%%plaza-76%%",
+  "la-peatonal-68":"%%la-peatonal-68%%",
+  "city-plaza-san-francisco":"%%city-plaza-san-francisco%%",
+  "royal-blue-plaza":"%%royal-blue-plaza%%",
+  "plaza-jolie":"%%plaza-jolie%%",
+  "plaza-boulevard-del-este":"%%plaza-boulevard-del-este%%",
+  "shi-plaza":"%%shi-plaza%%",
+  "plaza-obarrio":"%%plaza-obarrio%%",
+  "plaza-downtown-at-obarrio":"%%plaza-downtown-at-obarrio%%",
+  "plaza-61-obarrio":"%%plaza-61-obarrio%%",
+  "central-plaza-condado-del-rey":"%%central-plaza-condado-del-rey%%",
+  "condado-mall":"%%condado-mall%%",
+  "plaza-altos-de-panama":"%%plaza-altos-de-panama%%",
+  "brisas-mall":"%%brisas-mall%%",
+  "ph-premier-plaza":"%%ph-premier-plaza%%",
+  "plaza-del-golf":"%%plaza-del-golf%%",
+  "dorado-city-center":"%%dorado-city-center%%",
+  "la-galeria-el-dorado":"%%la-galeria-el-dorado%%",
+  "plaza-aventura":"%%plaza-aventura%%",
+  "grand-plaza-punta-pacifica":"%%grand-plaza-punta-pacifica%%",
+  "pacific-center":"%%pacific-center%%"
+};
+function cover(p){
+  const src = IMAGES[p.id];
+  return (src && !src.startsWith("%%"))
+    ? `<img loading="lazy" src="${src}" alt="${esc(p.nombre)}">`
+    : coverSVG(p,400,260);
+}
+
+/* ================= Vistas ================= */
+
+function viewInicio(){
+  const nLocales = PLAZAS.reduce((a,p)=>a+p.locales.length,0);
+  const nTenants = PLAZAS.reduce((a,p)=>a+p.tenants.length,0);
+  const zonas = new Set(PLAZAS.map(p=>p.zona)).size;
+  const destacadas = ["plaza-aventura","plaza-downtown-at-obarrio","star-plaza"].map(plaza).filter(Boolean);
+  const QUICK = ["Farmacia","Café","Restaurante","Gimnasio","Barbería","Clínica","Veterinaria","Salón de belleza"];
+  return `
+  <div class="home-hero">
+    <div>
+      <h1>Encuentra la plaza ideal para <em>tu negocio</em></h1>
+      <p class="lede">No busques solo un local: elige la plaza correcta. Te mostramos qué negocios ya operan en cada plaza de Panamá, cuáles atraen a tus clientes y dónde todavía no hay competencia.</p>
+      <div class="quick">
+        <div class="q-label">¿Qué negocio quieres abrir?</div>
+        <div class="quickcats">
+          ${QUICK.map(c=>`<button class="cat-btn" data-cat="${esc(c)}">${esc(c)}</button>`).join("")}
+          <a class="cat-btn" href="#/oportunidades" style="text-decoration:none">Otro…</a>
+        </div>
+        <p class="home-alt" style="margin-top:14px">¿Quieres una recomendación a tu medida? <a href="#/evaluacion">Responde 4 preguntas y te decimos dónde te conviene →</a></p>
+      </div>
+      <p class="home-alt">¿Prefieres ver todo lo disponible? <a href="#/explorar">Explora los ${nLocales} locales</a> o <a href="#/mapa">mira las ${PLAZAS.length} plazas en el mapa</a>.</p>
+    </div>
+    <div class="mosaic" aria-hidden="true">
+      ${destacadas.map(p=>`<a class="cover" href="#/plaza/${p.id}">${cover(p)}</a>`).join("")}
+    </div>
+  </div>
+
+  <div class="home-stats">
+    <div class="stat"><div class="v num">${PLAZAS.length}</div><div class="l">Plazas mapeadas</div></div>
+    <div class="stat"><div class="v num">${nLocales}</div><div class="l">Locales disponibles</div></div>
+    <div class="stat"><div class="v num">${nTenants}</div><div class="l">Negocios registrados</div></div>
+    <div class="stat"><div class="v num">${zonas}</div><div class="l">Zonas de la ciudad</div></div>
+  </div>
+
+  <section class="home-block">
+    <h2>Cómo funciona</h2>
+    <p class="sub">Información estratégica primero, el local después.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><b>Dinos qué negocio quieres abrir</b><p>Farmacia, café, gimnasio… lo que sea. Ese dato cambia por completo qué plaza te conviene.</p></div>
+      <div class="step"><span class="n">2</span><b>Analizamos cada plaza por ti</b><p>Cruzamos el listado de negocios de cada plaza: cuáles atraen a tus clientes, dónde ya hay un competidor y dónde está libre la categoría.</p></div>
+      <div class="step"><span class="n">3</span><b>Contacta a la plaza directo</b><p>Ves los locales disponibles con precio y tamaño, y envías tu solicitud a la administración sin intermediarios.</p></div>
+    </div>
+  </section>
+
+  <div class="band">
+    <div>
+      <b>¿Administras una plaza?</b>
+      <p>Publica tus locales disponibles y recibe solicitudes de negocios que le convienen a tu plaza.</p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap">
+      <a class="btn" href="#/miplaza" style="text-decoration:none">Ver el panel de plaza</a>
+      <button class="btn" id="btn-publicar-2">Publica tu plaza</button>
+    </div>
+  </div>`;
+}
+
+function viewExplorar(){
+  const ciudades = [...new Set(PLAZAS.map(p=>p.zona))];
+  const f = state.filtros;
+  const opt = (v,l,cur)=>`<option value="${v}" ${String(cur)===String(v)?"selected":""}>${l}</option>`;
+  return `
+  <div class="page-head">
+    <h1>Encuentra el local para tu negocio</h1>
+    <p>Locales en plazas comerciales de todo Panamá — y en cada plaza, el detalle de qué negocios ya operan allí.</p>
+  </div>
+  <div class="filterbar" aria-label="Filtros">
+    <select id="f-ciudad" aria-label="Zona">
+      ${opt("","Todas las zonas",f.ciudad)}${ciudades.map(c=>opt(c,c,f.ciudad)).join("")}
+    </select>
+    <select id="f-tipo" aria-label="Tipo de plaza">
+      ${opt("","Tipo de plaza",f.tipo)}${["Vecinal","Comunitaria","Lifestyle"].map(t=>opt(t,t,f.tipo)).join("")}
+    </select>
+    <select id="f-precio" aria-label="Presupuesto">
+      ${opt(0,"Presupuesto",f.precioMax)}
+      ${opt(1000,"Hasta $1,000/mes",f.precioMax)}
+      ${opt(1500,"Hasta $1,500/mes",f.precioMax)}
+      ${opt(2500,"Hasta $2,500/mes",f.precioMax)}
+      ${opt(4000,"Hasta $4,000/mes",f.precioMax)}
+    </select>
+    <select id="f-m2" aria-label="Tamaño mínimo">
+      ${opt(0,"Tamaño",f.m2Min)}
+      ${opt(50,"50 m² o más",f.m2Min)}
+      ${opt(80,"80 m² o más",f.m2Min)}
+      ${opt(120,"120 m² o más",f.m2Min)}
+    </select>
+    <select id="f-estac" aria-label="Estacionamientos">
+      ${opt(0,"Estacionamientos",f.estacMin)}
+      ${opt(30,"30 o más",f.estacMin)}
+      ${opt(60,"60 o más",f.estacMin)}
+      ${opt(100,"100 o más",f.estacMin)}
+    </select>
+    <span class="spacer"></span>
+    <select id="f-orden" aria-label="Ordenar por">
+      ${opt("precio-asc","Precio: menor a mayor",f.orden)}
+      ${opt("precio-desc","Precio: mayor a menor",f.orden)}
+      ${opt("m2-desc","Tamaño: mayor a menor",f.orden)}
+    </select>
+  </div>
+  <p class="count" id="r-count" style="margin:0 0 18px"></p>
+  <div class="grid" id="resultados"></div>`;
+}
+
+function localesFiltrados(){
+  const f = state.filtros;
+  let rows = [];
+  for(const p of PLAZAS){
+    if(f.ciudad && p.zona!==f.ciudad) continue;
+    if(f.tipo && p.tipo!==f.tipo) continue;
+    if(p.estac < f.estacMin) continue;
+    const locs = p.locales.filter(l=>{
+      if(f.precioMax && l.precio > f.precioMax) return false;
+      if(l.m2 < f.m2Min) return false;
+      return true;
+    });
+    if(locs.length) rows.push({p, locs});
+  }
+  const ord = f.orden;
+  const minPrecio = r => Math.min(...r.locs.map(l=>l.precio));
+  const maxM2 = r => Math.max(...r.locs.map(l=>l.m2));
+  rows.sort((a,b)=> ord==="precio-asc" ? minPrecio(a)-minPrecio(b)
+              : ord==="precio-desc" ? minPrecio(b)-minPrecio(a)
+              : maxM2(b)-maxM2(a));
+  return rows;
+}
+
+function renderResultados(){
+  const rows = localesFiltrados();
+  const nLocales = rows.reduce((a,r)=>a+r.locs.length,0);
+  $("#r-count").textContent = rows.length
+    ? `${nLocales} ${nLocales===1?"local disponible":"locales disponibles"} en ${rows.length} ${rows.length===1?"plaza":"plazas"}`
+    : "Ningún local coincide con estos filtros — prueba ampliar el presupuesto o quitar un filtro.";
+  $("#resultados").innerHTML = rows.map(({p,locs})=>{
+    const cheapest = locs.slice().sort((a,b)=>a.precio-b.precio)[0];
+    return `
+    <article class="lcard">
+      <a class="cover" href="#/plaza/${p.id}" aria-label="Ver ${esc(p.nombre)}">
+        ${cover(p)}
+        <span class="badge">${p.tipo}</span>
+      </a>
+      <div class="lc-body">
+        <div class="lc-title"><a href="#/plaza/${p.id}">${esc(p.nombre)}</a></div>
+        <div class="lc-sub">${esc(p.zona)} · Ciudad de Panamá</div>
+        <div class="lc-meta">${locs.length} ${locs.length===1?"local disponible":"locales disponibles"} · ${p.tenants.length} negocios en la plaza</div>
+        <div class="lc-foot">
+          <span class="lc-price num">Desde ${fmt$.format(cheapest.precio)} <small>/mes</small></span>
+          <button class="btn-text" data-solicitar="${p.id}" data-local="${cheapest.id}">Solicitar info</button>
+        </div>
+      </div>
+    </article>`;}).join("");
+}
+
+/* ---------- Plazas ---------- */
+
+function viewPlazas(){
+  return `
+  <div class="page-head">
+    <h1>Plazas comerciales</h1>
+    <p>Cada plaza tiene su perfil con locales disponibles y el listado completo de negocios que ya operan allí.</p>
+  </div>
+  <div class="grid">
+    ${PLAZAS.map(p=>{
+      const desde = p.locales.length ? Math.min(...p.locales.map(l=>l.precio)) : 0;
+      return `
+      <article class="lcard pcard">
+        <a class="cover" href="#/plaza/${p.id}" aria-label="Ver ${esc(p.nombre)}">
+          ${cover(p)}
+          <span class="badge">${p.tipo}</span>
+        </a>
+        <div class="lc-body">
+          <div class="lc-title"><a href="#/plaza/${p.id}">${esc(p.nombre)}</a></div>
+          <div class="lc-sub">${esc(p.zona)} · Ciudad de Panamá</div>
+          <div class="lc-meta">${p.locales.length ? p.locales.length+(p.locales.length===1?" local disponible":" locales disponibles") : "Sin vacantes"} · ${p.tenants.length} negocios</div>
+          ${desde ? `<div class="lc-foot"><span class="lc-price num">Desde ${fmt$.format(desde)} <small>/mes</small></span></div>` : ""}
+        </div>
+      </article>`;}).join("")}
+  </div>`;
+}
+
+/* ---------- Perfil de plaza ---------- */
+
+function viewPlaza(id){
+  const p = plaza(id);
+  if(!p) return `<div class="empty">Plaza no encontrada. <a href="#/plazas">Volver al directorio</a></div>`;
+  const desde = p.locales.length ? Math.min(...p.locales.map(l=>l.precio)) : 0;
+  return `
+  <a class="backlink" href="#/mapa">← Ver todas las plazas en el mapa</a>
+  <div class="hero-cover">${cover(p)}</div>
+  <div class="hero-head">
+    <div>
+      <h1>${esc(p.nombre)}</h1>
+      <div class="hero-sub">${esc(p.zona)} · Ciudad de Panamá · ${p.tipo} · ${TRAFICO[p.trafico]} · ${CARACTER_L[ZONA_INFO[p.zona]]}</div>
+    </div>
+    <button class="btn btn-primary" data-solicitar="${p.id}">Contactar a la plaza</button>
+  </div>
+  <p class="hero-desc">${esc(p.desc)}</p>
+  <div class="statrow">
+    <div class="stat"><div class="v num">${p.locales.length}</div><div class="l">Locales disponibles</div></div>
+    <div class="stat"><div class="v num">${p.tenants.length}</div><div class="l">Negocios operando</div></div>
+    <div class="stat"><div class="v num">${p.estac}</div><div class="l">Estacionamientos</div></div>
+    <div class="stat"><div class="v num">${desde ? fmt$.format(desde) : "—"}</div><div class="l">Renta desde /mes</div></div>
+  </div>
+
+  <section class="block">
+    <h2>Locales disponibles</h2>
+    <p class="sub">${p.locales.length ? "Solicita información y la administración de la plaza te contacta." : "Esta plaza no tiene vacantes por ahora."}</p>
+    ${p.locales.map(l=>`
+      <div class="local-row">
+        <div>
+          <div class="t">Local ${l.id}</div>
+          <div class="m">${l.m2} m² · ${esc(l.nivel)} · ${esc(l.frente)}</div>
+        </div>
+        <div class="right">
+          <span class="p num">${fmt$.format(l.precio)} <small>/mes</small></span>
+          <button class="btn btn-sm btn-primary" data-solicitar="${p.id}" data-local="${l.id}">Solicitar info</button>
+        </div>
+      </div>`).join("")}
+  </section>
+
+  <section class="block">
+    <h2>Negocios en la plaza</h2>
+    <p class="sub">El tenant mix completo: quién genera tráfico y qué categorías ya están cubiertas.</p>
+    <div class="tenant-grid">
+      ${p.tenants.map(t=>`
+        <div class="tenant"><b>${esc(t.n)}</b><span>${esc(t.cat)}</span></div>`).join("")}
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>El área</h2>
+    <p class="sub">Lo que rodea a la plaza — más allá de sus propios locales.</p>
+    <div class="area-grid">
+      <div class="area-fact"><span class="l">Carácter</span><span class="v">${CARACTER_L[ZONA_INFO[p.zona]]}</span></div>
+      <div class="area-fact"><span class="l">Poder adquisitivo</span><span class="v">${PODER_L[ZONA_PODER[p.zona]]}</span></div>
+      <div class="area-fact"><span class="l">Crecimiento</span><span class="v">${CRECIMIENTO_L[ZONA_CRECIMIENTO[p.zona]]}</span></div>
+      <div class="area-fact"><span class="l">Visibilidad</span><span class="v">${VIS_L[visibilidad(p)]}</span></div>
+      <div class="area-fact"><span class="l">Vacancia</span><span class="v num">${p.locales.length} ${p.locales.length===1?"local vacío":"locales vacíos"} de ${p.tenants.length+p.locales.length}</span></div>
+      <div class="area-fact"><span class="l">Radio de influencia</span><span class="v">${(ZONA_VECINAS[p.zona]||[]).join(", ") || "—"}</span></div>
+    </div>
+  </section>
+
+  <div class="hintbox"><b>¿Qué negocio le falta a esta plaza?</b> Usa el <a href="#/oportunidades">análisis de oportunidades</a> para ver qué rubros tienen tráfico asegurado aquí y aún no tienen competidor.</div>`;
+}
+
+/* ---------- Evaluación ---------- */
+
+const EV_STEPS = ["cat","budget","m2","zonas"];
+const BUDGET_OPTS = [
+  {v:"b1", l:"Hasta $1,000", min:0, max:1000},
+  {v:"b2", l:"$1,000 – $2,000", min:1000, max:2000},
+  {v:"b3", l:"$2,000 – $3,500", min:2000, max:3500},
+  {v:"b4", l:"Más de $3,500", min:3500, max:Infinity}
+];
+const M2_OPTS = [
+  {v:"m1", l:"Pequeño", s:"hasta 50 m²", min:0, max:50},
+  {v:"m2", l:"Mediano", s:"50 – 90 m²", min:50, max:90},
+  {v:"m3", l:"Grande", s:"90 – 150 m²", min:90, max:150},
+  {v:"m4", l:"Muy grande", s:"150 m² o más", min:150, max:Infinity}
+];
+const EV_MULTI = new Set(["budget","m2","zonas"]);
+
+function viewEvaluacion(){
+  const ev = state.ev;
+  if(ev.step >= EV_STEPS.length) return viewEvalResultados();
+  const key = EV_STEPS[ev.step];
+  const bar = EV_STEPS.map((_,i)=>`<i class="${i<=ev.step?"done":""}"></i>`).join("");
+  let navLabel = "Continuar";
+  if(key==="budget") navLabel = `Continuar ${ev.budget.length? "("+ev.budget.length+" seleccionados)":"(cualquier presupuesto)"}`;
+  else if(key==="m2") navLabel = `Continuar ${ev.m2.length? "("+ev.m2.length+" seleccionados)":"(cualquier tamaño)"}`;
+  else if(key==="zonas") navLabel = `Continuar ${ev.zonas.length? "("+ev.zonas.length+" zonas)":"(toda la ciudad)"}`;
+  const nav = `
+    <div class="wiz-nav">
+      <button class="btn" data-wnav="back" ${ev.step===0?"style='visibility:hidden'":""}>← Atrás</button>
+      ${EV_MULTI.has(key) ? `<button class="btn btn-primary" data-wnav="next">${navLabel}</button>` : ""}
+    </div>`;
+  let q="", sub="", opts="";
+  if(key==="cat"){
+    q="¿Qué negocio quieres abrir?"; sub="Este dato define qué plazas te convienen: dónde ya hay clientes para ti y dónde no hay competencia.";
+    opts = `<div class="wopts cols3">${TIPOS_NEGOCIO.map(c=>`<button class="wopt ${ev.cat===c?"on":""}" data-wk="cat" data-wv="${esc(c)}">${esc(c)}</button>`).join("")}</div>`;
+  } else if(key==="budget"){
+    q="¿Cuánto puedes pagar de alquiler al mes?"; sub="Puedes elegir más de un rango. Solo te recomendaremos plazas con locales dentro de tu presupuesto.";
+    opts = `<div class="wopts">${BUDGET_OPTS.map(o=>`<button class="wopt ${ev.budget.includes(o.v)?"on":""}" data-wk="budget" data-wv="${o.v}">${o.l}<small>por mes</small></button>`).join("")}</div>`;
+  } else if(key==="m2"){
+    q="¿Qué tamaño de local necesitas?"; sub="Puedes elegir más de una opción.";
+    opts = `<div class="wopts">${M2_OPTS.map(o=>`<button class="wopt ${ev.m2.includes(o.v)?"on":""}" data-wk="m2" data-wv="${o.v}">${o.l}<small>${o.s}</small></button>`).join("")}</div>`;
+  } else if(key==="zonas"){
+    q="¿En qué zonas te gustaría estar?"; sub="Última pregunta. Elige una o varias — o continúa sin elegir para evaluar toda la ciudad. Del resto del análisis (competencia, tráfico, negocios que te atraen clientes) nos encargamos nosotros.";
+    const zonas = [...new Set(PLAZAS.map(p=>p.zona))];
+    opts = `<div class="wopts cols3">${zonas.map(z=>`<button class="wopt ${ev.zonas.includes(z)?"on":""}" data-wk="zona" data-wv="${esc(z)}">${esc(z)}</button>`).join("")}</div>`;
+  }
+  return `
+  <div class="wiz">
+    <div class="wiz-progress">${bar}</div>
+    <h1 class="wiz-q">${q}</h1>
+    <p class="wiz-sub">${sub}</p>
+    ${opts}
+    ${nav}
+  </div>`;
+}
+
+function evaluar(){
+  const ev = state.ev;
+  const base = new Map(analizar(ev.cat).map(r=>[r.p.id, r]));
+  const budgetRanges = BUDGET_OPTS.filter(o=>ev.budget.includes(o.v));
+  const m2Ranges = M2_OPTS.filter(o=>ev.m2.includes(o.v));
+  const inBudget = precio => !budgetRanges.length || budgetRanges.some(r=>precio>=r.min && precio<=r.max);
+  const inSize = m2 => !m2Ranges.length || m2Ranges.some(r=>m2>=r.min && m2<=r.max);
+  const out = [];
+  for(const p of PLAZAS){
+    if(ev.zonas.length && !ev.zonas.includes(p.zona)) continue;
+    const b = base.get(p.id);
+    let score = b.score, estado = b.estado;
+    const reasons = b.reasons.filter(r=>!r.t.startsWith("Sin locales") && !r.t.includes("local disponible") && !r.t.includes("locales disponibles"));
+    // locales que encajan con presupuesto y tamaño
+    const match = p.locales.filter(l=> inBudget(l.precio) && inSize(l.m2));
+    if(!p.locales.length){
+      estado = estado==="abierta" ? "sin-locales" : estado;
+      reasons.push({ic:"n", t:"Sin locales disponibles por ahora"});
+    } else if(!match.length){
+      estado = estado==="abierta" ? "sin-locales" : estado;
+      reasons.push({ic:"n", t:"Tiene locales, pero ninguno encaja con tu presupuesto y tamaño"});
+    } else {
+      score += Math.min(match.length,2)*6;
+      reasons.push({ic:"y", t:`${match.length} ${match.length===1?"local encaja":"locales encajan"} contigo — desde ${fmt$.format(Math.min(...match.map(l=>l.precio)))}/mes`});
+    }
+    score = Math.max(4, Math.min(100, score));
+    if(estado!=="abierta") score = Math.min(score, 30);
+    out.push({p, score, reasons, estado, match});
+  }
+  return out.sort((a,b)=> (a.estado==="abierta"?0:1)-(b.estado==="abierta"?0:1) || b.score-a.score);
+}
+
+function viewEvalResultados(){
+  const ev = state.ev;
+  const res = evaluar();
+  const abiertas = res.filter(r=>r.estado==="abierta");
+  const answers = [
+    ev.cat,
+    ev.budget.length ? BUDGET_OPTS.filter(o=>ev.budget.includes(o.v)).map(o=>o.l).join(" · ") : "cualquier presupuesto",
+    ev.m2.length ? M2_OPTS.filter(o=>ev.m2.includes(o.v)).map(o=>o.l).join(" · ") : "cualquier tamaño",
+    ev.zonas.length? ev.zonas.join(", ") : "toda la ciudad"];
+  return `
+  <div class="page-head">
+    <h1>Tu evaluación</h1>
+    <p>Analizamos ${res.length} ${res.length===1?"plaza":"plazas"} según tus respuestas. ${abiertas.length ? `<b>${abiertas.length} ${abiertas.length===1?"es una buena opción":"son buenas opciones"} para tu ${ev.cat.toLowerCase()}.</b>` : "Ninguna encaja del todo — prueba ajustar presupuesto o zonas."}</p>
+  </div>
+  <div class="wiz-answers">
+    ${answers.map(a=>`<span class="chip">${esc(a)}</span>`).join("")}
+    <button class="btn btn-sm" data-wnav="restart">Cambiar respuestas</button>
+  </div>
+  <div class="opp-list">
+    ${res.map(({p,score,reasons,estado},i)=>`
+      <article class="opp-card ${estado!=="abierta"?"blocked":""} ${i===0&&estado==="abierta"?"best":""}">
+        ${i===0&&estado==="abierta"?`<span class="best-tag">Mejor opción para ti</span>`:""}
+        <a class="cover" href="#/plaza/${p.id}" aria-label="Ver ${esc(p.nombre)}">${cover(p)}</a>
+        <div>
+          <h3><a href="#/plaza/${p.id}">${esc(p.nombre)}</a></h3>
+          <div class="opp-zone">${esc(p.zona)} · Ciudad de Panamá · ${p.tipo}</div>
+          <ul class="opp-reasons">
+            ${reasons.map(r=>`<li><span class="ic ${r.ic}">${r.ic==="y"?"✓":r.ic==="n"?"✕":"○"}</span><span>${esc(r.t)}</span></li>`).join("")}
+          </ul>
+        </div>
+        <div class="score-box">
+          ${estado==="abierta"
+            ? `<div class="score-num num">${score}<small> /100</small></div>
+               <div class="meter"><i style="width:${score}%"></i></div>
+               <button class="btn btn-sm btn-primary" data-solicitar="${p.id}">Solicitar info</button>`
+            : estado==="competencia"
+            ? `<span class="chip block">Competencia directa</span>`
+            : `<span class="chip idle">Sin locales que encajen</span>`}
+          <a class="btn btn-sm" href="#/plaza/${p.id}" style="text-decoration:none">Ver plaza</a>
+        </div>
+      </article>`).join("")}
+  </div>`;
+}
+
+/* ---------- Mi plaza (panel del administrador) ---------- */
+
+const ADMIN_PLAZA = "plaza-aventura";
+
+function viewMiPlaza(){
+  const p = plaza(ADMIN_PLAZA);
+  const cats = new Set(p.tenants.map(t=>t.cat));
+  const totalUnits = p.tenants.length + p.locales.length;
+  const occ = totalUnits ? Math.round(p.tenants.length/totalUnits*100) : 100;
+
+  // Rubros que le faltan a la plaza, rankeados por anclas presentes + demanda
+  const faltan = TIPOS_NEGOCIO.filter(c=>!cats.has(c)).map(c=>{
+    const anc = (ANCLAS[c]||[]).filter(a=>cats.has(a));
+    const areaComp = PLAZAS.filter(q=>q.zona===p.zona && q.id!==p.id)
+      .flatMap(q=>q.tenants).filter(t=>t.cat===c).length;
+    const demanda = 5 + hashStr(c+p.id)%13;
+    return {c, anc, areaComp, demanda, sc: anc.length*10 + demanda - areaComp*6};
+  }).sort((a,b)=>b.sc-a.sc).slice(0,3);
+
+  // Solicitudes: ejemplos + las reales enviadas desde esta demo
+  const li = n => p.locales[n] ? "Local "+p.locales[n].id : "Perfil de la plaza";
+  let sols = [
+    {nombre:"María González", tipo:"Farmacia", local:li(0), fecha:"15/07/2026", estado:"nueva"},
+    {nombre:"Grupo Delicias S.A.", tipo:"Restaurante", local:li(1), fecha:"12/07/2026", estado:"vista"},
+    {nombre:"Luis Herrera", tipo:"Barbería", local:li(0), fecha:"08/07/2026", estado:"vista"}
+  ];
+  try{
+    const reg = JSON.parse(localStorage.getItem("pm-solicitudes")||"[]").filter(s=>s.plaza===p.id);
+    for(const s of reg.reverse()) sols.unshift({
+      nombre:s.nombre||"—", tipo:s.tipo||"—",
+      local:s.local?("Local "+s.local):"Perfil de la plaza",
+      fecha:new Date(s.fecha).toLocaleDateString("es-PA"), estado:"nueva"
+    });
+  }catch(e){}
+  const nuevas = sols.filter(s=>s.estado==="nueva").length;
+
+  return `
+  <div class="page-head">
+    <span class="demo-chip">Vista de demostración — así lo ve el administrador de una plaza</span>
+    <h1>Panel de ${esc(p.nombre)}</h1>
+    <p>${esc(p.zona)} · ${CARACTER_L[ZONA_INFO[p.zona]]} · ${p.tenants.length} negocios operando</p>
+  </div>
+
+  <div class="statrow" style="margin-top:0">
+    <div class="stat"><div class="v num">${sols.length}</div><div class="l">Solicitudes este mes${nuevas?` · <b style="color:var(--accent)">${nuevas} nuevas</b>`:""}</div></div>
+    <div class="stat"><div class="v num">${186 + hashStr(p.id)%140}</div><div class="l">Visitas a tu perfil</div></div>
+    <div class="stat"><div class="v num">${p.locales.length}</div><div class="l">Locales publicados</div></div>
+    <div class="stat"><div class="v num">${occ}%</div><div class="l">Ocupación</div></div>
+  </div>
+
+  <section class="block">
+    <h2>Qué negocio le falta a tu plaza</h2>
+    <p class="sub">Cruzamos tu mezcla de negocios con lo que los emprendedores están buscando en tu zona.</p>
+    <div class="miss-grid">
+      ${faltan.map((f,i)=>`
+        <div class="miss ${i===0?"top":""}">
+          <span class="demand num">${f.demanda} búsquedas en tu zona este mes</span>
+          <span class="cat">${esc(f.c)}</span>
+          <ul>
+            ${f.anc.length? f.anc.map(a=>`<li>Tu ${a.toLowerCase()} le jala clientes</li>`).join("") : `<li>Categoría con demanda en el área</li>`}
+            <li>${f.areaComp? f.areaComp+" competidor"+(f.areaComp===1?"":"es")+" en el área" : "Nadie lo ofrece en el área"}</li>
+            <li>No tienes ${f.c.toLowerCase()} en tu plaza</li>
+          </ul>
+          <button class="btn btn-sm ${i===0?"btn-primary":""}" data-open-publica>Buscar este negocio</button>
+        </div>`).join("")}
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Solicitudes recibidas</h2>
+    <p class="sub">Los emprendedores que quieren un local en tu plaza. Las que envíes desde esta demo aparecen aquí.</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Interesado</th><th>Quiere abrir</th><th>Local</th><th>Fecha</th><th>Estado</th></tr></thead>
+        <tbody>
+          ${sols.map(s=>`<tr>
+            <td><b>${esc(s.nombre)}</b></td><td>${esc(s.tipo)}</td><td>${esc(s.local)}</td>
+            <td class="num">${esc(s.fecha)}</td>
+            <td><span class="chip ${s.estado}">${s.estado==="nueva"?"Nueva":"Contactado"}</span></td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Tus locales publicados</h2>
+    <p class="sub">Lo que los emprendedores ven de tu plaza.</p>
+    ${p.locales.length ? p.locales.map(l=>`
+      <div class="local-row">
+        <div>
+          <div class="t">Local ${l.id}</div>
+          <div class="m">${l.m2} m² · ${esc(l.nivel)} · ${esc(l.frente)}</div>
+        </div>
+        <div class="right">
+          <span class="p num">${fmt$.format(l.precio)} <small>/mes</small></span>
+          <span class="chip open">Publicado</span>
+        </div>
+      </div>`).join("") : `<div class="empty">No tienes locales publicados. Publica uno para empezar a recibir solicitudes.</div>`}
+  </section>`;
+}
+
+/* ---------- Mapa ---------- */
+
+const ZONAS_MAPA = [
+  {area:"dorado",  nombre:"El Dorado"},
+  {area:"condado", nombre:"Condado del Rey"},
+  {area:"brisas",  nombre:"Brisas del Golf"},
+  {area:"alfaro",  nombre:"Vía Ricardo J. Alfaro"},
+  {area:"porras",  nombre:"Vía Porras"},
+  {area:"cde",     nombre:"Costa del Este"},
+  {area:"obarrio", nombre:"Obarrio"},
+  {area:"sf",      nombre:"San Francisco"},
+  {area:"pacifica",nombre:"Punta Pacífica"},
+];
+
+function viewMapa(){
+  const cat = state.mapCat;
+  let status = {};
+  if(cat){
+    for(const r of analizar(cat)){
+      status[r.p.id] = r.estado==="abierta" ? "ok" : (r.estado==="competencia" ? "bad" : "idle");
+    }
+  }
+  const dot = p => cat
+    ? status[p.id]
+    : (p.locales.length ? "ok" : "idle");
+  const legend = cat
+    ? `<span><i class="ldot ok"></i>Oportunidad abierta</span><span><i class="ldot bad"></i>Competencia directa</span><span><i class="ldot idle"></i>Sin locales</span>`
+    : `<span><i class="ldot ok"></i>Con locales disponibles</span><span><i class="ldot idle"></i>Sin vacantes</span>`;
+  return `
+  <div class="page-head">
+    <h1>Mapa de plazas</h1>
+    <p>Las ${PLAZAS.length} plazas organizadas por zona — norte arriba, costa abajo. Haz clic en una plaza para ver su perfil.</p>
+  </div>
+  <div class="map-tools">
+    <select id="map-cat" aria-label="Ver oportunidades para">
+      <option value="">Ver disponibilidad</option>
+      ${TIPOS_NEGOCIO.map(c=>`<option ${c===cat?"selected":""}>${c}</option>`).join("")}
+    </select>
+    <div class="legend">${legend}</div>
+  </div>
+  <div class="zmap">
+    ${ZONAS_MAPA.map(z=>{
+      const ps = PLAZAS.filter(p=>p.zona===z.nombre);
+      const nl = ps.reduce((a,p)=>a+p.locales.length,0);
+      return `
+      <div class="zone" style="grid-area:${z.area}">
+        <h3>${esc(z.nombre)}</h3>
+        <div class="zc num">${CARACTER_L[ZONA_INFO[z.nombre]]} · ${ps.length} ${ps.length===1?"plaza":"plazas"} · ${nl} ${nl===1?"local":"locales"}</div>
+        <div class="zc-tags">
+          <span class="ztag">${PODER_L[ZONA_PODER[z.nombre]]}</span>
+          <span class="ztag ${ZONA_CRECIMIENTO[z.nombre]==="alto"?"up":""}">${CRECIMIENTO_L[ZONA_CRECIMIENTO[z.nombre]]}</span>
+        </div>
+        <div class="pins">
+          ${ps.map(p=>`
+            <a class="pin" href="#/plaza/${p.id}">
+              <i class="ldot ${dot(p)}"></i>${esc(p.nombre)}
+              <small class="num">${p.locales.length ? p.locales.length+" loc." : "—"}</small>
+            </a>`).join("")}
+        </div>
+      </div>`;}).join("")}
+  </div>
+  <div class="ocean">Océano Pacífico</div>
+  <p class="map-note">Mapa esquemático: las zonas están ordenadas según su posición aproximada en la ciudad.</p>`;
+}
+
+/* ---------- Oportunidades ---------- */
+
+function analizar(cat){
+  const anclas = ANCLAS[cat] || [];
+  const out = PLAZAS.map(p=>{
+    const cats = new Set(p.tenants.map(t=>t.cat));
+    const found = anclas.filter(a=>cats.has(a));
+    const comp = p.tenants.filter(t=>t.cat===cat);
+    const nLoc = p.locales.length;
+    const soft = COMPETENCIA_SUAVE.has(cat);
+    let score = found.length*22 + Math.min(nLoc,3)*8 + p.trafico*6;
+    const reasons = [];
+    for(const a of found) reasons.push({ic:"y", t:`Tiene ${a.toLowerCase()} — genera tráfico de clientes`});
+    if(!found.length) for(const a of anclas.slice(0,1)) reasons.push({ic:"o", t:`Sin ${a.toLowerCase()} que jale gente a la plaza`});
+    let estado = "abierta";
+    if(comp.length){
+      if(soft){ score -= 25; reasons.push({ic:"n", t:`Ya opera ${comp[0].n} (competencia parcial — el rubro puede convivir)`}); }
+      else { estado = "competencia"; reasons.push({ic:"n", t:`Ya opera ${comp[0].n} — competencia directa`}); }
+    } else {
+      reasons.push({ic:"y", t:`Sin ${cat.toLowerCase()} — categoría libre en la plaza`});
+    }
+    // Tipo de plaza: ¿de barrio/familiar o lifestyle?
+    if(PREF_BARRIO.has(cat)){
+      if(p.tipo!=="Lifestyle"){ score += 8; reasons.push({ic:"y", t:`Plaza ${p.tipo==="Vecinal"?"de barrio":"familiar"} — el formato donde mejor funciona tu rubro`}); }
+      else { score -= 4; reasons.push({ic:"o", t:"Plaza lifestyle — formato menos típico para tu rubro"}); }
+    }
+    // Carácter del área: ¿residencial, oficinas, mixta?
+    const car = ZONA_INFO[p.zona];
+    if(PREF_RESIDENCIAL.has(cat)){
+      if(car==="residencial"){ score += 8; reasons.push({ic:"y", t:"Área residencial — tus clientes viven aquí"}); }
+      else if(car==="oficinas"){ score -= 4; reasons.push({ic:"o", t:"Área de oficinas — poca clientela residencial"}); }
+    }
+    // Poder adquisitivo del área
+    const poder = ZONA_PODER[p.zona];
+    score += PODER_BONUS[poder] || 0;
+    reasons.push({ic: poder==="alto"?"y":"o", t:`${PODER_L[poder]} en la zona`});
+    // Crecimiento proyectado del área
+    const crec = ZONA_CRECIMIENTO[p.zona];
+    if(crec==="alto"){ score += 7; reasons.push({ic:"y", t:"Zona en crecimiento — oportunidad de entrar temprano"}); }
+    else reasons.push({ic:"o", t:CRECIMIENTO_L[crec]});
+    // Radio de influencia real: competencia propia + zonas vecinas (peso reducido)
+    const vecinas = ZONA_VECINAS[p.zona] || [];
+    const compPropia = PLAZAS.filter(q=>q.zona===p.zona && q.id!==p.id)
+      .flatMap(q=>q.tenants).filter(t=>t.cat===cat).length;
+    const compVecina = PLAZAS.filter(q=>vecinas.includes(q.zona))
+      .flatMap(q=>q.tenants).filter(t=>t.cat===cat).length;
+    if(compPropia){ score -= compPropia*5; reasons.push({ic:"o", t:`${compPropia} ${compPropia===1?"negocio del mismo rubro opera":"negocios del mismo rubro operan"} en otras plazas de tu zona`}); }
+    else if(compVecina){ score -= Math.round(compVecina*0.5)*3; reasons.push({ic:"o", t:`${compVecina} en zonas cercanas (fuera de tu radio inmediato)`}); }
+    else if(!comp.length){ reasons.push({ic:"y", t:"Tampoco hay competencia en tu radio de influencia (zona + alrededores)"}); }
+    if(!found.length){
+      const anclaVecina = vecinas.some(z=>PLAZAS.some(q=>q.zona===z && q.tenants.some(t=>anclas.includes(t.cat))));
+      if(anclaVecina) reasons.push({ic:"o", t:"Hay anclas para tu rubro en zonas cercanas, aunque no en esta plaza"});
+    }
+    // Visibilidad desde la calle
+    const vis = visibilidad(p);
+    if(vis==="alta"){ score += 5; reasons.push({ic:"y", t:VIS_L[vis]}); }
+    else if(vis==="baja"){ score -= 5; reasons.push({ic:"n", t:VIS_L[vis]}); }
+    // Vacancia de la plaza
+    const vac = vacanciaPct(p);
+    if(vac>=35){ score -= 6; reasons.push({ic:"o", t:`${nLoc} ${nLoc===1?"local vacío":"locales vacíos"} — puede ser señal de baja demanda`}); }
+    else if(vac>0 && vac<=15 && p.tenants.length>=4){ score += 5; reasons.push({ic:"y", t:`Solo ${nLoc} ${nLoc===1?"local vacío":"locales vacíos"} — plaza con alta ocupación`}); }
+    if(nLoc) reasons.push({ic:"y", t:`${nLoc} ${nLoc===1?"local disponible":"locales disponibles"} desde ${fmt$.format(Math.min(...p.locales.map(l=>l.precio)))}/mes`});
+    else { estado = estado==="abierta" ? "sin-locales" : estado; reasons.push({ic:"n", t:"Sin locales disponibles por ahora"}); }
+    score = Math.max(4, Math.min(100, score));
+    if(estado!=="abierta") score = Math.min(score, 30);
+    return {p, score, reasons, estado};
+  });
+  return out.sort((a,b)=> (a.estado==="abierta"?0:1)-(b.estado==="abierta"?0:1) || b.score-a.score);
+}
+
+function viewOportunidades(){
+  const cat = state.oppCat;
+  let body;
+  if(!cat){
+    body = `<div class="empty">Elige el tipo de negocio que quieres abrir y te mostramos en qué plazas te conviene — dónde ya hay tráfico asegurado y todavía no hay competencia.</div>`;
+  } else {
+    const res = analizar(cat);
+    const libres = res.filter(r=>r.estado==="abierta").length;
+    body = `
+      <p class="opp-note">De ${PLAZAS.length} plazas analizadas, <b>${libres} ${libres===1?"es una oportunidad abierta":"son oportunidades abiertas"}</b> para ${cat.toLowerCase()}: tienen negocios que generan tráfico, locales disponibles y ningún competidor directo.</p>
+      <div class="opp-list">
+      ${res.map(({p,score,reasons,estado})=>`
+        <article class="opp-card ${estado!=="abierta"?"blocked":""}">
+          <a class="cover" href="#/plaza/${p.id}" aria-label="Ver ${esc(p.nombre)}">${cover(p)}</a>
+          <div>
+            <h3><a href="#/plaza/${p.id}">${esc(p.nombre)}</a></h3>
+            <div class="opp-zone">${esc(p.zona)} · Ciudad de Panamá · ${p.tipo}</div>
+            <ul class="opp-reasons">
+              ${reasons.map(r=>`<li><span class="ic ${r.ic}">${r.ic==="y"?"✓":r.ic==="n"?"✕":"○"}</span><span>${esc(r.t)}</span></li>`).join("")}
+            </ul>
+          </div>
+          <div class="score-box">
+            ${estado==="abierta"
+              ? `<div class="score-num num">${score}<small> /100</small></div>
+                 <div class="meter"><i style="width:${score}%"></i></div>
+                 <span class="chip open">Oportunidad abierta</span>`
+              : estado==="competencia"
+              ? `<span class="chip block">Competencia directa</span>`
+              : `<span class="chip idle">Sin locales disponibles</span>`}
+            <a class="btn btn-sm" href="#/plaza/${p.id}" style="text-decoration:none">Ver plaza</a>
+          </div>
+        </article>`).join("")}
+      </div>`;
+  }
+  return `
+  <div class="page-head">
+    <h1>¿Dónde conviene abrir tu negocio?</h1>
+    <p>Cruzamos el tenant mix de cada plaza: negocios ancla que atraen a tus clientes, competidores ya instalados y locales disponibles.</p>
+  </div>
+  <div class="cat-picker" role="group" aria-label="Tipo de negocio">
+    ${TIPOS_NEGOCIO.map(c=>`<button class="cat-btn ${c===cat?"on":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("")}
+  </div>
+  ${body}`;
+}
+
+/* ================= Router y eventos ================= */
+
+function render(){
+  const hash = location.hash || "#/inicio";
+  const [,route,arg] = hash.split("/");
+  const app = $("#app");
+  document.querySelectorAll("#tabs a").forEach(a=>{
+    a.classList.toggle("on", a.dataset.r===route || (route==="plaza" && a.dataset.r==="mapa"));
+  });
+  if(route==="plaza" && arg){ app.innerHTML = viewPlaza(arg); }
+  else if(route==="oportunidades"){ app.innerHTML = viewOportunidades(); }
+  else if(route==="plazas"){ location.hash = "#/mapa"; return; }
+  else if(route==="mapa"){
+    app.innerHTML = viewMapa();
+    $("#map-cat").addEventListener("change", e=>{ state.mapCat = e.target.value; render(); });
+  }
+  else if(route==="evaluacion"){ app.innerHTML = viewEvaluacion(); }
+  else if(route==="miplaza"){ app.innerHTML = viewMiPlaza(); }
+  else if(route==="explorar"){ app.innerHTML = viewExplorar(); bindFiltros(); renderResultados(); }
+  else {
+    app.innerHTML = viewInicio();
+    const b2 = document.getElementById("btn-publicar-2");
+    if(b2) b2.addEventListener("click", ()=> $("#dlg-plaza").showModal());
+  }
+  window.scrollTo({top:0});
+}
+
+function bindFiltros(){
+  const f = state.filtros;
+  $("#f-ciudad").addEventListener("change", e=>{ f.ciudad=e.target.value; renderResultados(); });
+  $("#f-tipo").addEventListener("change", e=>{ f.tipo=e.target.value; renderResultados(); });
+  $("#f-precio").addEventListener("change", e=>{ f.precioMax=+e.target.value; renderResultados(); });
+  $("#f-m2").addEventListener("change", e=>{ f.m2Min=+e.target.value; renderResultados(); });
+  $("#f-estac").addEventListener("change", e=>{ f.estacMin=+e.target.value; renderResultados(); });
+  $("#f-orden").addEventListener("change", e=>{ f.orden=e.target.value; renderResultados(); });
+}
+
+document.addEventListener("click", e=>{
+  const pub = e.target.closest("[data-open-publica]");
+  if(pub){ $("#dlg-plaza").showModal(); return; }
+  const wopt = e.target.closest("[data-wk]");
+  if(wopt){
+    const ev = state.ev, k = wopt.dataset.wk, v = wopt.dataset.wv;
+    if(k==="zona"){
+      const i = ev.zonas.indexOf(v);
+      i>=0 ? ev.zonas.splice(i,1) : ev.zonas.push(v);
+    } else if(k==="budget" || k==="m2"){
+      const arr = ev[k];
+      const i = arr.indexOf(v);
+      i>=0 ? arr.splice(i,1) : arr.push(v);
+    } else {
+      ev[k] = v;
+      ev.step++;
+    }
+    render(); return;
+  }
+  const wnav = e.target.closest("[data-wnav]");
+  if(wnav){
+    const ev = state.ev, a = wnav.dataset.wnav;
+    if(a==="back") ev.step = Math.max(0, ev.step-1);
+    else if(a==="next") ev.step++;
+    else if(a==="restart"){ ev.step = 0; if(!location.hash.startsWith("#/evaluacion")) location.hash="#/evaluacion"; }
+    render(); return;
+  }
+  const cat = e.target.closest("button[data-cat]");
+  if(cat){
+    state.oppCat = cat.dataset.cat;
+    if(location.hash.startsWith("#/oportunidades")) render();
+    else location.hash = "#/oportunidades";
+    return;
+  }
+  const sol = e.target.closest("[data-solicitar]");
+  if(sol){ abrirContacto(sol.dataset.solicitar, sol.dataset.local||""); return; }
+  const cls = e.target.closest("[data-close]");
+  if(cls){ cls.closest("dialog").close(); return; }
+});
+
+window.addEventListener("hashchange", render);
+
+/* ---------- Contacto ---------- */
+
+let ctx = {plaza:"", local:""};
+
+function abrirContacto(pid, lid){
+  const p = plaza(pid); if(!p) return;
+  ctx = {plaza:pid, local:lid};
+  $("#dlg-contacto-sub").textContent = lid
+    ? `Local ${lid} · ${p.nombre} — ${p.zona}`
+    : `${p.nombre} — ${p.zona}`;
+  $("#dlg-contacto").showModal();
+}
+
+$("#c-tipo").innerHTML = `<option value="">Selecciona…</option>` +
+  TIPOS_NEGOCIO.map(c=>`<option>${c}</option>`).join("") + `<option>Otro</option>`;
+
+$("#form-contacto").addEventListener("submit", ()=>{
+  const p = plaza(ctx.plaza);
+  const reg = JSON.parse(localStorage.getItem("pm-solicitudes")||"[]");
+  reg.push({fecha:new Date().toISOString(), plaza:ctx.plaza, local:ctx.local,
+    nombre:$("#c-nombre").value, correo:$("#c-correo").value,
+    tel:$("#c-tel").value, tipo:$("#c-tipo").value, msg:$("#c-msg").value});
+  localStorage.setItem("pm-solicitudes", JSON.stringify(reg));
+  $("#form-contacto").reset();
+  toast(`Solicitud enviada a ${p ? p.nombre : "la plaza"}. Te contactarán pronto.`);
+});
+
+$("#btn-publicar").addEventListener("click", ()=> $("#dlg-plaza").showModal());
+$("#form-plaza").addEventListener("submit", ()=>{
+  const reg = JSON.parse(localStorage.getItem("pm-plazas-nuevas")||"[]");
+  reg.push({fecha:new Date().toISOString(), nombre:$("#p-nombre").value, ciudad:$("#p-ciudad").value, correo:$("#p-correo").value});
+  localStorage.setItem("pm-plazas-nuevas", JSON.stringify(reg));
+  $("#form-plaza").reset();
+  toast("¡Gracias! Te contactaremos para crear el perfil de tu plaza.");
+});
+
+render();
+</script>
