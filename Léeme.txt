@@ -1,0 +1,20 @@
+PLAZA MARKETPLACE — carpeta de proyecto
+
+Sitio web en vivo: https://plaza-marketplace.vercel.app
+Código de acceso: 0010
+
+Archivos en esta carpeta:
+
+- Plaza Marketplace - Pitch Deck.pptx
+  Presentación de 12 diapositivas para inversionistas.
+
+- Plaza Marketplace - Resumen.pptx
+  Versión corta (6 diapositivas) para explicar la idea sin tono de venta.
+
+- Plaza Marketplace - Plan de Negocio.docx
+  Documento completo: problema, producto, el problema del huevo y la gallina,
+  modelo de negocio por etapas, mercado, riesgos y roadmap.
+
+- Plaza Marketplace - Sitio web.html
+  Copia local del prototipo. Para verlo funcionando, abre este archivo
+  directamente en un navegador (doble clic), o usa el enlace de arriba.
