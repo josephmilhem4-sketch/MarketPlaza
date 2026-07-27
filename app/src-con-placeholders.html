@@ -335,6 +335,12 @@
   .wopt:hover{border-color:var(--ink)}
   .wopt.on{border-color:var(--accent); background:var(--accent-soft); color:var(--accent)}
   .wopt small{display:block; font-weight:500; color:var(--muted); font-size:12.5px; margin-top:2px}
+  .otro-row{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+  .otro-row input{
+    flex:1; min-width:220px; background:var(--surface); color:var(--ink);
+    border:1.5px solid var(--line2); border-radius:10px; padding:11px 14px; font:inherit; font-size:14.5px;
+  }
+  .otro-row input:focus{border-color:var(--ink); outline:none}
   .wiz-nav{display:flex; justify-content:space-between; gap:10px; margin-top:26px}
   .wiz-answers{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px}
   .wiz-answers .chip{background:var(--surface); border:1px solid var(--line2); color:var(--ink)}
@@ -813,8 +819,9 @@ function waBtn(pid, lid, cls){
 const state = {
   filtros:{ ciudad:"", tipo:"", precioMax:0, m2Min:0, estacMin:0, orden:"precio-asc" },
   oppCat:"",
+  oppCatOtroMode:false,
   mapCat:"",
-  ev:{step:0, cat:"", budget:[], m2:[], zonas:[]}
+  ev:{step:0, cat:"", catOtroMode:false, budget:[], m2:[], zonas:[]}
 };
 
 /* ================= Utilidades ================= */
@@ -922,7 +929,7 @@ function viewInicio(){
         <div class="q-label">¿Qué negocio quieres abrir?</div>
         <div class="quickcats">
           ${QUICK.map(c=>`<button class="cat-btn" data-cat="${esc(c)}">${esc(c)}</button>`).join("")}
-          <a class="cat-btn" href="#/oportunidades" style="text-decoration:none">Otro…</a>
+          <button class="cat-btn" data-oppcat-otro="1">Otro…</button>
         </div>
         <p class="home-alt" style="margin-top:14px">¿Quieres una recomendación a tu medida? <a href="#/evaluacion">Responde 4 preguntas y te decimos dónde te conviene →</a></p>
       </div>
@@ -1190,7 +1197,18 @@ function viewEvaluacion(){
   let q="", sub="", opts="";
   if(key==="cat"){
     q="¿Qué negocio quieres abrir?"; sub="Este dato define qué plazas te convienen: dónde ya hay clientes para ti y dónde no hay competencia.";
-    opts = `<div class="wopts cols3">${TIPOS_NEGOCIO.map(c=>`<button class="wopt ${ev.cat===c?"on":""}" data-wk="cat" data-wv="${esc(c)}">${esc(c)}</button>`).join("")}</div>`;
+    if(ev.catOtroMode){
+      opts = `<div class="otro-row">
+        <input id="wiz-otro-input" type="text" placeholder="Ej. Estudio de yoga, lavado de autos…" value="${ev.cat && !TIPOS_NEGOCIO.includes(ev.cat) ? esc(ev.cat) : ""}">
+        <button class="btn btn-primary" data-wk="cat-otro-go" data-wv="">Continuar</button>
+      </div>
+      <button class="btn-text" style="margin-top:10px" data-wk="cat-otro-back" data-wv="">← Elegir de la lista</button>`;
+    } else {
+      opts = `<div class="wopts cols3">
+        ${TIPOS_NEGOCIO.map(c=>`<button class="wopt ${ev.cat===c?"on":""}" data-wk="cat" data-wv="${esc(c)}">${esc(c)}</button>`).join("")}
+        <button class="wopt ${ev.cat && !TIPOS_NEGOCIO.includes(ev.cat)?"on":""}" data-wk="cat-otro" data-wv="">Otro…</button>
+      </div>`;
+    }
   } else if(key==="budget"){
     q="¿Cuánto puedes pagar de alquiler al mes?"; sub="Puedes elegir más de un rango. Solo te recomendaremos plazas con locales dentro de tu presupuesto.";
     opts = `<div class="wopts">${BUDGET_OPTS.map(o=>`<button class="wopt ${ev.budget.includes(o.v)?"on":""}" data-wk="budget" data-wv="${o.v}">${o.l}<small>por mes</small></button>`).join("")}</div>`;
@@ -1566,7 +1584,13 @@ function viewOportunidades(){
   </div>
   <div class="cat-picker" role="group" aria-label="Tipo de negocio">
     ${TIPOS_NEGOCIO.map(c=>`<button class="cat-btn ${c===cat?"on":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("")}
+    <button class="cat-btn ${state.oppCatOtroMode || (cat && !TIPOS_NEGOCIO.includes(cat))?"on":""}" data-oppcat-otro="1">Otro…</button>
   </div>
+  ${state.oppCatOtroMode ? `
+  <div class="otro-row">
+    <input id="opp-otro-input" type="text" placeholder="Ej. Estudio de yoga, lavado de autos…" value="${cat && !TIPOS_NEGOCIO.includes(cat) ? esc(cat) : ""}">
+    <button class="btn btn-primary" id="opp-otro-go">Analizar</button>
+  </div>` : ""}
   ${body}`;
 }
 
@@ -1613,6 +1637,14 @@ document.addEventListener("click", e=>{
   const wopt = e.target.closest("[data-wk]");
   if(wopt){
     const ev = state.ev, k = wopt.dataset.wk, v = wopt.dataset.wv;
+    if(k==="cat-otro"){ ev.catOtroMode = true; render(); return; }
+    if(k==="cat-otro-back"){ ev.catOtroMode = false; render(); return; }
+    if(k==="cat-otro-go"){
+      const val = ($("#wiz-otro-input")?.value || "").trim();
+      if(!val) return;
+      ev.cat = val; ev.catOtroMode = false; ev.step++;
+      render(); return;
+    }
     if(k==="zona"){
       const i = ev.zonas.indexOf(v);
       i>=0 ? ev.zonas.splice(i,1) : ev.zonas.push(v);
@@ -1637,9 +1669,24 @@ document.addEventListener("click", e=>{
   const cat = e.target.closest("button[data-cat]");
   if(cat){
     state.oppCat = cat.dataset.cat;
+    state.oppCatOtroMode = false;
     if(location.hash.startsWith("#/oportunidades")) render();
     else location.hash = "#/oportunidades";
     return;
+  }
+  const oppOtro = e.target.closest("[data-oppcat-otro]");
+  if(oppOtro){
+    state.oppCatOtroMode = true;
+    if(location.hash.startsWith("#/oportunidades")) render();
+    else location.hash = "#/oportunidades";
+    return;
+  }
+  const oppOtroGo = e.target.closest("#opp-otro-go");
+  if(oppOtroGo){
+    const val = ($("#opp-otro-input")?.value || "").trim();
+    if(!val) return;
+    state.oppCat = val; state.oppCatOtroMode = false;
+    render(); return;
   }
   const sol = e.target.closest("[data-solicitar]");
   if(sol){ abrirContacto(sol.dataset.solicitar, sol.dataset.local||""); return; }
@@ -1648,6 +1695,12 @@ document.addEventListener("click", e=>{
 });
 
 window.addEventListener("hashchange", render);
+
+document.addEventListener("keydown", e=>{
+  if(e.key!=="Enter") return;
+  if(e.target.id==="wiz-otro-input") document.querySelector('[data-wk="cat-otro-go"]')?.click();
+  else if(e.target.id==="opp-otro-input") $("#opp-otro-go")?.click();
+});
 
 /* ---------- Contacto ---------- */
 
