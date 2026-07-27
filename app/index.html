@@ -726,27 +726,37 @@ const ANCLAS = {
   "Ferretería":      ["Supermercado"],
   "Óptica":          ["Clínica","Farmacia","Supermercado"],
   "Panadería":       ["Supermercado","Café"],
-  "Pet shop":        ["Supermercado","Veterinaria"]
+  "Pet shop":        ["Supermercado","Veterinaria"],
+  "Academia":        ["Supermercado","Banco"],
+  "Comida rápida":   ["Supermercado","Gimnasio","Banco"],
+  "Coworking":       ["Café","Banco"],
+  "Licorería":       ["Supermercado","Restaurante"],
+  "Moda":            ["Gimnasio","Supermercado","Banco"]
 };
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
-const COMPETENCIA_SUAVE = new Set(["Restaurante","Café"]);
+const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda"]);
 
 /* Para rubros escritos libremente ("Otro"): a qué categoría existente se parece más,
    según palabras clave. Así el análisis usa anclas y preferencias reales en vez de
    quedarse solo con los factores genéricos de la plaza. */
 const RUBRO_SIMILAR = [
-  {like:"Gimnasio",         kw:["yoga","pilates","crossfit","spinning","zumba","boxeo","artes marciales","box","funcional"]},
+  {like:"Gimnasio",         kw:["yoga","pilates","crossfit","spinning","zumba","boxeo","artes marciales","box","funcional","entrenamiento"]},
   {like:"Salón de belleza", kw:["spa","unas","manicure","manicura","pedicure","pedicura","estetica","cejas","pestanas","masaje","peluqueria"]},
-  {like:"Restaurante",      kw:["bar","cantina","pizzeria","sushi","hamburgueseria","comida","cocina","marisqueria","parrilla","ceviche","food truck","cafeteria"]},
+  {like:"Restaurante",      kw:["bar","cantina","sushi","comida","cocina","marisqueria","parrilla","ceviche","cafeteria","italiano","chino","japones","asados"]},
+  {like:"Comida rápida",    kw:["pizzeria","pizza","hamburgueseria","hamburguesa","pollo frito","fritanga","food truck","comida rapida","hot dog"]},
   {like:"Panadería",        kw:["pasteleria","reposteria","dulceria","postres"]},
   {like:"Ferretería",       kw:["taller","mecanico","refaccionaria","herramientas","hardware","tornillos"]},
-  {like:"Clínica",          kw:["dental","dentista","fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio"]},
+  {like:"Clínica",          kw:["dental","dentista","fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio","pediatra","ginecologo","dermatologo"]},
   {like:"Farmacia",         kw:["botica","drogueria"]},
   {like:"Veterinaria",      kw:["veterinario","veterinaria"]},
   {like:"Pet shop",         kw:["mascota","perro","gato","acuario"]},
   {like:"Lavandería",       kw:["tintoreria","lavado en seco","lavanderia"]},
   {like:"Óptica",           kw:["lentes","gafas","oftalmologica","anteojos"]},
   {like:"Barbería",         kw:["barber","barba"]},
+  {like:"Academia",         kw:["tutoria","tutorias","clases particulares","idiomas","ingles","kinder","preescolar","refuerzo escolar","escuela"]},
+  {like:"Coworking",        kw:["oficinas compartidas","espacio de trabajo","oficina virtual"]},
+  {like:"Licorería",        kw:["vinos","cerveza","cervezas","bebidas alcoholicas","liquor"]},
+  {like:"Moda",             kw:["ropa","boutique","zapatos","zapateria","calzado","accesorios","joyeria"]},
 ];
 function sinAcentos(s){ return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
 function rubroSimilar(cat){
@@ -772,9 +782,9 @@ const ZONA_INFO = {
 };
 const CARACTER_L = {residencial:"Zona residencial", oficinas:"Zona de oficinas", mixta:"Zona mixta"};
 /* Rubros que funcionan mejor en plaza de barrio/familiar */
-const PREF_BARRIO = new Set(["Pet shop","Farmacia","Lavandería","Panadería","Ferretería","Veterinaria","Barbería","Clínica"]);
+const PREF_BARRIO = new Set(["Pet shop","Farmacia","Lavandería","Panadería","Ferretería","Veterinaria","Barbería","Clínica","Academia","Licorería"]);
 /* Rubros cuya clientela es principalmente residencial */
-const PREF_RESIDENCIAL = new Set(["Pet shop","Farmacia","Lavandería","Panadería","Veterinaria","Ferretería","Clínica"]);
+const PREF_RESIDENCIAL = new Set(["Pet shop","Farmacia","Lavandería","Panadería","Veterinaria","Ferretería","Clínica","Academia","Licorería"]);
 
 /* Poder adquisitivo de cada zona */
 const ZONA_PODER = {
