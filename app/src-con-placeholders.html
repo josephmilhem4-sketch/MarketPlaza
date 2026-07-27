@@ -66,6 +66,13 @@
   .btn-sm{padding:7px 13px; font-size:13.5px; border-radius:9px}
   .btn-text{border:0; background:none; color:var(--ink); font-weight:600; font-size:13.5px; text-decoration:underline; padding:6px 4px}
   .btn-text:hover{color:var(--accent)}
+  .btn-wa{
+    display:inline-flex; align-items:center; gap:6px;
+    background:#25D366; border-color:#25D366; color:#fff; text-decoration:none;
+  }
+  .btn-wa:hover{background:#1EBE5A; border-color:#1EBE5A; box-shadow:var(--shadow)}
+  .btn-wa svg{flex-shrink:0}
+  .contact-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
 
   main{max-width:1200px; margin:0 auto; padding:34px 24px 80px}
 
@@ -110,7 +117,8 @@
   .lc-title{font-weight:600; font-size:15px; letter-spacing:-.01em}
   .lc-title a{text-decoration:none}
   .lc-sub, .lc-meta{font-size:13.5px; color:var(--muted)}
-  .lc-foot{display:flex; align-items:center; justify-content:space-between; margin-top:7px; gap:8px}
+  .lc-foot{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-top:7px; gap:8px}
+  .lc-foot .contact-row{gap:8px}
   .lc-price{font-weight:700; font-size:15px}
   .lc-price small{font-weight:500; color:var(--muted); font-size:13px}
 
@@ -784,6 +792,22 @@ const TIPOS_NEGOCIO = Object.keys(ANCLAS);
 const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
 const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
 
+/* Número de contacto para el botón de WhatsApp — placeholder de demo, reemplazar por el número real */
+const WHATSAPP_NUMBER = "50760000000";
+const WA_ICON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1s-.8 1-.9 1.2c-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.4 0-.5C10 9 9.5 7.8 9.3 7.3c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.1.8.8-3-.2-.3C3.7 14.2 3.2 12.6 3.2 11c0-4.8 3.9-8.7 8.8-8.7s8.8 3.9 8.8 8.7-3.9 8.7-8.8 8.7z"/></svg>`;
+
+function waLink(pid, lid){
+  const p = plaza(pid); if(!p) return "#";
+  const l = lid ? p.locales.find(x=>x.id===lid) : null;
+  const msg = l
+    ? `Hola! Vi Plaza Marketplace y me interesa el local ${l.id} en ${p.nombre} (${l.m2} m², ${fmt$.format(l.precio)}/mes). ¿Me pueden dar más información?`
+    : `Hola! Vi Plaza Marketplace y me interesa conocer más sobre los locales disponibles en ${p.nombre}.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
+function waBtn(pid, lid, cls){
+  return `<a class="${cls}" href="${waLink(pid,lid)}" target="_blank" rel="noopener">${WA_ICON}WhatsApp</a>`;
+}
+
 /* ================= Estado ================= */
 
 const state = {
@@ -1027,7 +1051,10 @@ function renderResultados(){
         <div class="lc-meta">${locs.length} ${locs.length===1?"local disponible":"locales disponibles"} · ${p.tenants.length} negocios en la plaza</div>
         <div class="lc-foot">
           <span class="lc-price num">Desde ${fmt$.format(cheapest.precio)} <small>/mes</small></span>
-          <button class="btn-text" data-solicitar="${p.id}" data-local="${cheapest.id}">Solicitar info</button>
+          <span class="contact-row">
+            ${waBtn(p.id, cheapest.id, "btn btn-sm btn-wa")}
+            <button class="btn-text" data-solicitar="${p.id}" data-local="${cheapest.id}">o formulario</button>
+          </span>
         </div>
       </div>
     </article>`;}).join("");
@@ -1074,7 +1101,10 @@ function viewPlaza(id){
       <h1>${esc(p.nombre)}</h1>
       <div class="hero-sub">${esc(p.zona)} · Ciudad de Panamá · ${p.tipo} · ${TRAFICO[p.trafico]} · ${CARACTER_L[ZONA_INFO[p.zona]]}</div>
     </div>
-    <button class="btn btn-primary" data-solicitar="${p.id}">Contactar a la plaza</button>
+    <span class="contact-row">
+      ${waBtn(p.id, "", "btn btn-wa")}
+      <button class="btn-text" data-solicitar="${p.id}">o completa el formulario</button>
+    </span>
   </div>
   <p class="hero-desc">${esc(p.desc)}</p>
   <div class="statrow">
@@ -1095,7 +1125,8 @@ function viewPlaza(id){
         </div>
         <div class="right">
           <span class="p num">${fmt$.format(l.precio)} <small>/mes</small></span>
-          <button class="btn btn-sm btn-primary" data-solicitar="${p.id}" data-local="${l.id}">Solicitar info</button>
+          ${waBtn(p.id, l.id, "btn btn-sm btn-wa")}
+          <button class="btn-text" data-solicitar="${p.id}" data-local="${l.id}">o formulario</button>
         </div>
       </div>`).join("")}
   </section>
@@ -1247,7 +1278,7 @@ function viewEvalResultados(){
           ${estado==="abierta"
             ? `<div class="score-num num">${score}<small> /100</small></div>
                <div class="meter"><i style="width:${score}%"></i></div>
-               <button class="btn btn-sm btn-primary" data-solicitar="${p.id}">Solicitar info</button>`
+               ${waBtn(p.id, "", "btn btn-sm btn-wa")}`
             : estado==="competencia"
             ? `<span class="chip block">Competencia directa</span>`
             : `<span class="chip idle">Sin locales que encajen</span>`}
