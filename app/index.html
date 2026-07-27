@@ -732,10 +732,11 @@ const ANCLAS = {
   "Coworking":       ["Café","Banco"],
   "Licorería":       ["Supermercado","Restaurante"],
   "Moda":            ["Gimnasio","Supermercado","Banco"],
-  "Bar":             ["Restaurante","Coworking"]
+  "Bar":             ["Restaurante","Coworking"],
+  "Entretenimiento": ["Restaurante","Comida rápida"]
 };
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
-const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda","Bar"]);
+const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda","Bar","Entretenimiento"]);
 
 /* Para rubros escritos libremente ("Otro"): a qué categoría existente se parece más,
    según palabras clave. Así el análisis usa anclas y preferencias reales en vez de
@@ -745,6 +746,7 @@ const RUBRO_SIMILAR = [
   {like:"Salón de belleza", kw:["spa","unas","manicure","manicura","pedicure","pedicura","estetica","cejas","pestanas","masaje","peluqueria"]},
   {like:"Restaurante",      kw:["sushi","comida","cocina","marisqueria","parrilla","ceviche","cafeteria","italiano","chino","japones","asados"]},
   {like:"Bar",              kw:["bar","cantina","pub","cerveceria","taberna","copas","trago","coctel"]},
+  {like:"Entretenimiento",  kw:["escape room","arcade","boliche","bowling","laser tag","karaoke","trampolin","salon de fiestas","cine","sala de juegos","minigolf","juegos"]},
   {like:"Comida rápida",    kw:["pizzeria","pizza","hamburgueseria","hamburguesa","pollo frito","fritanga","food truck","comida rapida","hot dog"]},
   {like:"Panadería",        kw:["pasteleria","reposteria","dulceria","postres"]},
   {like:"Ferretería",       kw:["taller","mecanico","refaccionaria","herramientas","hardware","tornillos"]},
