@@ -731,6 +731,33 @@ const ANCLAS = {
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
 const COMPETENCIA_SUAVE = new Set(["Restaurante","Café"]);
 
+/* Para rubros escritos libremente ("Otro"): a qué categoría existente se parece más,
+   según palabras clave. Así el análisis usa anclas y preferencias reales en vez de
+   quedarse solo con los factores genéricos de la plaza. */
+const RUBRO_SIMILAR = [
+  {like:"Gimnasio",         kw:["yoga","pilates","crossfit","spinning","zumba","boxeo","artes marciales","box","funcional"]},
+  {like:"Salón de belleza", kw:["spa","unas","manicure","manicura","pedicure","pedicura","estetica","cejas","pestanas","masaje","peluqueria"]},
+  {like:"Restaurante",      kw:["bar","cantina","pizzeria","sushi","hamburgueseria","comida","cocina","marisqueria","parrilla","ceviche","food truck","cafeteria"]},
+  {like:"Panadería",        kw:["pasteleria","reposteria","dulceria","postres"]},
+  {like:"Ferretería",       kw:["taller","mecanico","refaccionaria","herramientas","hardware","tornillos"]},
+  {like:"Clínica",          kw:["dental","dentista","fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio"]},
+  {like:"Farmacia",         kw:["botica","drogueria"]},
+  {like:"Veterinaria",      kw:["veterinario","veterinaria"]},
+  {like:"Pet shop",         kw:["mascota","perro","gato","acuario"]},
+  {like:"Lavandería",       kw:["tintoreria","lavado en seco","lavanderia"]},
+  {like:"Óptica",           kw:["lentes","gafas","oftalmologica","anteojos"]},
+  {like:"Barbería",         kw:["barber","barba"]},
+];
+function sinAcentos(s){ return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+function rubroSimilar(cat){
+  if(TIPOS_NEGOCIO.includes(cat)) return null;
+  const norm = sinAcentos(cat);
+  for(const {like, kw} of RUBRO_SIMILAR){
+    if(kw.some(k => norm.includes(sinAcentos(k)))) return like;
+  }
+  return null;
+}
+
 /* Carácter de cada zona de la ciudad */
 const ZONA_INFO = {
   "San Francisco":"mixta",
@@ -1484,15 +1511,18 @@ function viewMapa(){
 /* ---------- Oportunidades ---------- */
 
 function analizar(cat){
-  const anclas = ANCLAS[cat] || [];
+  const likeCat = rubroSimilar(cat);
+  const anclas = ANCLAS[likeCat || cat] || [];
   const out = PLAZAS.map(p=>{
     const cats = new Set(p.tenants.map(t=>t.cat));
     const found = anclas.filter(a=>cats.has(a));
     const comp = p.tenants.filter(t=>t.cat===cat);
     const nLoc = p.locales.length;
-    const soft = COMPETENCIA_SUAVE.has(cat);
+    const soft = COMPETENCIA_SUAVE.has(likeCat || cat);
     let score = found.length*22 + Math.min(nLoc,3)*8 + p.trafico*6;
     const reasons = [];
+    if(likeCat) reasons.push({ic:"o", t:`Analizado como "${likeCat}" — el rubro existente más parecido a "${cat}"`});
+    else if(!TIPOS_NEGOCIO.includes(cat)) reasons.push({ic:"o", t:`Sin datos específicos para "${cat}" — este análisis usa solo los factores generales de la plaza`});
     for(const a of found) reasons.push({ic:"y", t:`Tiene ${a.toLowerCase()} — genera tráfico de clientes`});
     if(!found.length) for(const a of anclas.slice(0,1)) reasons.push({ic:"o", t:`Sin ${a.toLowerCase()} que jale gente a la plaza`});
     let estado = "abierta";
@@ -1503,13 +1533,13 @@ function analizar(cat){
       reasons.push({ic:"y", t:`Sin ${cat.toLowerCase()} — categoría libre en la plaza`});
     }
     // Tipo de plaza: ¿de barrio/familiar o lifestyle?
-    if(PREF_BARRIO.has(cat)){
+    if(PREF_BARRIO.has(likeCat || cat)){
       if(p.tipo!=="Lifestyle"){ score += 8; reasons.push({ic:"y", t:`Plaza ${p.tipo==="Vecinal"?"de barrio":"familiar"} — el formato donde mejor funciona tu rubro`}); }
       else { score -= 4; reasons.push({ic:"o", t:"Plaza lifestyle — formato menos típico para tu rubro"}); }
     }
     // Carácter del área: ¿residencial, oficinas, mixta?
     const car = ZONA_INFO[p.zona];
-    if(PREF_RESIDENCIAL.has(cat)){
+    if(PREF_RESIDENCIAL.has(likeCat || cat)){
       if(car==="residencial"){ score += 8; reasons.push({ic:"y", t:"Área residencial — tus clientes viven aquí"}); }
       else if(car==="oficinas"){ score -= 4; reasons.push({ic:"o", t:"Área de oficinas — poca clientela residencial"}); }
     }
