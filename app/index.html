@@ -448,6 +448,84 @@
   .gate-card input:focus{border-color:var(--ink); outline:none}
   .gate-card .btn{width:100%}
   .gate-err{color:var(--danger); font-size:13px; font-weight:600; margin:10px 0 0; min-height:18px}
+
+  /* ========== MAPA INTERACTIVO (UbicaPTY Integration) ========== */
+  .map-wrapper{display:flex;height:70vh;min-height:500px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:18px;background:var(--soft)}
+  .map-sidebar{width:340px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+  .map-main{flex:1;position:relative;background:#e5e3df}
+  #gmap{width:100%;height:100%}
+  .map-sidebar-header{padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+  .map-sidebar-header h3{font-size:15px;font-weight:600;margin:0 0 4px}
+  .map-sidebar-header p{font-size:12px;color:var(--muted);margin:0}
+  .map-search-box{padding:12px 16px;border-bottom:1px solid var(--line)}
+  .map-search-input{width:100%;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;font:inherit;font-size:14px;background:var(--bg)}
+  .map-search-input:focus{outline:none;border-color:var(--ink)}
+  .map-filters-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--soft);border-bottom:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted)}
+  .map-filters-toggle:hover{background:var(--line)}
+  .map-filters-panel{max-height:0;overflow:hidden;transition:max-height .3s ease;background:var(--surface);border-bottom:1px solid var(--line)}
+  .map-filters-panel.active{max-height:200px}
+  .map-filters-grid{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px}
+  .map-filter-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;background:var(--surface);border:1px solid var(--line2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+  .map-filter-chip:hover{border-color:var(--ink)}
+  .map-filter-chip.active{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .map-comp-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);cursor:pointer;font-size:13px;font-weight:600;color:#fff}
+  .map-comp-toggle:hover{filter:brightness(1.05)}
+  .map-comp-panel{max-height:0;overflow:hidden;transition:max-height .3s ease;background:var(--surface);border-bottom:1px solid var(--line)}
+  .map-comp-panel.active{max-height:300px}
+  .map-comp-content{padding:12px 16px}
+  .map-comp-input{width:100%;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;font:inherit;font-size:14px;margin-bottom:8px}
+  .map-comp-input:focus{outline:none;border-color:var(--ink)}
+  .map-comp-btn{width:100%;padding:10px;background:var(--ink);color:var(--bg);border:none;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+  .map-comp-btn:hover{background:var(--accent)}
+  .map-comp-results{max-height:150px;overflow-y:auto;margin-top:10px}
+  .map-comp-item{padding:8px 10px;border-radius:6px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .map-comp-item:hover{background:var(--soft)}
+  .map-comp-num{width:20px;height:20px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+  .map-plaza-list{flex:1;overflow-y:auto;padding:8px 0}
+  .map-plaza-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 12px 8px;cursor:pointer;transition:all .15s}
+  .map-plaza-card:hover{border-color:var(--ink);box-shadow:var(--shadow)}
+  .map-plaza-card.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .map-plaza-card.active .map-plaza-zona,.map-plaza-card.active .map-plaza-info{color:rgba(255,255,255,.7)}
+  .map-plaza-nombre{font-weight:600;font-size:14px;margin:0 0 2px}
+  .map-plaza-zona{font-size:12px;color:var(--muted);margin:0 0 6px}
+  .map-plaza-info{display:flex;gap:12px;font-size:12px;color:var(--muted)}
+  .gmap-marker{background:var(--surface);border:2px solid var(--ink);border-radius:20px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer;transition:all .15s}
+  .gmap-marker.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .gmap-zone-marker{background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;text-align:center}
+  .gmap-zone-marker:hover{background:var(--accent)}
+  .gmap-zone-marker strong{display:block;font-size:13px}
+  .gmap-zone-marker span{font-size:11px;opacity:.8}
+  .gmap-biz-marker{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer}
+  .map-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;visibility:hidden;transition:all .2s;z-index:100}
+  .map-drawer-overlay.active{opacity:1;visibility:visible}
+  .map-drawer{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.95);background:var(--surface);border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.28);width:90%;max-width:420px;max-height:80vh;overflow:hidden;opacity:0;visibility:hidden;transition:all .2s;z-index:101}
+  .map-drawer.active{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible}
+  .map-drawer-header{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 20px 16px;border-bottom:1px solid var(--line)}
+  .map-drawer-title{font-size:18px;font-weight:700;margin:0 0 4px}
+  .map-drawer-zona{font-size:13px;color:var(--muted);margin:0}
+  .map-drawer-close{width:32px;height:32px;border:none;background:var(--soft);border-radius:50%;cursor:pointer;font-size:18px;color:var(--muted);display:flex;align-items:center;justify-content:center}
+  .map-drawer-close:hover{background:var(--line);color:var(--ink)}
+  .map-drawer-content{padding:16px 20px 20px;max-height:calc(80vh - 100px);overflow-y:auto}
+  .map-drawer-section{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 12px}
+  .map-local-card{background:var(--soft);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .map-local-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .map-local-numero{font-weight:600;font-size:13px}
+  .map-local-precio{font-weight:700;color:var(--accent)}
+  .map-local-precio span{font-weight:400;color:var(--muted);font-size:12px}
+  .map-local-details{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .map-local-wa{display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:8px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none}
+  .map-local-wa:hover{background:#1EBE5A}
+  .map-local-wa svg{width:16px;height:16px;fill:currentColor}
+  .map-view-profile{display:block;text-align:center;margin-top:16px;padding:12px;background:var(--ink);color:var(--bg);border-radius:10px;text-decoration:none;font-weight:600;font-size:14px}
+  .map-view-profile:hover{background:var(--accent)}
+  .map-loading{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:14px}
+  .map-loading::after{content:'';width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:mapspin .8s linear infinite;margin-left:10px}
+  @keyframes mapspin{to{transform:rotate(360deg)}}
+  @media(max-width:768px){
+    .map-wrapper{flex-direction:column-reverse;height:auto}
+    .map-sidebar{width:100%;max-height:45vh}
+    .map-main{height:50vh}
+  }
 </style>
 </head>
 <body>
@@ -874,6 +952,66 @@ function waBtn(pid, lid, cls){
   return `<a class="${cls}" href="${waLink(pid,lid)}" target="_blank" rel="noopener">${WA_ICON}WhatsApp</a>`;
 }
 
+/* ================= Google Maps Integration ================= */
+
+const GOOGLE_MAPS_API_KEY = 'AIzaSyC65ByD4HRlt1N3royoeZtX6tkPFxmWBw0';
+const GOOGLE_MAP_ID = 'b10820e6aabf2a4a52f8df1d';
+const WHATSAPP_MAPA = '50760000000';
+
+let gmap = null;
+let gmapMarkers = [];
+let gmapZoneMarkers = [];
+let gmapZonasData = {};
+let gmapPlacesService = null;
+let gmapFilterMarkers = [];
+let gmapBusinessMarkers = [];
+let gmapPlazaSeleccionada = null;
+
+// Plazas con coordenadas para el mapa interactivo
+const PLAZAS_MAPA = [
+  {id:"concordia",nombre:"Plaza Concordia",zona:"Vía España / El Cangrejo",lat:9.0194,lng:-79.5244,locales:[{numero:"L-15 · Planta Baja",m2:45,precio:28},{numero:"L-22 · Nivel 1",m2:65,precio:25},{numero:"K-08 · Kiosko",m2:8,precio:45}]},
+  {id:"einstein",nombre:"Plaza Einstein",zona:"El Cangrejo (Vía Argentina)",lat:9.0231,lng:-79.5258,locales:[{numero:"L-05 · Planta Baja",m2:55,precio:35},{numero:"L-12 · Esquina",m2:40,precio:38}]},
+  {id:"regent",nombre:"Plaza Regent",zona:"Vía España / Bella Vista",lat:9.0165,lng:-79.5281,locales:[{numero:"OF-301 · Oficina",m2:80,precio:22},{numero:"L-08 · Planta Baja",m2:50,precio:30}]},
+  {id:"multiplaza",nombre:"Multiplaza Pacific Mall",zona:"Punta Pacífica",lat:8.9897,lng:-79.5117,locales:[{numero:"L-245 · Nivel 2",m2:120,precio:85},{numero:"L-118 · Nivel 1",m2:95,precio:90},{numero:"FC-22 · Food Court",m2:55,precio:75}]},
+  {id:"sanfrancisco",nombre:"Plaza San Francisco",zona:"San Francisco / Calle 50",lat:8.9881,lng:-79.5085,locales:[{numero:"L-12 · Planta Baja",m2:85,precio:42},{numero:"L-28 · Nivel 1",m2:60,precio:38}]},
+  {id:"towncenter",nombre:"Town Center Costa del Este",zona:"Costa del Este",lat:9.0102,lng:-79.4678,locales:[{numero:"L-402 · Nivel 4",m2:88,precio:52},{numero:"L-215 · Nivel 2",m2:110,precio:55},{numero:"FC-08 · Food Court",m2:42,precio:58}]},
+  {id:"santamaria",nombre:"Santa María Plaza",zona:"Costa del Este / Santa María",lat:9.0198,lng:-79.4589,locales:[{numero:"L-22 · Planta Baja",m2:95,precio:48},{numero:"L-45 · Nivel 1",m2:75,precio:45}]},
+  {id:"obarrio",nombre:"Plaza Obarrio",zona:"Obarrio / Calle 50",lat:8.9862,lng:-79.5201,locales:[{numero:"L-12 · Planta Baja",m2:60,precio:55},{numero:"OF-205 · Oficina",m2:45,precio:42}]},
+  {id:"balboa",nombre:"Plaza Bal Harbour",zona:"Avenida Balboa",lat:8.9712,lng:-79.5298,locales:[{numero:"L-08 · Vista al mar",m2:85,precio:72},{numero:"L-15 · Terraza",m2:55,precio:68}]},
+  {id:"albrook",nombre:"Albrook Mall",zona:"Albrook",lat:8.9734,lng:-79.5532,locales:[{numero:"L-1245 · Pasillo Central",m2:65,precio:95},{numero:"L-856 · Ala Norte",m2:48,precio:85},{numero:"K-22 · Kiosko",m2:12,precio:120}]},
+  {id:"clayton",nombre:"Plaza Clayton",zona:"Clayton",lat:9.0061,lng:-79.5785,locales:[{numero:"L-15 · Planta Baja",m2:70,precio:42},{numero:"L-28 · Nivel 1",m2:55,precio:38}]},
+  {id:"eldorado",nombre:"Centro Comercial El Dorado",zona:"El Dorado / Vía Ricardo J. Alfaro",lat:9.0094,lng:-79.5358,locales:[{numero:"L-125 · Planta Baja",m2:85,precio:35},{numero:"L-208 · Nivel 2",m2:65,precio:32},{numero:"FC-12 · Food Court",m2:40,precio:42}]},
+  {id:"altaplaza",nombre:"AltaPlaza Mall",zona:"Vía Centenario",lat:9.0345,lng:-79.5289,locales:[{numero:"L-312 · Nivel 3",m2:95,precio:65},{numero:"L-156 · Nivel 1",m2:72,precio:70}]},
+  {id:"metromall",nombre:"Metromall",zona:"Vía Tocumen",lat:9.0512,lng:-79.4445,locales:[{numero:"L-425 · Nivel 4",m2:80,precio:45},{numero:"L-218 · Nivel 2",m2:55,precio:48},{numero:"FC-15 · Food Court",m2:38,precio:52}]},
+  {id:"brisas",nombre:"Plaza Brisas del Golf",zona:"Brisas del Golf / Vía Tocumen",lat:9.0792,lng:-79.4561,locales:[{numero:"L-08 · Planta Baja",m2:65,precio:32},{numero:"L-22 · Esquina",m2:50,precio:35}]},
+  {id:"transistmica",nombre:"Plaza Transístmica",zona:"El Cangrejo / Transístmica",lat:9.0245,lng:-79.5012,locales:[{numero:"L-12 · Planta Baja",m2:75,precio:38},{numero:"OF-305 · Oficina",m2:60,precio:28}]},
+  {id:"bellavista",nombre:"Plaza Bella Vista",zona:"Bella Vista / Calle 50",lat:8.9832,lng:-79.5234,locales:[{numero:"L-05 · Esquina",m2:55,precio:48},{numero:"L-18 · Interior",m2:40,precio:42}]},
+  {id:"cocodelmar",nombre:"Plaza Coco del Mar",zona:"Coco del Mar",lat:9.0028,lng:-79.4892,locales:[{numero:"L-03 · Esquina",m2:50,precio:55},{numero:"L-11 · Interior",m2:35,precio:48}]},
+  {id:"condado",nombre:"Plaza Condado del Rey",zona:"Condado del Rey",lat:9.0289,lng:-79.5322,locales:[{numero:"L-25 · Planta Baja",m2:70,precio:38},{numero:"L-42 · Nivel 1",m2:55,precio:35}]},
+  {id:"lospueblos",nombre:"Centro Comercial Los Pueblos",zona:"Los Pueblos / Juan Díaz",lat:9.0456,lng:-79.4678,locales:[{numero:"L-312 · Nivel 3",m2:60,precio:32},{numero:"L-108 · Planta Baja",m2:45,precio:35}]}
+];
+
+const CADENAS_PANAMA = {
+  'riba smith':[{nombre:'Riba Smith - Bella Vista',direccion:'Calle 45, Bella Vista',lat:9.0012,lng:-79.5098},{nombre:'Riba Smith - Multiplaza',direccion:'Punta Pacífica',lat:8.9897,lng:-79.5117},{nombre:'Riba Smith - Costa del Este',direccion:'Av. Centenario',lat:9.0125,lng:-79.4695},{nombre:'Riba Smith - Clayton',direccion:'Ciudad del Saber',lat:9.0014,lng:-79.5831}],
+  'super 99':[{nombre:'Super 99 - Vía España',direccion:'Vía España',lat:9.0194,lng:-79.5244},{nombre:'Super 99 - Albrook Mall',direccion:'Albrook Mall',lat:8.9734,lng:-79.5532},{nombre:'Super 99 - San Francisco',direccion:'Calle 74',lat:8.9951,lng:-79.5034},{nombre:'Super 99 - Costa Verde',direccion:'Juan Díaz',lat:9.0512,lng:-79.4445}],
+  'farmacias arrocha':[{nombre:'Arrocha - Multiplaza',direccion:'Punta Pacífica',lat:8.9897,lng:-79.5117},{nombre:'Arrocha - Albrook',direccion:'Albrook Mall',lat:8.9734,lng:-79.5532},{nombre:'Arrocha - Vía España',direccion:'El Cangrejo',lat:9.0194,lng:-79.5244},{nombre:'Arrocha - Costa del Este',direccion:'Town Center',lat:9.0102,lng:-79.4678},{nombre:'Arrocha - AltaPlaza',direccion:'AltaPlaza Mall',lat:9.0345,lng:-79.5289}],
+  'arrocha':'farmacias arrocha',
+  'melo':[{nombre:'Melo - Vía España',direccion:'Vía Argentina',lat:9.0231,lng:-79.5258},{nombre:'Melo - Costa del Este',direccion:'Av. Centenario',lat:9.0118,lng:-79.4644},{nombre:'Melo - Multiplaza',direccion:'Punta Pacífica',lat:8.9905,lng:-79.5105},{nombre:'Melo - Albrook',direccion:'Albrook Mall',lat:8.9734,lng:-79.5532}],
+  "mcdonald's":[{nombre:"McDonald's - Vía España",direccion:'El Cangrejo',lat:9.0194,lng:-79.5244},{nombre:"McDonald's - Albrook Mall",direccion:'Food Court',lat:8.9734,lng:-79.5532},{nombre:"McDonald's - Multiplaza",direccion:'Food Court',lat:8.9897,lng:-79.5117},{nombre:"McDonald's - Costa del Este",direccion:'Town Center',lat:9.0102,lng:-79.4678}],
+  'mcdonalds':"mcdonald's",
+  'kfc':[{nombre:'KFC - Vía España',direccion:'Vía España',lat:9.0178,lng:-79.5234},{nombre:'KFC - Albrook Mall',direccion:'Food Court',lat:8.9734,lng:-79.5532},{nombre:'KFC - Multiplaza',direccion:'Food Court',lat:8.9897,lng:-79.5117}]
+};
+
+const FILTROS_MAPA = [
+  {id:'restaurant',nombre:'Restaurantes',icon:'🍽️',type:'restaurant'},
+  {id:'bank',nombre:'Bancos',icon:'🏦',type:'bank'},
+  {id:'transit',nombre:'Transporte',icon:'🚌',type:'transit_station'},
+  {id:'parking',nombre:'Parqueos',icon:'🅿️',type:'parking'},
+  {id:'gas',nombre:'Gasolineras',icon:'⛽',type:'gas_station'},
+  {id:'shopping',nombre:'Tiendas',icon:'🛍️',type:'shopping_mall'},
+  {id:'hospital',nombre:'Hospitales',icon:'🏥',type:'hospital'}
+];
+
 /* ================= Estado ================= */
 
 const state = {
@@ -881,7 +1019,8 @@ const state = {
   oppCat:"",
   oppCatOtroMode:false,
   mapCat:"",
-  ev:{step:0, cat:"", catOtroMode:false, budget:[], m2:[], zonas:[]}
+  ev:{step:0, cat:"", catOtroMode:false, budget:[], m2:[], zonas:[]},
+  mapInitialized:false
 };
 
 /* ================= Utilidades ================= */
@@ -1490,55 +1629,298 @@ const ZONAS_MAPA = [
   {area:"pacifica",nombre:"Punta Pacífica"},
 ];
 
-function viewMapa(){
-  const cat = state.mapCat;
-  let status = {};
-  if(cat){
-    for(const r of analizar(cat)){
-      status[r.p.id] = r.estado==="abierta" ? "ok" : (r.estado==="competencia" ? "bad" : "idle");
-    }
+/* ================= Mapa Interactivo Functions ================= */
+
+function cargarGoogleMapsAPI(){
+  return new Promise((resolve,reject)=>{
+    if(typeof google!=='undefined'&&google.maps){resolve();return;}
+    const script=document.createElement('script');
+    script.src=`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker,places&loading=async`;
+    script.async=true;script.defer=true;
+    script.onload=resolve;
+    script.onerror=()=>reject(new Error('No se pudo cargar Google Maps'));
+    document.head.appendChild(script);
+  });
+}
+
+function initMapaIntegrado(){
+  const mapEl=document.getElementById('gmap');
+  if(!mapEl)return;
+  mapEl.innerHTML='';
+  try{
+    gmap=new google.maps.Map(mapEl,{
+      center:{lat:9.0,lng:-79.52},zoom:12,mapId:GOOGLE_MAP_ID,
+      mapTypeId:'hybrid',disableDefaultUI:false,zoomControl:true,
+      mapTypeControl:true,streetViewControl:false,fullscreenControl:true
+    });
+    crearGmapMarkers();
+    generarGmapTarjetas();
+    configurarGmapDrawer();
+    configurarGmapBusqueda();
+    configurarGmapFiltros();
+    gmapPlacesService=new google.maps.places.PlacesService(gmap);
+    configurarGmapCompetencia();
+  }catch(e){
+    mapEl.innerHTML=`<div class="map-loading">Error: ${e.message}</div>`;
   }
-  const dot = p => cat
-    ? status[p.id]
-    : (p.locales.length ? "ok" : "idle");
-  const legend = cat
-    ? `<span><i class="ldot ok"></i>Oportunidad abierta</span><span><i class="ldot bad"></i>Competencia directa</span><span><i class="ldot idle"></i>Sin locales</span>`
-    : `<span><i class="ldot ok"></i>Con locales disponibles</span><span><i class="ldot idle"></i>Sin vacantes</span>`;
+}
+
+function crearGmapMarkers(){
+  gmapZonasData={};
+  PLAZAS_MAPA.forEach(p=>{
+    const zn=p.zona.split('(')[0].trim().split('/')[0].trim();
+    if(!gmapZonasData[zn])gmapZonasData[zn]={nombre:zn,plazas:[],totalLocales:0,lat:0,lng:0};
+    gmapZonasData[zn].plazas.push(p);
+    gmapZonasData[zn].totalLocales+=p.locales.length;
+    gmapZonasData[zn].lat+=p.lat;
+    gmapZonasData[zn].lng+=p.lng;
+  });
+  PLAZAS_MAPA.forEach(p=>{
+    const precioMin=Math.min(...p.locales.map(l=>l.precio));
+    const zn=p.zona.split('(')[0].trim().split('/')[0].trim();
+    const mc=document.createElement('div');
+    mc.className='gmap-marker';mc.innerHTML=`desde $${precioMin}/m²`;mc.dataset.plazaId=p.id;
+    const marker=new google.maps.marker.AdvancedMarkerElement({
+      map:null,position:{lat:p.lat,lng:p.lng},content:mc,title:p.nombre
+    });
+    marker.addListener('click',()=>seleccionarGmapPlaza(p.id));
+    gmapMarkers.push({plazaId:p.id,zonaNombre:zn,marker,content:mc});
+  });
+  Object.values(gmapZonasData).forEach(z=>{
+    z.lat=z.lat/z.plazas.length;z.lng=z.lng/z.plazas.length;
+    const mc=document.createElement('div');mc.className='gmap-zone-marker';
+    mc.innerHTML=`<strong>${z.nombre}</strong><span>${z.plazas.length} plaza${z.plazas.length>1?'s':''} · ${z.totalLocales} locales</span>`;
+    const marker=new google.maps.marker.AdvancedMarkerElement({
+      map:gmap,position:{lat:z.lat,lng:z.lng},content:mc,title:z.nombre
+    });
+    mc.addEventListener('mouseenter',()=>mostrarGmapLocalesZona(z.nombre));
+    mc.addEventListener('mouseleave',()=>ocultarGmapLocalesZona(z.nombre));
+    marker.addListener('click',()=>{gmap.setCenter({lat:z.lat,lng:z.lng});gmap.setZoom(15);});
+    gmapZoneMarkers.push({zonaNombre:z.nombre,marker,content:mc});
+  });
+}
+
+function mostrarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=gmap;});}
+function ocultarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=null;});}
+
+function generarGmapTarjetas(){
+  const container=document.getElementById('gmapPlazaList');if(!container)return;
+  container.innerHTML='';
+  PLAZAS_MAPA.forEach(p=>{
+    const precioMin=Math.min(...p.locales.map(l=>l.precio));
+    const card=document.createElement('div');card.className='map-plaza-card';card.dataset.plazaId=p.id;
+    card.innerHTML=`<h4 class="map-plaza-nombre">${p.nombre}</h4><p class="map-plaza-zona">${p.zona}</p><div class="map-plaza-info"><span>${p.locales.length} local${p.locales.length>1?'es':''}</span><span>Desde $${precioMin}/m²</span></div>`;
+    card.addEventListener('click',()=>seleccionarGmapPlaza(p.id));
+    container.appendChild(card);
+  });
+}
+
+function seleccionarGmapPlaza(id){
+  const plaza=PLAZAS_MAPA.find(p=>p.id===id);if(!plaza)return;
+  gmapPlazaSeleccionada=plaza;
+  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.toggle('active',c.dataset.plazaId===id));
+  gmapMarkers.forEach(m=>{m.content.classList.toggle('active',m.plazaId===id);m.marker.map=gmap;});
+  gmap.panTo({lat:plaza.lat,lng:plaza.lng});gmap.setZoom(15);
+  mostrarGmapDrawer(plaza);
+}
+
+function configurarGmapDrawer(){
+  const overlay=document.getElementById('gmapDrawerOverlay');
+  const closeBtn=document.getElementById('gmapDrawerClose');
+  if(overlay)overlay.addEventListener('click',cerrarGmapDrawer);
+  if(closeBtn)closeBtn.addEventListener('click',cerrarGmapDrawer);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarGmapDrawer();});
+}
+
+function mostrarGmapDrawer(plaza){
+  const drawer=document.getElementById('gmapDrawer');
+  const overlay=document.getElementById('gmapDrawerOverlay');
+  const title=document.getElementById('gmapDrawerTitle');
+  const zona=document.getElementById('gmapDrawerZona');
+  const content=document.getElementById('gmapDrawerContent');
+  if(!drawer||!overlay)return;
+  title.textContent=plaza.nombre;zona.textContent=plaza.zona;
+  let html=`<p class="map-drawer-section">Locales disponibles</p>`;
+  plaza.locales.forEach(l=>{
+    const waUrl=`https://wa.me/${WHATSAPP_MAPA}?text=${encodeURIComponent(`Hola, me interesa el local ${l.numero} en ${plaza.nombre}`)}`;
+    html+=`<div class="map-local-card"><div class="map-local-header"><span class="map-local-numero">${l.numero}</span><span class="map-local-precio">$${l.precio}<span>/m²</span></span></div><div class="map-local-details"><span>Área: ${l.m2} m²</span><span>Total: $${(l.m2*l.precio).toLocaleString()}/mes</span></div><a href="${waUrl}" target="_blank" class="map-local-wa"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>Me interesa</a></div>`;
+  });
+  // Link to full profile if exists in main PLAZAS
+  const mainPlaza=PLAZAS.find(p=>p.nombre.toLowerCase().includes(plaza.nombre.toLowerCase().split(' ')[1])||plaza.nombre.toLowerCase().includes(p.nombre.toLowerCase().split(' ')[1]));
+  if(mainPlaza){
+    html+=`<a href="#/plaza/${mainPlaza.id}" class="map-view-profile" onclick="cerrarGmapDrawer()">Ver perfil completo</a>`;
+  }
+  content.innerHTML=html;
+  drawer.classList.add('active');overlay.classList.add('active');
+}
+
+function cerrarGmapDrawer(){
+  const drawer=document.getElementById('gmapDrawer');
+  const overlay=document.getElementById('gmapDrawerOverlay');
+  if(drawer)drawer.classList.remove('active');
+  if(overlay)overlay.classList.remove('active');
+  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.remove('active'));
+  gmapMarkers.forEach(m=>m.content.classList.remove('active'));
+  gmapPlazaSeleccionada=null;
+}
+
+function configurarGmapBusqueda(){
+  const input=document.getElementById('gmapSearchInput');
+  const clear=document.getElementById('gmapSearchClear');
+  if(!input)return;
+  input.addEventListener('input',e=>{
+    const q=e.target.value.trim().toLowerCase();
+    if(clear)clear.style.display=q?'block':'none';
+    filtrarGmapPlazas(q);
+  });
+  if(clear)clear.addEventListener('click',()=>{input.value='';clear.style.display='none';filtrarGmapPlazas('');input.focus();});
+}
+
+function filtrarGmapPlazas(q){
+  if(!q){
+    document.querySelectorAll('.map-plaza-card').forEach(c=>c.style.display='block');
+    gmapMarkers.forEach(m=>{m.marker.map=null;});
+    gmapZoneMarkers.forEach(m=>{m.marker.map=gmap;});
+    return;
+  }
+  gmapZoneMarkers.forEach(m=>{m.marker.map=null;});
+  let found=0;
+  PLAZAS_MAPA.forEach(p=>{
+    const card=document.querySelector(`.map-plaza-card[data-plaza-id="${p.id}"]`);
+    const markerData=gmapMarkers.find(m=>m.plazaId===p.id);
+    const match=p.nombre.toLowerCase().includes(q)||p.zona.toLowerCase().includes(q);
+    if(card)card.style.display=match?'block':'none';
+    if(markerData)markerData.marker.map=match?gmap:null;
+    if(match)found++;
+  });
+}
+
+function configurarGmapFiltros(){
+  const toggle=document.getElementById('gmapFiltersToggle');
+  const panel=document.getElementById('gmapFiltersPanel');
+  const grid=document.getElementById('gmapFiltersGrid');
+  if(!toggle||!panel||!grid)return;
+  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
+  FILTROS_MAPA.forEach(f=>{
+    const chip=document.createElement('button');chip.className='map-filter-chip';chip.dataset.filterId=f.id;
+    chip.innerHTML=`${f.icon} ${f.nombre}`;
+    chip.addEventListener('click',()=>{
+      const wasActive=chip.classList.contains('active');
+      document.querySelectorAll('.map-filter-chip').forEach(c=>c.classList.remove('active'));
+      limpiarGmapFilterMarkers();
+      if(!wasActive){chip.classList.add('active');buscarGmapPOIs(f);}
+    });
+    grid.appendChild(chip);
+  });
+}
+
+function buscarGmapPOIs(filtro){
+  if(!gmapPlacesService)return;
+  const request={query:filtro.nombre+' en Ciudad de Panama',location:new google.maps.LatLng(9.0,-79.5),radius:30000};
+  gmapPlacesService.textSearch(request,(results,status)=>{
+    if(status===google.maps.places.PlacesServiceStatus.OK&&results){
+      results.slice(0,15).forEach((place,i)=>{
+        const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=filtro.icon;
+        const marker=new google.maps.marker.AdvancedMarkerElement({
+          map:gmap,position:place.geometry.location,content:mc,title:place.name
+        });
+        gmapFilterMarkers.push(marker);
+      });
+    }
+  });
+}
+
+function limpiarGmapFilterMarkers(){gmapFilterMarkers.forEach(m=>{m.map=null;});gmapFilterMarkers=[];}
+
+function configurarGmapCompetencia(){
+  const toggle=document.getElementById('gmapCompToggle');
+  const panel=document.getElementById('gmapCompPanel');
+  const input=document.getElementById('gmapCompInput');
+  const btn=document.getElementById('gmapCompBtn');
+  const results=document.getElementById('gmapCompResults');
+  if(!toggle||!panel)return;
+  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
+  if(btn)btn.addEventListener('click',()=>{if(input)buscarGmapCompetencia(input.value.trim());});
+  if(input)input.addEventListener('keypress',e=>{if(e.key==='Enter')buscarGmapCompetencia(input.value.trim());});
+}
+
+function buscarGmapCompetencia(q){
+  const results=document.getElementById('gmapCompResults');if(!results||!q)return;
+  limpiarGmapBusinessMarkers();
+  const qLower=q.toLowerCase();
+  let data=CADENAS_PANAMA[qLower];
+  if(typeof data==='string')data=CADENAS_PANAMA[data];
+  if(data&&Array.isArray(data)){
+    results.innerHTML='';
+    data.forEach((loc,i)=>{
+      const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=i+1;
+      const marker=new google.maps.marker.AdvancedMarkerElement({
+        map:gmap,position:{lat:loc.lat,lng:loc.lng},content:mc,title:loc.nombre
+      });
+      gmapBusinessMarkers.push(marker);
+      const item=document.createElement('div');item.className='map-comp-item';
+      item.innerHTML=`<span class="map-comp-num">${i+1}</span><span>${loc.nombre}</span>`;
+      item.addEventListener('click',()=>{gmap.panTo({lat:loc.lat,lng:loc.lng});gmap.setZoom(16);});
+      results.appendChild(item);
+    });
+  }else{
+    results.innerHTML=`<p style="font-size:12px;color:var(--muted);padding:8px">No encontrado en BD local. Prueba: Melo, Arrocha, McDonald's</p>`;
+  }
+}
+
+function limpiarGmapBusinessMarkers(){gmapBusinessMarkers.forEach(m=>{m.map=null;});gmapBusinessMarkers=[];}
+
+function viewMapa(){
   return `
   <div class="page-head">
-    <h1>Mapa de plazas</h1>
-    <p>Las ${PLAZAS.length} plazas organizadas por zona — norte arriba, costa abajo. Haz clic en una plaza para ver su perfil.</p>
+    <h1>Mapa interactivo</h1>
+    <p>Explora las ${PLAZAS_MAPA.length} plazas comerciales de Panamá en el mapa. Pasa el cursor sobre una zona para ver las plazas disponibles.</p>
   </div>
-  <div class="map-tools">
-    <select id="map-cat" aria-label="Ver oportunidades para">
-      <option value="">Ver disponibilidad</option>
-      ${TIPOS_NEGOCIO.map(c=>`<option ${c===cat?"selected":""}>${c}</option>`).join("")}
-    </select>
-    <div class="legend">${legend}</div>
-  </div>
-  <div class="zmap">
-    ${ZONAS_MAPA.map(z=>{
-      const ps = PLAZAS.filter(p=>p.zona===z.nombre);
-      const nl = ps.reduce((a,p)=>a+p.locales.length,0);
-      return `
-      <div class="zone" style="grid-area:${z.area}">
-        <h3>${esc(z.nombre)}</h3>
-        <div class="zc num">${CARACTER_L[ZONA_INFO[z.nombre]]} · ${ps.length} ${ps.length===1?"plaza":"plazas"} · ${nl} ${nl===1?"local":"locales"}</div>
-        <div class="zc-tags">
-          <span class="ztag">${PODER_L[ZONA_PODER[z.nombre]]}</span>
-          <span class="ztag ${ZONA_CRECIMIENTO[z.nombre]==="alto"?"up":""}">${CRECIMIENTO_L[ZONA_CRECIMIENTO[z.nombre]]}</span>
+  <div class="map-wrapper">
+    <aside class="map-sidebar">
+      <div class="map-sidebar-header">
+        <h3>Plazas disponibles</h3>
+        <p>${PLAZAS_MAPA.length} plazas · ${PLAZAS_MAPA.reduce((a,p)=>a+p.locales.length,0)} locales</p>
+      </div>
+      <div class="map-search-box">
+        <input type="text" class="map-search-input" id="gmapSearchInput" placeholder="Buscar plaza o zona..." autocomplete="off">
+        <button id="gmapSearchClear" style="display:none;position:absolute;right:24px;top:50%;transform:translateY(-50%);border:none;background:var(--line);width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:12px">×</button>
+      </div>
+      <div class="map-filters-toggle" id="gmapFiltersToggle">
+        <span>🗺️ Mostrar en el mapa</span>
+        <span>▼</span>
+      </div>
+      <div class="map-filters-panel" id="gmapFiltersPanel">
+        <div class="map-filters-grid" id="gmapFiltersGrid"></div>
+      </div>
+      <div class="map-comp-toggle" id="gmapCompToggle">
+        <span>🔍 Buscar competencia</span>
+        <span>▼</span>
+      </div>
+      <div class="map-comp-panel" id="gmapCompPanel">
+        <div class="map-comp-content">
+          <input type="text" class="map-comp-input" id="gmapCompInput" placeholder="Ej: Melo, Arrocha, McDonald's...">
+          <button class="map-comp-btn" id="gmapCompBtn">Buscar</button>
+          <div class="map-comp-results" id="gmapCompResults"></div>
         </div>
-        <div class="pins">
-          ${ps.map(p=>`
-            <a class="pin" href="#/plaza/${p.id}">
-              <i class="ldot ${dot(p)}"></i>${esc(p.nombre)}
-              <small class="num">${p.locales.length ? p.locales.length+" loc." : "—"}</small>
-            </a>`).join("")}
-        </div>
-      </div>`;}).join("")}
+      </div>
+      <div class="map-plaza-list" id="gmapPlazaList"></div>
+    </aside>
+    <main class="map-main">
+      <div id="gmap" class="map-loading">Cargando mapa...</div>
+    </main>
   </div>
-  <div class="ocean">Océano Pacífico</div>
-  <p class="map-note">Mapa esquemático: las zonas están ordenadas según su posición aproximada en la ciudad.</p>`;
+  <div class="map-drawer-overlay" id="gmapDrawerOverlay"></div>
+  <div class="map-drawer" id="gmapDrawer">
+    <header class="map-drawer-header">
+      <div>
+        <h2 class="map-drawer-title" id="gmapDrawerTitle"></h2>
+        <p class="map-drawer-zona" id="gmapDrawerZona"></p>
+      </div>
+      <button class="map-drawer-close" id="gmapDrawerClose">×</button>
+    </header>
+    <div class="map-drawer-content" id="gmapDrawerContent"></div>
+  </div>`;
 }
 
 /* ---------- Oportunidades ---------- */
@@ -1680,7 +2062,14 @@ function render(){
   else if(route==="plazas"){ location.hash = "#/mapa"; return; }
   else if(route==="mapa"){
     app.innerHTML = viewMapa();
-    $("#map-cat").addEventListener("change", e=>{ state.mapCat = e.target.value; render(); });
+    // Cargar Google Maps API e inicializar el mapa
+    cargarGoogleMapsAPI().then(()=>{
+      initMapaIntegrado();
+      state.mapInitialized=true;
+    }).catch(err=>{
+      const mapEl=document.getElementById('gmap');
+      if(mapEl)mapEl.innerHTML=`<div class="map-loading">Error al cargar Google Maps: ${err.message}</div>`;
+    });
   }
   else if(route==="evaluacion"){ app.innerHTML = viewEvaluacion(); }
   else if(route==="miplaza"){ app.innerHTML = viewMiPlaza(); }
