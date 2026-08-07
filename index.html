@@ -322,6 +322,37 @@
   .chip.block{background:var(--danger-soft); color:var(--danger); border:1px solid rgba(239,68,68,.2)}
   .chip.idle{background:var(--soft); color:var(--muted); border:1px solid var(--line)}
 
+  /* ---------- Opportunity Map Section ---------- */
+  .opp-map-section{margin-top:48px; padding-top:40px; border-top:1px solid var(--line)}
+  .opp-map-title{font-size:24px; font-weight:700; margin:0 0 8px}
+  .opp-map-subtitle{font-size:14px; color:var(--muted); margin:0 0 20px; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .legend-dot{width:12px; height:12px; border-radius:50%; display:inline-block}
+  .legend-dot.open{background:var(--success)}
+  .legend-dot.comp{background:var(--danger)}
+  .legend-dot.idle{background:var(--muted)}
+  .opp-map-wrapper{display:grid; grid-template-columns:1fr 280px; gap:20px; height:500px; border-radius:var(--r-lg); overflow:hidden; border:1px solid var(--line); background:var(--surface)}
+  @media(max-width:900px){.opp-map-wrapper{grid-template-columns:1fr; height:auto}}
+  .opp-map-container{width:100%; height:100%; min-height:400px; background:var(--soft)}
+  .opp-map-legend{padding:20px; overflow-y:auto; border-left:1px solid var(--line); background:var(--surface)}
+  @media(max-width:900px){.opp-map-legend{border-left:none; border-top:1px solid var(--line); max-height:250px}}
+  .opp-map-legend h4{font-size:14px; font-weight:600; margin:0 0 14px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px}
+  .opp-legend-list{display:flex; flex-direction:column; gap:8px}
+  .opp-legend-item{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:var(--r); cursor:pointer; transition:all .15s; border:1px solid transparent}
+  .opp-legend-item:hover{background:var(--soft); border-color:var(--line)}
+  .opp-legend-item.active{background:var(--accent-soft); border-color:var(--accent)}
+  .opp-legend-dot{width:10px; height:10px; border-radius:50%; flex-shrink:0}
+  .opp-legend-dot.open{background:var(--success)}
+  .opp-legend-dot.comp{background:var(--danger)}
+  .opp-legend-dot.idle{background:var(--muted)}
+  .opp-legend-info{flex:1; min-width:0}
+  .opp-legend-name{font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .opp-legend-score{font-size:11px; color:var(--muted)}
+  .opp-marker{padding:6px 10px; border-radius:20px; font-size:11px; font-weight:700; box-shadow:var(--shadow-md); cursor:pointer; transition:transform .15s; white-space:nowrap}
+  .opp-marker:hover{transform:scale(1.05)}
+  .opp-marker.open{background:var(--success); color:#fff}
+  .opp-marker.comp{background:var(--danger); color:#fff}
+  .opp-marker.idle{background:var(--muted); color:#fff}
+
   /* ---------- Portada ---------- */
   .home-hero{
     display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;
@@ -2119,6 +2150,163 @@ function buscarGmapCompetencia(q){
 
 function limpiarGmapBusinessMarkers(){gmapBusinessMarkers.forEach(m=>{m.map=null;});gmapBusinessMarkers=[];}
 
+// ================= Opportunity Map Functions =================
+let oppMap = null;
+let oppMarkers = [];
+
+function initMapaOportunidades(cat){
+  const mapEl=document.getElementById('opp-gmap');
+  const legendList=document.getElementById('oppLegendList');
+  if(!mapEl)return;
+  mapEl.innerHTML='';
+
+  try{
+    oppMap=new google.maps.Map(mapEl,{
+      center:{lat:9.0,lng:-79.52},zoom:12,mapId:GOOGLE_MAP_ID,
+      mapTypeId:'roadmap',disableDefaultUI:false,zoomControl:true,
+      mapTypeControl:false,streetViewControl:false,fullscreenControl:true
+    });
+
+    // Get analysis results
+    const res=analizar(cat);
+    const bounds=new google.maps.LatLngBounds();
+
+    // Clear previous markers
+    oppMarkers.forEach(m=>m.map=null);
+    oppMarkers=[];
+    if(legendList)legendList.innerHTML='';
+
+    // Create markers for each plaza based on score
+    res.forEach(({p,score,estado},idx)=>{
+      // Find plaza coordinates from PLAZAS_MAPA
+      const plazaMapa=PLAZAS_MAPA.find(pm=>
+        pm.nombre.toLowerCase().includes(p.nombre.toLowerCase().split(' ')[1]||p.nombre.toLowerCase()) ||
+        p.nombre.toLowerCase().includes(pm.nombre.toLowerCase().split(' ')[1]||pm.nombre.toLowerCase())
+      );
+
+      if(!plazaMapa)return;
+
+      const markerClass=estado==='abierta'?'open':estado==='competencia'?'comp':'idle';
+      const mc=document.createElement('div');
+      mc.className=`opp-marker ${markerClass}`;
+      mc.innerHTML=estado==='abierta'?`${score}`:estado==='competencia'?'✕':'—';
+
+      const marker=new google.maps.marker.AdvancedMarkerElement({
+        map:oppMap,
+        position:{lat:plazaMapa.lat,lng:plazaMapa.lng},
+        content:mc,
+        title:p.nombre
+      });
+
+      marker.addListener('click',()=>{
+        mostrarOppDrawer(p,plazaMapa,score,estado);
+      });
+
+      oppMarkers.push(marker);
+      bounds.extend({lat:plazaMapa.lat,lng:plazaMapa.lng});
+
+      // Add to legend (top 10)
+      if(idx<10&&legendList){
+        const item=document.createElement('div');
+        item.className='opp-legend-item';
+        item.innerHTML=`
+          <span class="opp-legend-dot ${markerClass}"></span>
+          <div class="opp-legend-info">
+            <div class="opp-legend-name">${p.nombre}</div>
+            <div class="opp-legend-score">${estado==='abierta'?`Score: ${score}/100`:estado==='competencia'?'Competencia':'Sin locales'}</div>
+          </div>
+        `;
+        item.addEventListener('click',()=>{
+          oppMap.panTo({lat:plazaMapa.lat,lng:plazaMapa.lng});
+          oppMap.setZoom(15);
+          mostrarOppDrawer(p,plazaMapa,score,estado);
+          document.querySelectorAll('.opp-legend-item').forEach(i=>i.classList.remove('active'));
+          item.classList.add('active');
+        });
+        legendList.appendChild(item);
+      }
+    });
+
+    // Fit map to show all markers
+    if(oppMarkers.length>0){
+      oppMap.fitBounds(bounds);
+      const listener=google.maps.event.addListener(oppMap,'idle',()=>{
+        if(oppMap.getZoom()>14)oppMap.setZoom(14);
+        google.maps.event.removeListener(listener);
+      });
+    }
+
+    // Setup drawer close
+    const overlay=document.getElementById('oppDrawerOverlay');
+    const closeBtn=document.getElementById('oppDrawerClose');
+    if(overlay)overlay.addEventListener('click',cerrarOppDrawer);
+    if(closeBtn)closeBtn.addEventListener('click',cerrarOppDrawer);
+
+  }catch(e){
+    mapEl.innerHTML=`<div class="map-loading">Error: ${e.message}</div>`;
+  }
+}
+
+function mostrarOppDrawer(plaza,plazaMapa,score,estado){
+  const drawer=document.getElementById('oppDrawer');
+  const overlay=document.getElementById('oppDrawerOverlay');
+  const title=document.getElementById('oppDrawerTitle');
+  const zona=document.getElementById('oppDrawerZona');
+  const content=document.getElementById('oppDrawerContent');
+  if(!drawer||!overlay)return;
+
+  title.textContent=plaza.nombre;
+  zona.textContent=plaza.zona;
+
+  const statusHtml=estado==='abierta'
+    ?`<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <span style="font-size:32px;font-weight:700">${score}</span>
+        <div>
+          <div style="font-size:12px;color:var(--muted)">/100 puntos</div>
+          <span class="chip open">Oportunidad abierta</span>
+        </div>
+      </div>`
+    :estado==='competencia'
+    ?`<span class="chip block" style="margin-bottom:16px">Competencia directa</span>`
+    :`<span class="chip idle" style="margin-bottom:16px">Sin locales disponibles</span>`;
+
+  let localesHtml='<p class="map-drawer-section">Locales disponibles</p>';
+  if(plazaMapa.locales&&plazaMapa.locales.length>0){
+    plazaMapa.locales.forEach(l=>{
+      const waUrl=`https://wa.me/${WHATSAPP_MAPA}?text=${encodeURIComponent(`Hola, me interesa el local ${l.numero} en ${plaza.nombre}`)}`;
+      localesHtml+=`<div class="map-local-card">
+        <div class="map-local-header">
+          <span class="map-local-numero">${l.numero}</span>
+          <span class="map-local-precio">$${l.precio}<span>/m²</span></span>
+        </div>
+        <div class="map-local-details">
+          <span>Área: ${l.m2} m²</span>
+          <span>Total: $${(l.m2*l.precio).toLocaleString()}/mes</span>
+        </div>
+        <a href="${waUrl}" target="_blank" class="map-local-wa">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+          Me interesa
+        </a>
+      </div>`;
+    });
+  }else{
+    localesHtml+=`<p style="color:var(--muted);font-size:14px">No hay información de locales disponibles.</p>`;
+  }
+
+  content.innerHTML=statusHtml+localesHtml+`<a href="#/plaza/${plaza.id}" class="map-view-profile">Ver perfil completo</a>`;
+
+  drawer.classList.add('active');
+  overlay.classList.add('active');
+}
+
+function cerrarOppDrawer(){
+  const drawer=document.getElementById('oppDrawer');
+  const overlay=document.getElementById('oppDrawerOverlay');
+  if(drawer)drawer.classList.remove('active');
+  if(overlay)overlay.classList.remove('active');
+  document.querySelectorAll('.opp-legend-item').forEach(i=>i.classList.remove('active'));
+}
+
 function viewMapa(){
   return `
   <div class="page-head">
@@ -2248,6 +2436,7 @@ function analizar(cat){
 function viewOportunidades(){
   const cat = state.oppCat;
   let body;
+  let mapSection = '';
   if(!cat){
     body = `<div class="empty">Elige el tipo de negocio que quieres abrir y te mostramos en qué plazas te conviene — dónde ya hay tráfico asegurado y todavía no hay competencia.</div>`;
   } else {
@@ -2279,6 +2468,32 @@ function viewOportunidades(){
           </div>
         </article>`).join("")}
       </div>`;
+    // Add map section when category is selected
+    mapSection = `
+      <div class="opp-map-section">
+        <h2 class="opp-map-title">Mapa de oportunidades para ${esc(cat)}</h2>
+        <p class="opp-map-subtitle">Las plazas en <span class="legend-dot open"></span> verde son oportunidades abiertas, <span class="legend-dot comp"></span> rojo tienen competencia, <span class="legend-dot idle"></span> gris no tienen locales disponibles.</p>
+        <div class="opp-map-wrapper">
+          <div id="opp-gmap" class="opp-map-container">
+            <div class="map-loading">Cargando mapa...</div>
+          </div>
+          <div class="opp-map-legend">
+            <h4>Top recomendaciones</h4>
+            <div class="opp-legend-list" id="oppLegendList"></div>
+          </div>
+        </div>
+      </div>
+      <div class="map-drawer-overlay" id="oppDrawerOverlay"></div>
+      <div class="map-drawer" id="oppDrawer">
+        <header class="map-drawer-header">
+          <div>
+            <h2 class="map-drawer-title" id="oppDrawerTitle"></h2>
+            <p class="map-drawer-zona" id="oppDrawerZona"></p>
+          </div>
+          <button class="map-drawer-close" id="oppDrawerClose">×</button>
+        </header>
+        <div class="map-drawer-content" id="oppDrawerContent"></div>
+      </div>`;
   }
   return `
   <div class="page-head">
@@ -2294,7 +2509,8 @@ function viewOportunidades(){
     <input id="opp-otro-input" type="text" placeholder="Ej. Estudio de yoga, lavado de autos…" value="${cat && !TIPOS_NEGOCIO.includes(cat) ? esc(cat) : ""}">
     <button class="btn btn-primary" id="opp-otro-go">Analizar</button>
   </div>` : ""}
-  ${body}`;
+  ${body}
+  ${mapSection}`;
 }
 
 /* ================= Router y eventos ================= */
@@ -2307,7 +2523,18 @@ function render(){
     a.classList.toggle("on", a.dataset.r===route || (route==="plaza" && a.dataset.r==="mapa"));
   });
   if(route==="plaza" && arg){ app.innerHTML = viewPlaza(arg); }
-  else if(route==="oportunidades"){ app.innerHTML = viewOportunidades(); }
+  else if(route==="oportunidades"){
+    app.innerHTML = viewOportunidades();
+    // Si hay categoría seleccionada, cargar el mapa de oportunidades
+    if(state.oppCat){
+      cargarGoogleMapsAPI().then(()=>{
+        initMapaOportunidades(state.oppCat);
+      }).catch(err=>{
+        const mapEl=document.getElementById('opp-gmap');
+        if(mapEl)mapEl.innerHTML=`<div class="map-loading">Error al cargar mapa: ${err.message}</div>`;
+      });
+    }
+  }
   else if(route==="plazas"){ location.hash = "#/mapa"; return; }
   else if(route==="mapa"){
     app.innerHTML = viewMapa();
