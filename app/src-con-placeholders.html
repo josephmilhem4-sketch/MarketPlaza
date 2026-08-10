@@ -2113,6 +2113,15 @@ function viewMiPlaza(){
   </div>
 
   <section class="block">
+    <h2>Negocios que ya tienes</h2>
+    <p class="sub">Lo que hoy opera en tu plaza — esta es la base de todo lo demás en este panel.</p>
+    <div class="tenant-grid">
+      ${p.tenants.map(t=>`
+        <div class="tenant"><b>${esc(t.n)}</b><span>${esc(t.cat)}</span></div>`).join("")}
+    </div>
+  </section>
+
+  <section class="block">
     <h2>Qué negocio le falta a tu plaza</h2>
     <p class="sub">Basado en tu propia mezcla de negocios: qué categorías no tienes y cuáles se beneficiarían de lo que ya tienes ahí. (Todavía no usamos búsquedas ni competencia del área — eso viene cuando tengamos data real de toda la zona.)</p>
     <div class="miss-grid">
