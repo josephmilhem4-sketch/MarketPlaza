@@ -972,13 +972,13 @@ const PLAZAS = [
       {n:"American Pets", cat:"Pet shop"},
       {n:"Mimosa Spa", cat:"Salón de belleza"},
       {n:"Dairy Queen", cat:"Comida rápida"},
-      {n:"City Kids Learning and Care Center", cat:"Otro"},
+      {n:"City Kids Learning and Care Center", cat:"Guardería"},
       {n:"Blending Hairstudio", cat:"Salón de belleza"},
-      {n:"Sweet Blossom", cat:"Otro"},
-      {n:"Carnicería gourmet", cat:"Otro"},
+      {n:"Sweet Blossom", cat:"Floristería"},
+      {n:"Carnicería gourmet", cat:"Carnicería"},
       {n:"Kumon", cat:"Academia"},
-      {n:"Quick Box", cat:"Otro"},
-      {n:"Uno Express", cat:"Otro"},
+      {n:"Quick Box", cat:"Paquetería"},
+      {n:"Uno Express", cat:"Paquetería"},
       {n:"Arpafarma", cat:"Farmacia"},
       {n:"HD Eyebrow Design", cat:"Salón de belleza"},
       {n:"Dermamed", cat:"Clínica"},
@@ -1008,8 +1008,8 @@ const PLAZAS = [
       {n:"Taekwondo Bekho", cat:"Academia"},
       {n:"Mila Nail Art", cat:"Salón de belleza"},
       {n:"Secret Beauty", cat:"Salón de belleza"},
-      {n:"FedEx Ship Center", cat:"Otro"},
-      {n:"Happy Copy", cat:"Otro"},
+      {n:"FedEx Ship Center", cat:"Paquetería"},
+      {n:"Happy Copy", cat:"Papelería"},
       {n:"Sherwin-Williams", cat:"Ferretería"},
       {n:"Pastas Frescas", cat:"Comida rápida"},
       {n:"Estudio de Arte Artis", cat:"Academia"}
@@ -1137,7 +1137,15 @@ const ANCLAS = {
   "Licorería":       ["Supermercado","Restaurante"],
   "Moda":            ["Gimnasio","Supermercado","Banco"],
   "Bar":             ["Restaurante","Coworking"],
-  "Entretenimiento": ["Restaurante","Comida rápida"]
+  "Entretenimiento": ["Restaurante","Comida rápida"],
+  "Banco":           ["Supermercado"],
+  "Supermercado":    [],
+  "Floristería":     ["Supermercado","Restaurante"],
+  "Guardería":       ["Supermercado","Gimnasio"],
+  "Paquetería":      ["Supermercado","Banco"],
+  "Papelería":       ["Academia","Supermercado"],
+  "Dental":          ["Farmacia","Supermercado"],
+  "Carnicería":      ["Supermercado"]
 };
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
 const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda","Bar","Entretenimiento"]);
@@ -1154,10 +1162,18 @@ const RUBRO_SIMILAR = [
   {like:"Comida rápida",    kw:["pizzeria","pizza","hamburgueseria","hamburguesa","pollo frito","fritanga","food truck","comida rapida","hot dog"]},
   {like:"Panadería",        kw:["pasteleria","reposteria","dulceria","postres"]},
   {like:"Ferretería",       kw:["taller","mecanico","refaccionaria","herramientas","hardware","tornillos"]},
-  {like:"Clínica",          kw:["dental","dentista","fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio","pediatra","ginecologo","dermatologo"]},
+  {like:"Dental",           kw:["dental","dentista","ortodoncia","odontologia","odontologo"]},
+  {like:"Clínica",          kw:["fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio","pediatra","ginecologo","dermatologo"]},
   {like:"Farmacia",         kw:["botica","drogueria"]},
   {like:"Veterinaria",      kw:["veterinario","veterinaria"]},
   {like:"Pet shop",         kw:["mascota","perro","gato","acuario"]},
+  {like:"Floristería",      kw:["flores","florista","floreria","arreglos florales"]},
+  {like:"Guardería",        kw:["guarderia","daycare","cuidado infantil","ninera"]},
+  {like:"Paquetería",       kw:["paqueteria","envios","casillero","courier","mensajeria","encomiendas"]},
+  {like:"Papelería",        kw:["papeleria","imprenta","copias","impresiones"]},
+  {like:"Carnicería",       kw:["carniceria","carnes","charcuteria"]},
+  {like:"Banco",            kw:["banco","cooperativa","cambio de cheques","remesas"]},
+  {like:"Supermercado",     kw:["supermercado","minimarket","abarrotes","viveres"]},
   {like:"Lavandería",       kw:["tintoreria","lavado en seco","lavanderia"]},
   {like:"Óptica",           kw:["lentes","gafas","oftalmologica","anteojos"]},
   {like:"Barbería",         kw:["barber","barba"]},
@@ -1249,7 +1265,7 @@ function vacanciaPct(p){
 
 const TIPOS_NEGOCIO = Object.keys(ANCLAS);
 /* Negocios de cita/destino: funcionan bien en niveles altos, no dependen de vitrina en planta baja */
-const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento"]);
+const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental"]);
 const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
 const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
 
@@ -2095,7 +2111,7 @@ function viewMiPlaza(){
     const ancTenants = p.tenants.filter(t=>anc.includes(t.cat)).length;
     const cumplePiso = !soloPisoAlto || CATS_SERVICIO.has(c);
     return {c, anc, cumplePiso, sc: anc.length*10 + ancTenants};
-  }).sort((a,b)=>(b.cumplePiso-a.cumplePiso) || (b.sc-a.sc) || a.c.localeCompare(b.c));
+  }).sort((a,b)=>(b.cumplePiso-a.cumplePiso) || (b.sc-a.sc) || a.c.localeCompare(b.c)).slice(0,3);
 
   // Solicitudes: ejemplos + las reales enviadas desde esta demo
   const li = n => p.locales[n] ? "Local "+p.locales[n].id : "Perfil de la plaza";
