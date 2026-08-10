@@ -1137,7 +1137,10 @@ const ANCLAS = {
   "Paquetería":      ["Supermercado","Banco"],
   "Papelería":       ["Academia","Supermercado"],
   "Dental":          ["Farmacia","Supermercado"],
-  "Carnicería":      ["Supermercado"]
+  "Carnicería":      ["Supermercado"],
+  "Joyería":         ["Moda","Banco"],
+  "Tienda naturista":["Farmacia","Supermercado"],
+  "Agencia de viajes":["Banco","Café"]
 };
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
 const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda","Bar","Entretenimiento"]);
@@ -1172,7 +1175,10 @@ const RUBRO_SIMILAR = [
   {like:"Academia",         kw:["tutoria","tutorias","clases particulares","idiomas","ingles","kinder","preescolar","refuerzo escolar","escuela"]},
   {like:"Coworking",        kw:["oficinas compartidas","espacio de trabajo","oficina virtual"]},
   {like:"Licorería",        kw:["vinos","cerveza","cervezas","bebidas alcoholicas","liquor"]},
-  {like:"Moda",             kw:["ropa","boutique","zapatos","zapateria","calzado","accesorios","joyeria"]},
+  {like:"Moda",             kw:["ropa","boutique","zapatos","zapateria","calzado","accesorios"]},
+  {like:"Joyería",          kw:["joyeria","joyas","relojeria","bisuteria"]},
+  {like:"Tienda naturista", kw:["naturista","suplementos","vitaminas","productos naturales","organicos"]},
+  {like:"Agencia de viajes",kw:["viajes","turismo","boletos","paquetes turisticos"]},
 ];
 function sinAcentos(s){ return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
 function rubroSimilar(cat){
@@ -1257,7 +1263,7 @@ function vacanciaPct(p){
 
 const TIPOS_NEGOCIO = Object.keys(ANCLAS);
 /* Negocios de cita/destino: funcionan bien en niveles altos, no dependen de vitrina en planta baja */
-const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental"]);
+const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental","Agencia de viajes"]);
 const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
 const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
 
