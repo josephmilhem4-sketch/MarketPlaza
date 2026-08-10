@@ -370,6 +370,8 @@
     display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700;
     background:var(--soft); color:var(--muted); border-radius:999px; padding:4px 12px; margin-bottom:10px;
   }
+  .miplaza-switcher{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:0 0 22px}
+  .miplaza-switcher-label{font-size:13px; font-weight:600; color:var(--muted)}
   .miss-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
   @media (max-width:760px){ .miss-grid{grid-template-columns:1fr} }
   .miss{
@@ -685,9 +687,9 @@ const PLAZAS = [
   {
     id:"star-plaza", nombre:"Star Plaza", zona:"Costa del Este",
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:40, trafico:3,
-    desc:"Plaza en Costa del Este, zona corporativa y residencial de alto poder adquisitivo.",
-    tenants:[{n:"Lavamático Burbujas", cat:"Lavandería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Farmacia Metro Plus", cat:"Farmacia"},{n:"Napoli Pizza", cat:"Restaurante"}],
-    locales:[{id:"L-9", m2:110, precio:3300, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-4", m2:90, precio:2930, nivel:"Nivel 2", frente:"Frente al estacionamiento"}]
+    desc:"Plaza en Costa del Este, frente a Riba Smith y cerca de Novey y Santa María. Una de las plazas con mayor variedad comercial de la zona, con alto tráfico peatonal y vehicular.",
+    tenants:[{n:"Salón de belleza", cat:"Salón de belleza"},{n:"Floristería", cat:"Otro"},{n:"Carnicería gourmet", cat:"Otro"},{n:"Heladería", cat:"Comida rápida"},{n:"Supermercado", cat:"Supermercado"}],
+    locales:[{id:"L-A", m2:98, precio:3800, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-B", m2:99, precio:3300, nivel:"Planta baja", frente:"Con estacionamiento"}]
   },
   {
     id:"shi-plaza", nombre:"Shi Plaza", zona:"Costa del Este",
@@ -695,6 +697,13 @@ const PLAZAS = [
     desc:"Plaza en Costa del Este, zona corporativa y residencial de alto poder adquisitivo.",
     tenants:[{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Smart Fit", cat:"Gimnasio"},{n:"Do It Center Express", cat:"Ferretería"},{n:"Café Kotowa", cat:"Café"}],
     locales:[{id:"L-17", m2:35, precio:1070, nivel:"Planta baja", frente:"Esquina"},{id:"L-10", m2:35, precio:1220, nivel:"Planta baja", frente:"Con terraza"}]
+  },
+  {
+    id:"sky-plaza", nombre:"Sky Plaza", zona:"Costa del Este",
+    ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:50, trafico:2,
+    desc:"Plaza en Avenida Centenario, Costa del Este.",
+    tenants:[{n:"FedEx Ship Center", cat:"Otro"},{n:"Grand Deli Gourmet", cat:"Otro"}],
+    locales:[]
   },
   {
     id:"plaza-obarrio", nombre:"Plaza Obarrio", zona:"Obarrio",
@@ -953,10 +962,15 @@ function waBtn(pid, lid, cls){
 }
 
 /* ================= Google Maps Integration ================= */
+/* Aportado por Jonathan (UbicaPTY). Usa las plazas reales (PLAZAS) del
+   sitio, no un set de datos aparte — así nunca queda desincronizado con
+   Explorar, Oportunidades, Evaluación o Mi plaza. */
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyC65ByD4HRlt1N3royoeZtX6tkPFxmWBw0';
+/* IMPORTANTE: pon aquí tu llave real de Google Maps antes de usar el mapa.
+   No la subas a un repositorio público sin restricciones de dominio
+   configuradas en Google Cloud Console. */
+const GOOGLE_MAPS_API_KEY = 'TU_LLAVE_DE_GOOGLE_MAPS_AQUI';
 const GOOGLE_MAP_ID = 'b10820e6aabf2a4a52f8df1d';
-const WHATSAPP_MAPA = '50760000000';
 
 let gmap = null;
 let gmapMarkers = [];
@@ -967,29 +981,27 @@ let gmapFilterMarkers = [];
 let gmapBusinessMarkers = [];
 let gmapPlazaSeleccionada = null;
 
-// Plazas con coordenadas para el mapa interactivo
-const PLAZAS_MAPA = [
-  {id:"concordia",nombre:"Plaza Concordia",zona:"Vía España / El Cangrejo",lat:9.0194,lng:-79.5244,locales:[{numero:"L-15 · Planta Baja",m2:45,precio:28},{numero:"L-22 · Nivel 1",m2:65,precio:25},{numero:"K-08 · Kiosko",m2:8,precio:45}]},
-  {id:"einstein",nombre:"Plaza Einstein",zona:"El Cangrejo (Vía Argentina)",lat:9.0231,lng:-79.5258,locales:[{numero:"L-05 · Planta Baja",m2:55,precio:35},{numero:"L-12 · Esquina",m2:40,precio:38}]},
-  {id:"regent",nombre:"Plaza Regent",zona:"Vía España / Bella Vista",lat:9.0165,lng:-79.5281,locales:[{numero:"OF-301 · Oficina",m2:80,precio:22},{numero:"L-08 · Planta Baja",m2:50,precio:30}]},
-  {id:"multiplaza",nombre:"Multiplaza Pacific Mall",zona:"Punta Pacífica",lat:8.9897,lng:-79.5117,locales:[{numero:"L-245 · Nivel 2",m2:120,precio:85},{numero:"L-118 · Nivel 1",m2:95,precio:90},{numero:"FC-22 · Food Court",m2:55,precio:75}]},
-  {id:"sanfrancisco",nombre:"Plaza San Francisco",zona:"San Francisco / Calle 50",lat:8.9881,lng:-79.5085,locales:[{numero:"L-12 · Planta Baja",m2:85,precio:42},{numero:"L-28 · Nivel 1",m2:60,precio:38}]},
-  {id:"towncenter",nombre:"Town Center Costa del Este",zona:"Costa del Este",lat:9.0102,lng:-79.4678,locales:[{numero:"L-402 · Nivel 4",m2:88,precio:52},{numero:"L-215 · Nivel 2",m2:110,precio:55},{numero:"FC-08 · Food Court",m2:42,precio:58}]},
-  {id:"santamaria",nombre:"Santa María Plaza",zona:"Costa del Este / Santa María",lat:9.0198,lng:-79.4589,locales:[{numero:"L-22 · Planta Baja",m2:95,precio:48},{numero:"L-45 · Nivel 1",m2:75,precio:45}]},
-  {id:"obarrio",nombre:"Plaza Obarrio",zona:"Obarrio / Calle 50",lat:8.9862,lng:-79.5201,locales:[{numero:"L-12 · Planta Baja",m2:60,precio:55},{numero:"OF-205 · Oficina",m2:45,precio:42}]},
-  {id:"balboa",nombre:"Plaza Bal Harbour",zona:"Avenida Balboa",lat:8.9712,lng:-79.5298,locales:[{numero:"L-08 · Vista al mar",m2:85,precio:72},{numero:"L-15 · Terraza",m2:55,precio:68}]},
-  {id:"albrook",nombre:"Albrook Mall",zona:"Albrook",lat:8.9734,lng:-79.5532,locales:[{numero:"L-1245 · Pasillo Central",m2:65,precio:95},{numero:"L-856 · Ala Norte",m2:48,precio:85},{numero:"K-22 · Kiosko",m2:12,precio:120}]},
-  {id:"clayton",nombre:"Plaza Clayton",zona:"Clayton",lat:9.0061,lng:-79.5785,locales:[{numero:"L-15 · Planta Baja",m2:70,precio:42},{numero:"L-28 · Nivel 1",m2:55,precio:38}]},
-  {id:"eldorado",nombre:"Centro Comercial El Dorado",zona:"El Dorado / Vía Ricardo J. Alfaro",lat:9.0094,lng:-79.5358,locales:[{numero:"L-125 · Planta Baja",m2:85,precio:35},{numero:"L-208 · Nivel 2",m2:65,precio:32},{numero:"FC-12 · Food Court",m2:40,precio:42}]},
-  {id:"altaplaza",nombre:"AltaPlaza Mall",zona:"Vía Centenario",lat:9.0345,lng:-79.5289,locales:[{numero:"L-312 · Nivel 3",m2:95,precio:65},{numero:"L-156 · Nivel 1",m2:72,precio:70}]},
-  {id:"metromall",nombre:"Metromall",zona:"Vía Tocumen",lat:9.0512,lng:-79.4445,locales:[{numero:"L-425 · Nivel 4",m2:80,precio:45},{numero:"L-218 · Nivel 2",m2:55,precio:48},{numero:"FC-15 · Food Court",m2:38,precio:52}]},
-  {id:"brisas",nombre:"Plaza Brisas del Golf",zona:"Brisas del Golf / Vía Tocumen",lat:9.0792,lng:-79.4561,locales:[{numero:"L-08 · Planta Baja",m2:65,precio:32},{numero:"L-22 · Esquina",m2:50,precio:35}]},
-  {id:"transistmica",nombre:"Plaza Transístmica",zona:"El Cangrejo / Transístmica",lat:9.0245,lng:-79.5012,locales:[{numero:"L-12 · Planta Baja",m2:75,precio:38},{numero:"OF-305 · Oficina",m2:60,precio:28}]},
-  {id:"bellavista",nombre:"Plaza Bella Vista",zona:"Bella Vista / Calle 50",lat:8.9832,lng:-79.5234,locales:[{numero:"L-05 · Esquina",m2:55,precio:48},{numero:"L-18 · Interior",m2:40,precio:42}]},
-  {id:"cocodelmar",nombre:"Plaza Coco del Mar",zona:"Coco del Mar",lat:9.0028,lng:-79.4892,locales:[{numero:"L-03 · Esquina",m2:50,precio:55},{numero:"L-11 · Interior",m2:35,precio:48}]},
-  {id:"condado",nombre:"Plaza Condado del Rey",zona:"Condado del Rey",lat:9.0289,lng:-79.5322,locales:[{numero:"L-25 · Planta Baja",m2:70,precio:38},{numero:"L-42 · Nivel 1",m2:55,precio:35}]},
-  {id:"lospueblos",nombre:"Centro Comercial Los Pueblos",zona:"Los Pueblos / Juan Díaz",lat:9.0456,lng:-79.4678,locales:[{numero:"L-312 · Nivel 3",m2:60,precio:32},{numero:"L-108 · Planta Baja",m2:45,precio:35}]}
-];
+/* Coordenadas aproximadas del centro de cada zona (ilustrativas, no
+   direcciones verificadas). Cada plaza se ubica cerca del centro de su
+   zona con un pequeño offset determinístico para no apilarse. */
+const ZONA_COORDS = {
+  "San Francisco":{lat:9.0020,lng:-79.5080},
+  "Vía Porras":{lat:8.9950,lng:-79.5165},
+  "Costa del Este":{lat:9.0110,lng:-79.4680},
+  "Obarrio":{lat:8.9880,lng:-79.5225},
+  "Condado del Rey":{lat:9.0290,lng:-79.5330},
+  "Brisas del Golf":{lat:9.0630,lng:-79.4790},
+  "El Dorado":{lat:9.0090,lng:-79.5360},
+  "Vía Ricardo J. Alfaro":{lat:9.0230,lng:-79.5380},
+  "Punta Pacífica":{lat:8.9850,lng:-79.5110}
+};
+function coordsPlaza(p){
+  const base = ZONA_COORDS[p.zona] || {lat:9.0, lng:-79.52};
+  const h = hashStr(p.id);
+  const jitterLat = ((h % 1000) / 1000 - 0.5) * 0.012;
+  const jitterLng = (((h >> 3) % 1000) / 1000 - 0.5) * 0.012;
+  return {lat: base.lat + jitterLat, lng: base.lng + jitterLng};
+}
 
 const CADENAS_PANAMA = {
   'riba smith':[{nombre:'Riba Smith - Bella Vista',direccion:'Calle 45, Bella Vista',lat:9.0012,lng:-79.5098},{nombre:'Riba Smith - Multiplaza',direccion:'Punta Pacífica',lat:8.9897,lng:-79.5117},{nombre:'Riba Smith - Costa del Este',direccion:'Av. Centenario',lat:9.0125,lng:-79.4695},{nombre:'Riba Smith - Clayton',direccion:'Ciudad del Saber',lat:9.0014,lng:-79.5831}],
@@ -1012,6 +1024,241 @@ const FILTROS_MAPA = [
   {id:'hospital',nombre:'Hospitales',icon:'🏥',type:'hospital'}
 ];
 
+function cargarGoogleMapsAPI(){
+  return new Promise((resolve,reject)=>{
+    if(typeof google!=='undefined'&&google.maps){resolve();return;}
+    const script=document.createElement('script');
+    script.src=`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker,places&loading=async`;
+    script.async=true;script.defer=true;
+    script.onload=resolve;
+    script.onerror=()=>reject(new Error('No se pudo cargar Google Maps'));
+    document.head.appendChild(script);
+  });
+}
+
+function initMapaIntegrado(){
+  const mapEl=document.getElementById('gmap');
+  if(!mapEl)return;
+  mapEl.innerHTML='';
+  try{
+    gmap=new google.maps.Map(mapEl,{
+      center:{lat:9.0,lng:-79.52},zoom:12,mapId:GOOGLE_MAP_ID,
+      mapTypeId:'hybrid',disableDefaultUI:false,zoomControl:true,
+      mapTypeControl:true,streetViewControl:false,fullscreenControl:true
+    });
+    crearGmapMarkers();
+    generarGmapTarjetas();
+    configurarGmapDrawer();
+    configurarGmapBusqueda();
+    configurarGmapFiltros();
+    gmapPlacesService=new google.maps.places.PlacesService(gmap);
+    configurarGmapCompetencia();
+  }catch(e){
+    mapEl.innerHTML=`<div class="map-loading">Error: ${e.message}</div>`;
+  }
+}
+
+function crearGmapMarkers(){
+  gmapZonasData={};
+  PLAZAS.forEach(p=>{
+    const zn=p.zona;
+    if(!gmapZonasData[zn])gmapZonasData[zn]={nombre:zn,plazas:[],totalLocales:0,lat:0,lng:0};
+    gmapZonasData[zn].plazas.push(p);
+    gmapZonasData[zn].totalLocales+=p.locales.length;
+    const c=coordsPlaza(p);
+    gmapZonasData[zn].lat+=c.lat;
+    gmapZonasData[zn].lng+=c.lng;
+  });
+  PLAZAS.forEach(p=>{
+    const c=coordsPlaza(p);
+    const zn=p.zona;
+    const label = p.locales.length ? `${p.locales.length} ${p.locales.length===1?"local":"locales"}` : "sin vacantes";
+    const mc=document.createElement('div');
+    mc.className='gmap-marker';mc.innerHTML=esc(label);mc.dataset.plazaId=p.id;
+    const marker=new google.maps.marker.AdvancedMarkerElement({
+      map:null,position:c,content:mc,title:p.nombre
+    });
+    marker.addListener('click',()=>seleccionarGmapPlaza(p.id));
+    gmapMarkers.push({plazaId:p.id,zonaNombre:zn,marker,content:mc});
+  });
+  Object.values(gmapZonasData).forEach(z=>{
+    z.lat=z.lat/z.plazas.length;z.lng=z.lng/z.plazas.length;
+    const mc=document.createElement('div');mc.className='gmap-zone-marker';
+    mc.innerHTML=`<strong>${esc(z.nombre)}</strong><span>${z.plazas.length} plaza${z.plazas.length>1?'s':''} · ${z.totalLocales} locales</span>`;
+    const marker=new google.maps.marker.AdvancedMarkerElement({
+      map:gmap,position:{lat:z.lat,lng:z.lng},content:mc,title:z.nombre
+    });
+    mc.addEventListener('mouseenter',()=>mostrarGmapLocalesZona(z.nombre));
+    mc.addEventListener('mouseleave',()=>ocultarGmapLocalesZona(z.nombre));
+    marker.addListener('click',()=>{gmap.setCenter({lat:z.lat,lng:z.lng});gmap.setZoom(15);});
+    gmapZoneMarkers.push({zonaNombre:z.nombre,marker,content:mc});
+  });
+}
+
+function mostrarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=gmap;});}
+function ocultarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=null;});}
+
+function generarGmapTarjetas(){
+  const container=document.getElementById('gmapPlazaList');if(!container)return;
+  container.innerHTML='';
+  PLAZAS.forEach(p=>{
+    const desde = p.locales.length ? fmt$.format(Math.min(...p.locales.map(l=>l.precio))) : null;
+    const card=document.createElement('div');card.className='map-plaza-card';card.dataset.plazaId=p.id;
+    card.innerHTML=`<h4 class="map-plaza-nombre">${esc(p.nombre)}</h4><p class="map-plaza-zona">${esc(p.zona)}</p><div class="map-plaza-info"><span>${p.locales.length} local${p.locales.length===1?'':'es'}</span>${desde?`<span>Desde ${desde}/mes</span>`:""}</div>`;
+    card.addEventListener('click',()=>seleccionarGmapPlaza(p.id));
+    container.appendChild(card);
+  });
+}
+
+function seleccionarGmapPlaza(id){
+  const p=plaza(id);if(!p)return;
+  gmapPlazaSeleccionada=p;
+  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.toggle('active',c.dataset.plazaId===id));
+  gmapMarkers.forEach(m=>{m.content.classList.toggle('active',m.plazaId===id);m.marker.map=gmap;});
+  const c=coordsPlaza(p);
+  gmap.panTo(c);gmap.setZoom(15);
+  mostrarGmapDrawer(p);
+}
+
+function configurarGmapDrawer(){
+  const overlay=document.getElementById('gmapDrawerOverlay');
+  const closeBtn=document.getElementById('gmapDrawerClose');
+  if(overlay)overlay.addEventListener('click',cerrarGmapDrawer);
+  if(closeBtn)closeBtn.addEventListener('click',cerrarGmapDrawer);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarGmapDrawer();});
+}
+
+function mostrarGmapDrawer(p){
+  const drawer=document.getElementById('gmapDrawer');
+  const overlay=document.getElementById('gmapDrawerOverlay');
+  const title=document.getElementById('gmapDrawerTitle');
+  const zona=document.getElementById('gmapDrawerZona');
+  const content=document.getElementById('gmapDrawerContent');
+  if(!drawer||!overlay)return;
+  title.textContent=p.nombre;zona.textContent=p.zona;
+  let html=`<p class="map-drawer-section">Locales disponibles</p>`;
+  if(!p.locales.length) html+=`<p style="font-size:13px;color:var(--muted)">Esta plaza no tiene vacantes por ahora.</p>`;
+  p.locales.forEach(l=>{
+    html+=`<div class="map-local-card"><div class="map-local-header"><span class="map-local-numero">Local ${esc(l.id)} · ${esc(l.nivel)}</span><span class="map-local-precio">${fmt$.format(l.precio)}<span>/mes</span></span></div><div class="map-local-details"><span>${l.m2} m²</span><span>${esc(l.frente)}</span></div>${waBtn(p.id,l.id,'map-local-wa')}</div>`;
+  });
+  html+=`<a href="#/plaza/${p.id}" class="map-view-profile" onclick="cerrarGmapDrawer()">Ver perfil completo</a>`;
+  content.innerHTML=html;
+  drawer.classList.add('active');overlay.classList.add('active');
+}
+
+function cerrarGmapDrawer(){
+  const drawer=document.getElementById('gmapDrawer');
+  const overlay=document.getElementById('gmapDrawerOverlay');
+  if(drawer)drawer.classList.remove('active');
+  if(overlay)overlay.classList.remove('active');
+  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.remove('active'));
+  gmapMarkers.forEach(m=>m.content.classList.remove('active'));
+  gmapPlazaSeleccionada=null;
+}
+
+function configurarGmapBusqueda(){
+  const input=document.getElementById('gmapSearchInput');
+  const clear=document.getElementById('gmapSearchClear');
+  if(!input)return;
+  input.addEventListener('input',e=>{
+    const q=e.target.value.trim().toLowerCase();
+    if(clear)clear.style.display=q?'block':'none';
+    filtrarGmapPlazas(q);
+  });
+  if(clear)clear.addEventListener('click',()=>{input.value='';clear.style.display='none';filtrarGmapPlazas('');input.focus();});
+}
+
+function filtrarGmapPlazas(q){
+  if(!q){
+    document.querySelectorAll('.map-plaza-card').forEach(c=>c.style.display='block');
+    gmapMarkers.forEach(m=>{m.marker.map=null;});
+    gmapZoneMarkers.forEach(m=>{m.marker.map=gmap;});
+    return;
+  }
+  gmapZoneMarkers.forEach(m=>{m.marker.map=null;});
+  PLAZAS.forEach(p=>{
+    const card=document.querySelector(`.map-plaza-card[data-plaza-id="${p.id}"]`);
+    const markerData=gmapMarkers.find(m=>m.plazaId===p.id);
+    const match=p.nombre.toLowerCase().includes(q)||p.zona.toLowerCase().includes(q);
+    if(card)card.style.display=match?'block':'none';
+    if(markerData)markerData.marker.map=match?gmap:null;
+  });
+}
+
+function configurarGmapFiltros(){
+  const toggle=document.getElementById('gmapFiltersToggle');
+  const panel=document.getElementById('gmapFiltersPanel');
+  const grid=document.getElementById('gmapFiltersGrid');
+  if(!toggle||!panel||!grid)return;
+  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
+  FILTROS_MAPA.forEach(f=>{
+    const chip=document.createElement('button');chip.className='map-filter-chip';chip.dataset.filterId=f.id;
+    chip.innerHTML=`${f.icon} ${f.nombre}`;
+    chip.addEventListener('click',()=>{
+      const wasActive=chip.classList.contains('active');
+      document.querySelectorAll('.map-filter-chip').forEach(c=>c.classList.remove('active'));
+      limpiarGmapFilterMarkers();
+      if(!wasActive){chip.classList.add('active');buscarGmapPOIs(f);}
+    });
+    grid.appendChild(chip);
+  });
+}
+
+function buscarGmapPOIs(filtro){
+  if(!gmapPlacesService)return;
+  const request={query:filtro.nombre+' en Ciudad de Panama',location:new google.maps.LatLng(9.0,-79.5),radius:30000};
+  gmapPlacesService.textSearch(request,(results,status)=>{
+    if(status===google.maps.places.PlacesServiceStatus.OK&&results){
+      results.slice(0,15).forEach((place)=>{
+        const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=filtro.icon;
+        const marker=new google.maps.marker.AdvancedMarkerElement({
+          map:gmap,position:place.geometry.location,content:mc,title:place.name
+        });
+        gmapFilterMarkers.push(marker);
+      });
+    }
+  });
+}
+
+function limpiarGmapFilterMarkers(){gmapFilterMarkers.forEach(m=>{m.map=null;});gmapFilterMarkers=[];}
+
+function configurarGmapCompetencia(){
+  const toggle=document.getElementById('gmapCompToggle');
+  const panel=document.getElementById('gmapCompPanel');
+  const input=document.getElementById('gmapCompInput');
+  const btn=document.getElementById('gmapCompBtn');
+  if(!toggle||!panel)return;
+  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
+  if(btn)btn.addEventListener('click',()=>{if(input)buscarGmapCompetencia(input.value.trim());});
+  if(input)input.addEventListener('keypress',e=>{if(e.key==='Enter')buscarGmapCompetencia(input.value.trim());});
+}
+
+function buscarGmapCompetencia(q){
+  const results=document.getElementById('gmapCompResults');if(!results||!q)return;
+  limpiarGmapBusinessMarkers();
+  const qLower=q.toLowerCase();
+  let data=CADENAS_PANAMA[qLower];
+  if(typeof data==='string')data=CADENAS_PANAMA[data];
+  if(data&&Array.isArray(data)){
+    results.innerHTML='';
+    data.forEach((loc,i)=>{
+      const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=i+1;
+      const marker=new google.maps.marker.AdvancedMarkerElement({
+        map:gmap,position:{lat:loc.lat,lng:loc.lng},content:mc,title:loc.nombre
+      });
+      gmapBusinessMarkers.push(marker);
+      const item=document.createElement('div');item.className='map-comp-item';
+      item.innerHTML=`<span class="map-comp-num">${i+1}</span><span>${esc(loc.nombre)}</span>`;
+      item.addEventListener('click',()=>{gmap.panTo({lat:loc.lat,lng:loc.lng});gmap.setZoom(16);});
+      results.appendChild(item);
+    });
+  }else{
+    results.innerHTML=`<p style="font-size:12px;color:var(--muted);padding:8px">No encontrado en BD local. Prueba: Melo, Arrocha, McDonald's</p>`;
+  }
+}
+
+function limpiarGmapBusinessMarkers(){gmapBusinessMarkers.forEach(m=>{m.map=null;});gmapBusinessMarkers=[];}
+
 /* ================= Estado ================= */
 
 const state = {
@@ -1019,8 +1266,8 @@ const state = {
   oppCat:"",
   oppCatOtroMode:false,
   mapCat:"",
-  ev:{step:0, cat:"", catOtroMode:false, budget:[], m2:[], zonas:[]},
-  mapInitialized:false
+  miPlazaId:"",
+  ev:{step:0, cat:"", catOtroMode:false, budget:[], m2:[], zonas:[]}
 };
 
 /* ================= Utilidades ================= */
@@ -1515,10 +1762,11 @@ function viewEvalResultados(){
 
 /* ---------- Mi plaza (panel del administrador) ---------- */
 
-const ADMIN_PLAZA = "plaza-aventura";
+const MIS_PLAZAS = ["star-plaza", "sky-plaza"];
 
 function viewMiPlaza(){
-  const p = plaza(ADMIN_PLAZA);
+  const activo = MIS_PLAZAS.includes(state.miPlazaId) ? state.miPlazaId : MIS_PLAZAS[0];
+  const p = plaza(activo);
   const cats = new Set(p.tenants.map(t=>t.cat));
   const totalUnits = p.tenants.length + p.locales.length;
   const occ = totalUnits ? Math.round(p.tenants.length/totalUnits*100) : 100;
@@ -1555,6 +1803,12 @@ function viewMiPlaza(){
     <h1>Panel de ${esc(p.nombre)}</h1>
     <p>${esc(p.zona)} · ${CARACTER_L[ZONA_INFO[p.zona]]} · ${p.tenants.length} negocios operando</p>
   </div>
+
+  ${MIS_PLAZAS.length>1 ? `
+  <div class="miplaza-switcher" role="group" aria-label="Tus plazas">
+    <span class="miplaza-switcher-label">Tus plazas:</span>
+    ${MIS_PLAZAS.map(id=>{ const pp=plaza(id); return `<button class="cat-btn ${id===activo?"on":""}" data-miplaza="${id}">${esc(pp.nombre)}</button>`; }).join("")}
+  </div>` : ""}
 
   <div class="statrow" style="margin-top:0">
     <div class="stat"><div class="v num">${sols.length}</div><div class="l">Solicitudes este mes${nuevas?` · <b style="color:var(--accent)">${nuevas} nuevas</b>`:""}</div></div>
@@ -1629,258 +1883,17 @@ const ZONAS_MAPA = [
   {area:"pacifica",nombre:"Punta Pacífica"},
 ];
 
-/* ================= Mapa Interactivo Functions ================= */
-
-function cargarGoogleMapsAPI(){
-  return new Promise((resolve,reject)=>{
-    if(typeof google!=='undefined'&&google.maps){resolve();return;}
-    const script=document.createElement('script');
-    script.src=`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker,places&loading=async`;
-    script.async=true;script.defer=true;
-    script.onload=resolve;
-    script.onerror=()=>reject(new Error('No se pudo cargar Google Maps'));
-    document.head.appendChild(script);
-  });
-}
-
-function initMapaIntegrado(){
-  const mapEl=document.getElementById('gmap');
-  if(!mapEl)return;
-  mapEl.innerHTML='';
-  try{
-    gmap=new google.maps.Map(mapEl,{
-      center:{lat:9.0,lng:-79.52},zoom:12,mapId:GOOGLE_MAP_ID,
-      mapTypeId:'hybrid',disableDefaultUI:false,zoomControl:true,
-      mapTypeControl:true,streetViewControl:false,fullscreenControl:true
-    });
-    crearGmapMarkers();
-    generarGmapTarjetas();
-    configurarGmapDrawer();
-    configurarGmapBusqueda();
-    configurarGmapFiltros();
-    gmapPlacesService=new google.maps.places.PlacesService(gmap);
-    configurarGmapCompetencia();
-  }catch(e){
-    mapEl.innerHTML=`<div class="map-loading">Error: ${e.message}</div>`;
-  }
-}
-
-function crearGmapMarkers(){
-  gmapZonasData={};
-  PLAZAS_MAPA.forEach(p=>{
-    const zn=p.zona.split('(')[0].trim().split('/')[0].trim();
-    if(!gmapZonasData[zn])gmapZonasData[zn]={nombre:zn,plazas:[],totalLocales:0,lat:0,lng:0};
-    gmapZonasData[zn].plazas.push(p);
-    gmapZonasData[zn].totalLocales+=p.locales.length;
-    gmapZonasData[zn].lat+=p.lat;
-    gmapZonasData[zn].lng+=p.lng;
-  });
-  PLAZAS_MAPA.forEach(p=>{
-    const precioMin=Math.min(...p.locales.map(l=>l.precio));
-    const zn=p.zona.split('(')[0].trim().split('/')[0].trim();
-    const mc=document.createElement('div');
-    mc.className='gmap-marker';mc.innerHTML=`desde $${precioMin}/m²`;mc.dataset.plazaId=p.id;
-    const marker=new google.maps.marker.AdvancedMarkerElement({
-      map:null,position:{lat:p.lat,lng:p.lng},content:mc,title:p.nombre
-    });
-    marker.addListener('click',()=>seleccionarGmapPlaza(p.id));
-    gmapMarkers.push({plazaId:p.id,zonaNombre:zn,marker,content:mc});
-  });
-  Object.values(gmapZonasData).forEach(z=>{
-    z.lat=z.lat/z.plazas.length;z.lng=z.lng/z.plazas.length;
-    const mc=document.createElement('div');mc.className='gmap-zone-marker';
-    mc.innerHTML=`<strong>${z.nombre}</strong><span>${z.plazas.length} plaza${z.plazas.length>1?'s':''} · ${z.totalLocales} locales</span>`;
-    const marker=new google.maps.marker.AdvancedMarkerElement({
-      map:gmap,position:{lat:z.lat,lng:z.lng},content:mc,title:z.nombre
-    });
-    mc.addEventListener('mouseenter',()=>mostrarGmapLocalesZona(z.nombre));
-    mc.addEventListener('mouseleave',()=>ocultarGmapLocalesZona(z.nombre));
-    marker.addListener('click',()=>{gmap.setCenter({lat:z.lat,lng:z.lng});gmap.setZoom(15);});
-    gmapZoneMarkers.push({zonaNombre:z.nombre,marker,content:mc});
-  });
-}
-
-function mostrarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=gmap;});}
-function ocultarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=null;});}
-
-function generarGmapTarjetas(){
-  const container=document.getElementById('gmapPlazaList');if(!container)return;
-  container.innerHTML='';
-  PLAZAS_MAPA.forEach(p=>{
-    const precioMin=Math.min(...p.locales.map(l=>l.precio));
-    const card=document.createElement('div');card.className='map-plaza-card';card.dataset.plazaId=p.id;
-    card.innerHTML=`<h4 class="map-plaza-nombre">${p.nombre}</h4><p class="map-plaza-zona">${p.zona}</p><div class="map-plaza-info"><span>${p.locales.length} local${p.locales.length>1?'es':''}</span><span>Desde $${precioMin}/m²</span></div>`;
-    card.addEventListener('click',()=>seleccionarGmapPlaza(p.id));
-    container.appendChild(card);
-  });
-}
-
-function seleccionarGmapPlaza(id){
-  const plaza=PLAZAS_MAPA.find(p=>p.id===id);if(!plaza)return;
-  gmapPlazaSeleccionada=plaza;
-  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.toggle('active',c.dataset.plazaId===id));
-  gmapMarkers.forEach(m=>{m.content.classList.toggle('active',m.plazaId===id);m.marker.map=gmap;});
-  gmap.panTo({lat:plaza.lat,lng:plaza.lng});gmap.setZoom(15);
-  mostrarGmapDrawer(plaza);
-}
-
-function configurarGmapDrawer(){
-  const overlay=document.getElementById('gmapDrawerOverlay');
-  const closeBtn=document.getElementById('gmapDrawerClose');
-  if(overlay)overlay.addEventListener('click',cerrarGmapDrawer);
-  if(closeBtn)closeBtn.addEventListener('click',cerrarGmapDrawer);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarGmapDrawer();});
-}
-
-function mostrarGmapDrawer(plaza){
-  const drawer=document.getElementById('gmapDrawer');
-  const overlay=document.getElementById('gmapDrawerOverlay');
-  const title=document.getElementById('gmapDrawerTitle');
-  const zona=document.getElementById('gmapDrawerZona');
-  const content=document.getElementById('gmapDrawerContent');
-  if(!drawer||!overlay)return;
-  title.textContent=plaza.nombre;zona.textContent=plaza.zona;
-  let html=`<p class="map-drawer-section">Locales disponibles</p>`;
-  plaza.locales.forEach(l=>{
-    const waUrl=`https://wa.me/${WHATSAPP_MAPA}?text=${encodeURIComponent(`Hola, me interesa el local ${l.numero} en ${plaza.nombre}`)}`;
-    html+=`<div class="map-local-card"><div class="map-local-header"><span class="map-local-numero">${l.numero}</span><span class="map-local-precio">$${l.precio}<span>/m²</span></span></div><div class="map-local-details"><span>Área: ${l.m2} m²</span><span>Total: $${(l.m2*l.precio).toLocaleString()}/mes</span></div><a href="${waUrl}" target="_blank" class="map-local-wa"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>Me interesa</a></div>`;
-  });
-  // Link to full profile if exists in main PLAZAS
-  const mainPlaza=PLAZAS.find(p=>p.nombre.toLowerCase().includes(plaza.nombre.toLowerCase().split(' ')[1])||plaza.nombre.toLowerCase().includes(p.nombre.toLowerCase().split(' ')[1]));
-  if(mainPlaza){
-    html+=`<a href="#/plaza/${mainPlaza.id}" class="map-view-profile" onclick="cerrarGmapDrawer()">Ver perfil completo</a>`;
-  }
-  content.innerHTML=html;
-  drawer.classList.add('active');overlay.classList.add('active');
-}
-
-function cerrarGmapDrawer(){
-  const drawer=document.getElementById('gmapDrawer');
-  const overlay=document.getElementById('gmapDrawerOverlay');
-  if(drawer)drawer.classList.remove('active');
-  if(overlay)overlay.classList.remove('active');
-  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.remove('active'));
-  gmapMarkers.forEach(m=>m.content.classList.remove('active'));
-  gmapPlazaSeleccionada=null;
-}
-
-function configurarGmapBusqueda(){
-  const input=document.getElementById('gmapSearchInput');
-  const clear=document.getElementById('gmapSearchClear');
-  if(!input)return;
-  input.addEventListener('input',e=>{
-    const q=e.target.value.trim().toLowerCase();
-    if(clear)clear.style.display=q?'block':'none';
-    filtrarGmapPlazas(q);
-  });
-  if(clear)clear.addEventListener('click',()=>{input.value='';clear.style.display='none';filtrarGmapPlazas('');input.focus();});
-}
-
-function filtrarGmapPlazas(q){
-  if(!q){
-    document.querySelectorAll('.map-plaza-card').forEach(c=>c.style.display='block');
-    gmapMarkers.forEach(m=>{m.marker.map=null;});
-    gmapZoneMarkers.forEach(m=>{m.marker.map=gmap;});
-    return;
-  }
-  gmapZoneMarkers.forEach(m=>{m.marker.map=null;});
-  let found=0;
-  PLAZAS_MAPA.forEach(p=>{
-    const card=document.querySelector(`.map-plaza-card[data-plaza-id="${p.id}"]`);
-    const markerData=gmapMarkers.find(m=>m.plazaId===p.id);
-    const match=p.nombre.toLowerCase().includes(q)||p.zona.toLowerCase().includes(q);
-    if(card)card.style.display=match?'block':'none';
-    if(markerData)markerData.marker.map=match?gmap:null;
-    if(match)found++;
-  });
-}
-
-function configurarGmapFiltros(){
-  const toggle=document.getElementById('gmapFiltersToggle');
-  const panel=document.getElementById('gmapFiltersPanel');
-  const grid=document.getElementById('gmapFiltersGrid');
-  if(!toggle||!panel||!grid)return;
-  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
-  FILTROS_MAPA.forEach(f=>{
-    const chip=document.createElement('button');chip.className='map-filter-chip';chip.dataset.filterId=f.id;
-    chip.innerHTML=`${f.icon} ${f.nombre}`;
-    chip.addEventListener('click',()=>{
-      const wasActive=chip.classList.contains('active');
-      document.querySelectorAll('.map-filter-chip').forEach(c=>c.classList.remove('active'));
-      limpiarGmapFilterMarkers();
-      if(!wasActive){chip.classList.add('active');buscarGmapPOIs(f);}
-    });
-    grid.appendChild(chip);
-  });
-}
-
-function buscarGmapPOIs(filtro){
-  if(!gmapPlacesService)return;
-  const request={query:filtro.nombre+' en Ciudad de Panama',location:new google.maps.LatLng(9.0,-79.5),radius:30000};
-  gmapPlacesService.textSearch(request,(results,status)=>{
-    if(status===google.maps.places.PlacesServiceStatus.OK&&results){
-      results.slice(0,15).forEach((place,i)=>{
-        const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=filtro.icon;
-        const marker=new google.maps.marker.AdvancedMarkerElement({
-          map:gmap,position:place.geometry.location,content:mc,title:place.name
-        });
-        gmapFilterMarkers.push(marker);
-      });
-    }
-  });
-}
-
-function limpiarGmapFilterMarkers(){gmapFilterMarkers.forEach(m=>{m.map=null;});gmapFilterMarkers=[];}
-
-function configurarGmapCompetencia(){
-  const toggle=document.getElementById('gmapCompToggle');
-  const panel=document.getElementById('gmapCompPanel');
-  const input=document.getElementById('gmapCompInput');
-  const btn=document.getElementById('gmapCompBtn');
-  const results=document.getElementById('gmapCompResults');
-  if(!toggle||!panel)return;
-  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
-  if(btn)btn.addEventListener('click',()=>{if(input)buscarGmapCompetencia(input.value.trim());});
-  if(input)input.addEventListener('keypress',e=>{if(e.key==='Enter')buscarGmapCompetencia(input.value.trim());});
-}
-
-function buscarGmapCompetencia(q){
-  const results=document.getElementById('gmapCompResults');if(!results||!q)return;
-  limpiarGmapBusinessMarkers();
-  const qLower=q.toLowerCase();
-  let data=CADENAS_PANAMA[qLower];
-  if(typeof data==='string')data=CADENAS_PANAMA[data];
-  if(data&&Array.isArray(data)){
-    results.innerHTML='';
-    data.forEach((loc,i)=>{
-      const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=i+1;
-      const marker=new google.maps.marker.AdvancedMarkerElement({
-        map:gmap,position:{lat:loc.lat,lng:loc.lng},content:mc,title:loc.nombre
-      });
-      gmapBusinessMarkers.push(marker);
-      const item=document.createElement('div');item.className='map-comp-item';
-      item.innerHTML=`<span class="map-comp-num">${i+1}</span><span>${loc.nombre}</span>`;
-      item.addEventListener('click',()=>{gmap.panTo({lat:loc.lat,lng:loc.lng});gmap.setZoom(16);});
-      results.appendChild(item);
-    });
-  }else{
-    results.innerHTML=`<p style="font-size:12px;color:var(--muted);padding:8px">No encontrado en BD local. Prueba: Melo, Arrocha, McDonald's</p>`;
-  }
-}
-
-function limpiarGmapBusinessMarkers(){gmapBusinessMarkers.forEach(m=>{m.map=null;});gmapBusinessMarkers=[];}
-
 function viewMapa(){
   return `
   <div class="page-head">
     <h1>Mapa interactivo</h1>
-    <p>Explora las ${PLAZAS_MAPA.length} plazas comerciales de Panamá en el mapa. Pasa el cursor sobre una zona para ver las plazas disponibles.</p>
+    <p>Explora las ${PLAZAS.length} plazas comerciales de Panamá en el mapa. Haz clic en una para ver sus locales.</p>
   </div>
   <div class="map-wrapper">
     <aside class="map-sidebar">
       <div class="map-sidebar-header">
         <h3>Plazas disponibles</h3>
-        <p>${PLAZAS_MAPA.length} plazas · ${PLAZAS_MAPA.reduce((a,p)=>a+p.locales.length,0)} locales</p>
+        <p>${PLAZAS.length} plazas · ${PLAZAS.reduce((a,p)=>a+p.locales.length,0)} locales</p>
       </div>
       <div class="map-search-box">
         <input type="text" class="map-search-input" id="gmapSearchInput" placeholder="Buscar plaza o zona..." autocomplete="off">
@@ -1920,7 +1933,8 @@ function viewMapa(){
       <button class="map-drawer-close" id="gmapDrawerClose">×</button>
     </header>
     <div class="map-drawer-content" id="gmapDrawerContent"></div>
-  </div>`;
+  </div>
+  <p class="map-note">Las plazas se ubican en el centro aproximado de su zona — no son direcciones verificadas.</p>`;
 }
 
 /* ---------- Oportunidades ---------- */
@@ -2062,13 +2076,11 @@ function render(){
   else if(route==="plazas"){ location.hash = "#/mapa"; return; }
   else if(route==="mapa"){
     app.innerHTML = viewMapa();
-    // Cargar Google Maps API e inicializar el mapa
     cargarGoogleMapsAPI().then(()=>{
       initMapaIntegrado();
-      state.mapInitialized=true;
     }).catch(err=>{
-      const mapEl=document.getElementById('gmap');
-      if(mapEl)mapEl.innerHTML=`<div class="map-loading">Error al cargar Google Maps: ${err.message}</div>`;
+      const mapEl = document.getElementById('gmap');
+      if(mapEl) mapEl.innerHTML = `<div class="map-loading">Error al cargar Google Maps: ${err.message}</div>`;
     });
   }
   else if(route==="evaluacion"){ app.innerHTML = viewEvaluacion(); }
@@ -2140,6 +2152,12 @@ document.addEventListener("click", e=>{
     state.oppCatOtroMode = true;
     if(location.hash.startsWith("#/oportunidades")) render();
     else location.hash = "#/oportunidades";
+    return;
+  }
+  const miplaza = e.target.closest("[data-miplaza]");
+  if(miplaza){
+    state.miPlazaId = miplaza.dataset.miplaza;
+    render();
     return;
   }
   const oppOtroGo = e.target.closest("#opp-otro-go");
