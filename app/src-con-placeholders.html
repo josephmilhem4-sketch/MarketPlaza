@@ -1232,6 +1232,8 @@ function vacanciaPct(p){
 }
 
 const TIPOS_NEGOCIO = Object.keys(ANCLAS);
+/* Negocios de cita/destino: funcionan bien en niveles altos, no dependen de vitrina en planta baja */
+const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento"]);
 const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
 const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
 
@@ -2069,11 +2071,15 @@ function viewMiPlaza(){
   // Rubros que le faltan a la plaza, rankeados solo por lo que ya tiene esta plaza
   // (anclas presentes). No usa búsquedas de zona ni competencia de otras plazas
   // porque todavía no tenemos data real y completa del área — solo de esta plaza.
+  // Si los locales disponibles son todos de nivel alto (no planta baja), se
+  // priorizan negocios de servicio/cita, que no dependen de vitrina en la calle.
+  const soloPisoAlto = p.locales.length>0 && p.locales.every(l=>l.nivel!=="Planta baja");
   const faltan = TIPOS_NEGOCIO.filter(c=>!cats.has(c)).map(c=>{
     const anc = (ANCLAS[c]||[]).filter(a=>cats.has(a));
     const ancTenants = p.tenants.filter(t=>anc.includes(t.cat)).length;
-    return {c, anc, sc: anc.length*10 + ancTenants};
-  }).sort((a,b)=>b.sc-a.sc || a.c.localeCompare(b.c)).slice(0,3);
+    const cumplePiso = !soloPisoAlto || CATS_SERVICIO.has(c);
+    return {c, anc, cumplePiso, sc: anc.length*10 + ancTenants};
+  }).sort((a,b)=>(b.cumplePiso-a.cumplePiso) || (b.sc-a.sc) || a.c.localeCompare(b.c)).slice(0,3);
 
   // Solicitudes: ejemplos + las reales enviadas desde esta demo
   const li = n => p.locales[n] ? "Local "+p.locales[n].id : "Perfil de la plaza";
