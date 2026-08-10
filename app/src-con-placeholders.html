@@ -2087,7 +2087,7 @@ function viewMiPlaza(){
     const ancTenants = p.tenants.filter(t=>anc.includes(t.cat)).length;
     const cumplePiso = !soloPisoAlto || CATS_SERVICIO.has(c);
     return {c, anc, cumplePiso, sc: anc.length*10 + ancTenants};
-  }).sort((a,b)=>(b.cumplePiso-a.cumplePiso) || (b.sc-a.sc) || a.c.localeCompare(b.c)).slice(0,3);
+  }).sort((a,b)=>(b.cumplePiso-a.cumplePiso) || (b.sc-a.sc) || a.c.localeCompare(b.c));
 
   // Solicitudes: ejemplos + las reales enviadas desde esta demo
   const li = n => p.locales[n] ? "Local "+p.locales[n].id : "Perfil de la plaza";
