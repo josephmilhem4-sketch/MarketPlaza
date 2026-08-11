@@ -968,8 +968,24 @@ const PLAZAS = [
     id:"star-plaza", nombre:"Star Plaza", zona:"Costa del Este",
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:40, trafico:3,
     desc:"Plaza en Costa del Este, frente a Riba Smith y cerca de Novey y Santa María. Una de las plazas con mayor variedad comercial de la zona, con alto tráfico peatonal y vehicular.",
-    tenants:[{n:"Salón de belleza", cat:"Salón de belleza"},{n:"Floristería", cat:"Otro"},{n:"Carnicería gourmet", cat:"Otro"},{n:"Heladería", cat:"Comida rápida"},{n:"Supermercado", cat:"Supermercado"}],
-    locales:[{id:"L-A", m2:98, precio:3800, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-B", m2:99, precio:3300, nivel:"Planta baja", frente:"Con estacionamiento"}]
+    tenants:[
+      {n:"American Pets", cat:"Pet shop"},
+      {n:"Mimosa Spa", cat:"Salón de belleza"},
+      {n:"Dairy Queen", cat:"Comida rápida"},
+      {n:"City Kids Learning and Care Center", cat:"Guardería"},
+      {n:"Blending Hairstudio", cat:"Salón de belleza"},
+      {n:"Sweet Blossom", cat:"Floristería"},
+      {n:"Carnicería gourmet", cat:"Carnicería"},
+      {n:"Kumon", cat:"Academia"},
+      {n:"Quick Box", cat:"Paquetería"},
+      {n:"Uno Express", cat:"Paquetería"},
+      {n:"Arpafarma", cat:"Farmacia"},
+      {n:"HD Eyebrow Design", cat:"Salón de belleza"},
+      {n:"Dermamed", cat:"Clínica"},
+      {n:"Corte Argentino", cat:"Barbería"},
+      {n:"Benjamin Moore", cat:"Ferretería"}
+    ],
+    locales:[{id:"L-A", m2:98, precio:3800, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-B", m2:99, precio:3300, nivel:"Planta baja", frente:"Con estacionamiento"},{id:"L-C", m2:50, precio:1500, nivel:"Nivel 2", frente:"Esquina"}]
   },
   {
     id:"shi-plaza", nombre:"Shi Plaza", zona:"Costa del Este",
@@ -982,8 +998,23 @@ const PLAZAS = [
     id:"sky-plaza", nombre:"Sky Plaza", zona:"Costa del Este",
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:50, trafico:2,
     desc:"Plaza en Avenida Centenario, Costa del Este.",
-    tenants:[{n:"FedEx Ship Center", cat:"Otro"},{n:"Grand Deli Gourmet", cat:"Otro"}],
-    locales:[]
+    tenants:[
+      {n:"Metro Plus", cat:"Farmacia"},
+      {n:"Grand Deli Gourmet", cat:"Supermercado"},
+      {n:"Grand Deli Gourmet – Café", cat:"Café"},
+      {n:"Beautherapy Spa", cat:"Salón de belleza"},
+      {n:"Barbman", cat:"Barbería"},
+      {n:"Laboratorio Clínico Raly", cat:"Clínica"},
+      {n:"Taekwondo Bekho", cat:"Academia"},
+      {n:"Mila Nail Art", cat:"Salón de belleza"},
+      {n:"Secret Beauty", cat:"Salón de belleza"},
+      {n:"FedEx Ship Center", cat:"Paquetería"},
+      {n:"Happy Copy", cat:"Papelería"},
+      {n:"Sherwin-Williams", cat:"Ferretería"},
+      {n:"Pastas Frescas", cat:"Comida rápida"},
+      {n:"Estudio de Arte Artis", cat:"Academia"}
+    ],
+    locales:[{id:"L-2", m2:55, precio:1800, nivel:"Nivel 2", frente:"Junto a Mila Nail Art"}]
   },
   {
     id:"plaza-obarrio", nombre:"Plaza Obarrio", zona:"Obarrio",
@@ -1106,7 +1137,18 @@ const ANCLAS = {
   "Licorería":       ["Supermercado","Restaurante"],
   "Moda":            ["Gimnasio","Supermercado","Banco"],
   "Bar":             ["Restaurante","Coworking"],
-  "Entretenimiento": ["Restaurante","Comida rápida"]
+  "Entretenimiento": ["Restaurante","Comida rápida"],
+  "Banco":           ["Supermercado"],
+  "Supermercado":    [],
+  "Floristería":     ["Supermercado","Restaurante"],
+  "Guardería":       ["Supermercado","Gimnasio"],
+  "Paquetería":      ["Supermercado","Banco"],
+  "Papelería":       ["Academia","Supermercado"],
+  "Dental":          ["Farmacia","Supermercado"],
+  "Carnicería":      ["Supermercado"],
+  "Joyería":         ["Moda","Banco"],
+  "Tienda naturista":["Farmacia","Supermercado"],
+  "Agencia de viajes":["Banco","Café"]
 };
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
 const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda","Bar","Entretenimiento"]);
@@ -1123,17 +1165,28 @@ const RUBRO_SIMILAR = [
   {like:"Comida rápida",    kw:["pizzeria","pizza","hamburgueseria","hamburguesa","pollo frito","fritanga","food truck","comida rapida","hot dog"]},
   {like:"Panadería",        kw:["pasteleria","reposteria","dulceria","postres"]},
   {like:"Ferretería",       kw:["taller","mecanico","refaccionaria","herramientas","hardware","tornillos"]},
-  {like:"Clínica",          kw:["dental","dentista","fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio","pediatra","ginecologo","dermatologo"]},
+  {like:"Dental",           kw:["dental","dentista","ortodoncia","odontologia","odontologo"]},
+  {like:"Clínica",          kw:["fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio","pediatra","ginecologo","dermatologo"]},
   {like:"Farmacia",         kw:["botica","drogueria"]},
   {like:"Veterinaria",      kw:["veterinario","veterinaria"]},
   {like:"Pet shop",         kw:["mascota","perro","gato","acuario"]},
+  {like:"Floristería",      kw:["flores","florista","floreria","arreglos florales"]},
+  {like:"Guardería",        kw:["guarderia","daycare","cuidado infantil","ninera"]},
+  {like:"Paquetería",       kw:["paqueteria","envios","casillero","courier","mensajeria","encomiendas"]},
+  {like:"Papelería",        kw:["papeleria","imprenta","copias","impresiones"]},
+  {like:"Carnicería",       kw:["carniceria","carnes","charcuteria"]},
+  {like:"Banco",            kw:["banco","cooperativa","cambio de cheques","remesas"]},
+  {like:"Supermercado",     kw:["supermercado","minimarket","abarrotes","viveres"]},
   {like:"Lavandería",       kw:["tintoreria","lavado en seco","lavanderia"]},
   {like:"Óptica",           kw:["lentes","gafas","oftalmologica","anteojos"]},
   {like:"Barbería",         kw:["barber","barba"]},
   {like:"Academia",         kw:["tutoria","tutorias","clases particulares","idiomas","ingles","kinder","preescolar","refuerzo escolar","escuela"]},
   {like:"Coworking",        kw:["oficinas compartidas","espacio de trabajo","oficina virtual"]},
   {like:"Licorería",        kw:["vinos","cerveza","cervezas","bebidas alcoholicas","liquor"]},
-  {like:"Moda",             kw:["ropa","boutique","zapatos","zapateria","calzado","accesorios","joyeria"]},
+  {like:"Moda",             kw:["ropa","boutique","zapatos","zapateria","calzado","accesorios"]},
+  {like:"Joyería",          kw:["joyeria","joyas","relojeria","bisuteria"]},
+  {like:"Tienda naturista", kw:["naturista","suplementos","vitaminas","productos naturales","organicos"]},
+  {like:"Agencia de viajes",kw:["viajes","turismo","boletos","paquetes turisticos"]},
 ];
 function sinAcentos(s){ return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
 function rubroSimilar(cat){
@@ -1217,6 +1270,8 @@ function vacanciaPct(p){
 }
 
 const TIPOS_NEGOCIO = Object.keys(ANCLAS);
+/* Negocios de cita/destino: funcionan bien en niveles altos, no dependen de vitrina en planta baja */
+const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental","Agencia de viajes"]);
 const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
 const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
 
@@ -2051,14 +2106,18 @@ function viewMiPlaza(){
   const totalUnits = p.tenants.length + p.locales.length;
   const occ = totalUnits ? Math.round(p.tenants.length/totalUnits*100) : 100;
 
-  // Rubros que le faltan a la plaza, rankeados por anclas presentes + demanda
+  // Rubros que le faltan a la plaza, rankeados solo por lo que ya tiene esta plaza
+  // (anclas presentes). No usa búsquedas de zona ni competencia de otras plazas
+  // porque todavía no tenemos data real y completa del área — solo de esta plaza.
+  // Si los locales disponibles son todos de nivel alto (no planta baja), se
+  // priorizan negocios de servicio/cita, que no dependen de vitrina en la calle.
+  const soloPisoAlto = p.locales.length>0 && p.locales.every(l=>l.nivel!=="Planta baja");
   const faltan = TIPOS_NEGOCIO.filter(c=>!cats.has(c)).map(c=>{
     const anc = (ANCLAS[c]||[]).filter(a=>cats.has(a));
-    const areaComp = PLAZAS.filter(q=>q.zona===p.zona && q.id!==p.id)
-      .flatMap(q=>q.tenants).filter(t=>t.cat===c).length;
-    const demanda = demandaZona(c, p.zona);
-    return {c, anc, areaComp, demanda, sc: anc.length*10 + demanda - areaComp*6};
-  }).sort((a,b)=>b.sc-a.sc).slice(0,3);
+    const ancTenants = p.tenants.filter(t=>anc.includes(t.cat)).length;
+    const cumplePiso = !soloPisoAlto || CATS_SERVICIO.has(c);
+    return {c, anc, cumplePiso, sc: anc.length*10 + ancTenants};
+  }).sort((a,b)=>(b.cumplePiso-a.cumplePiso) || (b.sc-a.sc) || a.c.localeCompare(b.c)).slice(0,3);
 
   // Solicitudes: ejemplos + las reales enviadas desde esta demo
   const li = n => p.locales[n] ? "Local "+p.locales[n].id : "Perfil de la plaza";
@@ -2098,16 +2157,23 @@ function viewMiPlaza(){
   </div>
 
   <section class="block">
+    <h2>Negocios que ya tienes</h2>
+    <p class="sub">Lo que hoy opera en tu plaza — esta es la base de todo lo demás en este panel.</p>
+    <div class="tenant-grid">
+      ${p.tenants.map(t=>`
+        <div class="tenant"><b>${esc(t.n)}</b><span>${esc(t.cat)}</span></div>`).join("")}
+    </div>
+  </section>
+
+  <section class="block">
     <h2>Qué negocio le falta a tu plaza</h2>
-    <p class="sub">Cruzamos tu mezcla de negocios con lo que los emprendedores están buscando en tu zona.</p>
+    <p class="sub">Basado en tu propia mezcla de negocios: qué categorías no tienes y cuáles se beneficiarían de lo que ya tienes ahí. (Todavía no usamos búsquedas ni competencia del área — eso viene cuando tengamos data real de toda la zona.)</p>
     <div class="miss-grid">
       ${faltan.map((f,i)=>`
         <div class="miss ${i===0?"top":""}">
-          <span class="demand num">${f.demanda} búsquedas en tu zona este mes</span>
           <span class="cat">${esc(f.c)}</span>
           <ul>
-            ${f.anc.length? f.anc.map(a=>`<li>Tu ${a.toLowerCase()} le jala clientes</li>`).join("") : `<li>Categoría con demanda en el área</li>`}
-            <li>${f.areaComp? f.areaComp+" competidor"+(f.areaComp===1?"":"es")+" en el área" : "Nadie lo ofrece en el área"}</li>
+            ${f.anc.length? f.anc.map(a=>`<li>Tu ${a.toLowerCase()} le jala clientes</li>`).join("") : `<li>Categoría sin cubrir en tu plaza</li>`}
             <li>No tienes ${f.c.toLowerCase()} en tu plaza</li>
           </ul>
           <button class="btn btn-sm ${i===0?"btn-primary":""}" data-open-publica>Buscar este negocio</button>
