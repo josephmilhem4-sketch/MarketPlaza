@@ -962,18 +962,18 @@ const PLAZAS = [
     desc:"Plaza en Costa del Este, frente a Riba Smith y cerca de Novey y Santa María. Una de las plazas con mayor variedad comercial de la zona, con alto tráfico peatonal y vehicular.",
     tenants:[
       {n:"American Pets", cat:"Pet shop"},
-      {n:"Mimosa Spa", cat:"Salón de belleza"},
+      {n:"Mimosa Spa", cat:"Spa / Masajes"},
       {n:"Dairy Queen", cat:"Comida rápida"},
       {n:"City Kids Learning and Care Center", cat:"Guardería"},
-      {n:"Blending Hairstudio", cat:"Salón de belleza"},
+      {n:"Blending Hairstudio", cat:"Peluquería"},
       {n:"Sweet Blossom", cat:"Floristería"},
       {n:"Carnicería gourmet", cat:"Carnicería"},
       {n:"Kumon", cat:"Academia"},
       {n:"Quick Box", cat:"Paquetería"},
       {n:"Uno Express", cat:"Paquetería"},
       {n:"Arpafarma", cat:"Farmacia"},
-      {n:"HD Eyebrow Design", cat:"Salón de belleza"},
-      {n:"Dermamed", cat:"Clínica"},
+      {n:"HD Eyebrow Design", cat:"Cejas y pestañas"},
+      {n:"Dermamed", cat:"Dermatología"},
       {n:"Corte Argentino", cat:"Barbería"},
       {n:"Benjamin Moore", cat:"Ferretería"}
     ],
@@ -993,11 +993,11 @@ const PLAZAS = [
     tenants:[
       {n:"Metro Plus", cat:"Farmacia"},
       {n:"Grand Deli Gourmet", cat:["Supermercado","Café","Panadería"]},
-      {n:"Beautherapy Spa", cat:"Salón de belleza"},
+      {n:"Beautherapy Spa", cat:"Spa / Masajes"},
       {n:"Barbman", cat:"Barbería"},
-      {n:"Laboratorio Clínico Raly", cat:"Clínica"},
+      {n:"Laboratorio Clínico Raly", cat:"Laboratorio clínico"},
       {n:"Taekwondo Bekho", cat:"Academia"},
-      {n:"Mila Nail Art", cat:"Salón de belleza"},
+      {n:"Mila Nail Art", cat:"Uñas"},
       {n:"Secret Beauty", cat:"Salón de belleza"},
       {n:"FedEx Ship Center", cat:"Paquetería"},
       {n:"Happy Copy", cat:"Papelería"},
@@ -1143,7 +1143,13 @@ const ANCLAS = {
   "Carnicería":      ["Supermercado"],
   "Joyería":         ["Moda","Banco"],
   "Tienda naturista":["Farmacia","Supermercado"],
-  "Agencia de viajes":["Banco","Café"]
+  "Agencia de viajes":["Banco","Café"],
+  "Spa / Masajes":   ["Supermercado","Gimnasio"],
+  "Uñas":            ["Supermercado","Gimnasio"],
+  "Peluquería":      ["Supermercado","Gimnasio"],
+  "Cejas y pestañas":["Supermercado","Gimnasio"],
+  "Laboratorio clínico":["Farmacia","Supermercado"],
+  "Dermatología":    ["Farmacia","Supermercado"]
 };
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
 const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda","Bar","Entretenimiento"]);
@@ -1153,7 +1159,11 @@ const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda"
    quedarse solo con los factores genéricos de la plaza. */
 const RUBRO_SIMILAR = [
   {like:"Gimnasio",         kw:["yoga","pilates","crossfit","spinning","zumba","boxeo","artes marciales","box","funcional","entrenamiento"]},
-  {like:"Salón de belleza", kw:["spa","unas","manicure","manicura","pedicure","pedicura","estetica","cejas","pestanas","masaje","peluqueria"]},
+  {like:"Spa / Masajes",    kw:["spa","masaje","masajes","relajacion","dia de spa"]},
+  {like:"Uñas",             kw:["unas","manicure","manicura","pedicure","pedicura"]},
+  {like:"Peluquería",       kw:["peluqueria","corte de cabello","estilista","tinte","alaciado","cabello"]},
+  {like:"Cejas y pestañas", kw:["cejas","pestanas","microblading","lifting de pestanas","extensiones de pestanas"]},
+  {like:"Salón de belleza", kw:["estetica","belleza"]},
   {like:"Restaurante",      kw:["sushi","comida","cocina","marisqueria","parrilla","ceviche","cafeteria","italiano","chino","japones","asados"]},
   {like:"Bar",              kw:["bar","cantina","pub","cerveceria","taberna","copas","trago","coctel"]},
   {like:"Entretenimiento",  kw:["escape room","arcade","boliche","bowling","laser tag","karaoke","trampolin","salon de fiestas","cine","sala de juegos","minigolf","juegos"]},
@@ -1161,7 +1171,9 @@ const RUBRO_SIMILAR = [
   {like:"Panadería",        kw:["pasteleria","reposteria","dulceria","postres"]},
   {like:"Ferretería",       kw:["taller","mecanico","refaccionaria","herramientas","hardware","tornillos"]},
   {like:"Dental",           kw:["dental","dentista","ortodoncia","odontologia","odontologo"]},
-  {like:"Clínica",          kw:["fisioterapia","psicologo","nutricionista","laboratorio","medico","consultorio","pediatra","ginecologo","dermatologo"]},
+  {like:"Laboratorio clínico",kw:["laboratorio","analisis clinicos","examenes de laboratorio","toma de muestras"]},
+  {like:"Dermatología",     kw:["dermatologo","dermatologia","piel"]},
+  {like:"Clínica",          kw:["fisioterapia","psicologo","nutricionista","medico","consultorio","pediatra","ginecologo"]},
   {like:"Farmacia",         kw:["botica","drogueria"]},
   {like:"Veterinaria",      kw:["veterinario","veterinaria"]},
   {like:"Pet shop",         kw:["mascota","perro","gato","acuario"]},
@@ -1266,7 +1278,7 @@ function vacanciaPct(p){
 
 const TIPOS_NEGOCIO = Object.keys(ANCLAS);
 /* Negocios de cita/destino: funcionan bien en niveles altos, no dependen de vitrina en planta baja */
-const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental","Agencia de viajes"]);
+const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental","Agencia de viajes","Spa / Masajes","Uñas","Peluquería","Cejas y pestañas","Laboratorio clínico","Dermatología"]);
 const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
 const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
 
