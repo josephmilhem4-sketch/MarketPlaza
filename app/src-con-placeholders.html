@@ -992,9 +992,7 @@ const PLAZAS = [
     desc:"Plaza en Avenida Centenario, Costa del Este.",
     tenants:[
       {n:"Metro Plus", cat:"Farmacia"},
-      {n:"Grand Deli Gourmet", cat:"Supermercado"},
-      {n:"Grand Deli Gourmet – Café", cat:"Café"},
-      {n:"Grand Deli Gourmet – Panadería", cat:"Panadería"},
+      {n:"Grand Deli Gourmet", cat:["Supermercado","Café","Panadería"]},
       {n:"Beautherapy Spa", cat:"Salón de belleza"},
       {n:"Barbman", cat:"Barbería"},
       {n:"Laboratorio Clínico Raly", cat:"Clínica"},
@@ -1108,6 +1106,10 @@ const PLAZAS = [
     locales:[]
   }
 ];
+
+/* Un negocio puede operar en más de un rubro a la vez (ej. un deli que también
+   es café y panadería). t.cat acepta un string o un array de strings. */
+function catsOf(t){ return Array.isArray(t.cat) ? t.cat : [t.cat]; }
 
 /* Qué anclas generan tráfico para cada tipo de negocio */
 const ANCLAS = {
@@ -1924,7 +1926,7 @@ function viewPlaza(id){
     <p class="sub">El tenant mix completo: quién genera tráfico y qué categorías ya están cubiertas.</p>
     <div class="tenant-grid">
       ${p.tenants.map(t=>`
-        <div class="tenant"><b>${esc(t.n)}</b><span>${esc(t.cat)}</span></div>`).join("")}
+        <div class="tenant"><b>${esc(t.n)}</b><span>${esc(catsOf(t).join(" · "))}</span></div>`).join("")}
     </div>
   </section>
 
@@ -2095,7 +2097,7 @@ const MIS_PLAZAS = ["star-plaza", "sky-plaza"];
 function viewMiPlaza(){
   const activo = MIS_PLAZAS.includes(state.miPlazaId) ? state.miPlazaId : MIS_PLAZAS[0];
   const p = plaza(activo);
-  const cats = new Set(p.tenants.map(t=>t.cat));
+  const cats = new Set(p.tenants.flatMap(t=>catsOf(t)));
   const totalUnits = p.tenants.length + p.locales.length;
   const occ = totalUnits ? Math.round(p.tenants.length/totalUnits*100) : 100;
 
@@ -2107,7 +2109,7 @@ function viewMiPlaza(){
   const soloPisoAlto = p.locales.length>0 && p.locales.every(l=>l.nivel!=="Planta baja");
   const faltan = TIPOS_NEGOCIO.filter(c=>!cats.has(c)).map(c=>{
     const anc = (ANCLAS[c]||[]).filter(a=>cats.has(a));
-    const ancTenants = p.tenants.filter(t=>anc.includes(t.cat)).length;
+    const ancTenants = p.tenants.filter(t=>catsOf(t).some(tc=>anc.includes(tc))).length;
     const cumplePiso = !soloPisoAlto || CATS_SERVICIO.has(c);
     return {c, anc, cumplePiso, sc: anc.length*10 + ancTenants};
   }).sort((a,b)=>(b.cumplePiso-a.cumplePiso) || (b.sc-a.sc) || a.c.localeCompare(b.c)).slice(0,3);
@@ -2154,7 +2156,7 @@ function viewMiPlaza(){
     <p class="sub">Lo que hoy opera en tu plaza — esta es la base de todo lo demás en este panel.</p>
     <div class="tenant-grid">
       ${p.tenants.map(t=>`
-        <div class="tenant"><b>${esc(t.n)}</b><span>${esc(t.cat)}</span></div>`).join("")}
+        <div class="tenant"><b>${esc(t.n)}</b><span>${esc(catsOf(t).join(" · "))}</span></div>`).join("")}
     </div>
   </section>
 
@@ -2436,9 +2438,9 @@ function analizar(cat){
   const likeCat = rubroSimilar(cat);
   const anclas = ANCLAS[likeCat || cat] || [];
   const out = PLAZAS.map(p=>{
-    const cats = new Set(p.tenants.map(t=>t.cat));
+    const cats = new Set(p.tenants.flatMap(t=>catsOf(t)));
     const found = anclas.filter(a=>cats.has(a));
-    const comp = p.tenants.filter(t=>t.cat===cat);
+    const comp = p.tenants.filter(t=>catsOf(t).includes(cat));
     const nLoc = p.locales.length;
     const soft = COMPETENCIA_SUAVE.has(likeCat || cat);
     let score = found.length*22 + Math.min(nLoc,3)*8 + p.trafico*6;
@@ -2476,14 +2478,14 @@ function analizar(cat){
     // Radio de influencia real: competencia propia + zonas vecinas (peso reducido)
     const vecinas = ZONA_VECINAS[p.zona] || [];
     const compPropia = PLAZAS.filter(q=>q.zona===p.zona && q.id!==p.id)
-      .flatMap(q=>q.tenants).filter(t=>t.cat===cat).length;
+      .flatMap(q=>q.tenants).filter(t=>catsOf(t).includes(cat)).length;
     const compVecina = PLAZAS.filter(q=>vecinas.includes(q.zona))
-      .flatMap(q=>q.tenants).filter(t=>t.cat===cat).length;
+      .flatMap(q=>q.tenants).filter(t=>catsOf(t).includes(cat)).length;
     if(compPropia){ score -= compPropia*5; reasons.push({ic:"o", t:`${compPropia} ${compPropia===1?"negocio del mismo rubro opera":"negocios del mismo rubro operan"} en otras plazas de tu zona`}); }
     else if(compVecina){ score -= Math.round(compVecina*0.5)*3; reasons.push({ic:"o", t:`${compVecina} en zonas cercanas (fuera de tu radio inmediato)`}); }
     else if(!comp.length){ reasons.push({ic:"y", t:"Tampoco hay competencia en tu radio de influencia (zona + alrededores)"}); }
     if(!found.length){
-      const anclaVecina = vecinas.some(z=>PLAZAS.some(q=>q.zona===z && q.tenants.some(t=>anclas.includes(t.cat))));
+      const anclaVecina = vecinas.some(z=>PLAZAS.some(q=>q.zona===z && q.tenants.some(t=>catsOf(t).some(tc=>anclas.includes(tc)))));
       if(anclaVecina) reasons.push({ic:"o", t:"Hay anclas para tu rubro en zonas cercanas, aunque no en esta plaza"});
     }
     // Visibilidad desde la calle
