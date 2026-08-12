@@ -963,14 +963,14 @@ const PLAZAS = [
     tenants:[
       {n:"American Pets", cat:"Pet shop"},
       {n:"Mimosa Spa", cat:"Spa / Masajes"},
-      {n:"Dairy Queen", cat:"Comida rápida"},
+      {n:"Dairy Queen", cat:["Heladería","Comida rápida"]},
       {n:"City Kids Learning and Care Center", cat:"Guardería"},
       {n:"Blending Hairstudio", cat:"Peluquería"},
       {n:"Sweet Blossom", cat:"Floristería"},
       {n:"Carnicería gourmet", cat:"Carnicería"},
       {n:"Kumon", cat:"Academia"},
-      {n:"Quick Box", cat:"Paquetería"},
-      {n:"Uno Express", cat:"Paquetería"},
+      {n:"Quick Box", cat:"Casillero"},
+      {n:"Uno Express", cat:"Transporte de carga"},
       {n:"Arpafarma", cat:"Farmacia"},
       {n:"HD Eyebrow Design", cat:"Cejas y pestañas"},
       {n:"Dermamed", cat:"Dermatología"},
@@ -996,14 +996,14 @@ const PLAZAS = [
       {n:"Beautherapy Spa", cat:"Spa / Masajes"},
       {n:"Barbman", cat:"Barbería"},
       {n:"Laboratorio Clínico Raly", cat:"Laboratorio clínico"},
-      {n:"Taekwondo Bekho", cat:"Academia"},
+      {n:"Taekwondo Bekho", cat:"Artes marciales"},
       {n:"Mila Nail Art", cat:"Uñas"},
       {n:"Secret Beauty", cat:"Salón de belleza"},
       {n:"FedEx Ship Center", cat:"Paquetería"},
       {n:"Happy Copy", cat:"Papelería"},
       {n:"Sherwin-Williams", cat:"Ferretería"},
       {n:"Pastas Frescas", cat:"Comida rápida"},
-      {n:"Estudio de Arte Artis", cat:"Academia"}
+      {n:"Estudio de Arte Artis", cat:"Arte y cultura"}
     ],
     locales:[{id:"L-2", m2:55, precio:1800, nivel:"Nivel 2", frente:"Junto a Mila Nail Art"}]
   },
@@ -1149,7 +1149,12 @@ const ANCLAS = {
   "Peluquería":      ["Supermercado","Gimnasio"],
   "Cejas y pestañas":["Supermercado","Gimnasio"],
   "Laboratorio clínico":["Farmacia","Supermercado"],
-  "Dermatología":    ["Farmacia","Supermercado"]
+  "Dermatología":    ["Farmacia","Supermercado"],
+  "Artes marciales": ["Gimnasio","Academia"],
+  "Arte y cultura":  ["Academia","Supermercado"],
+  "Heladería":       ["Supermercado","Restaurante"],
+  "Casillero":       ["Supermercado","Banco"],
+  "Transporte de carga":["Supermercado"]
 };
 /* Rubros donde la competencia puede convivir (penaliza, no descarta) */
 const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda","Bar","Entretenimiento"]);
@@ -1158,7 +1163,12 @@ const COMPETENCIA_SUAVE = new Set(["Restaurante","Café","Comida rápida","Moda"
    según palabras clave. Así el análisis usa anclas y preferencias reales en vez de
    quedarse solo con los factores genéricos de la plaza. */
 const RUBRO_SIMILAR = [
-  {like:"Gimnasio",         kw:["yoga","pilates","crossfit","spinning","zumba","boxeo","artes marciales","box","funcional","entrenamiento"]},
+  {like:"Gimnasio",         kw:["yoga","pilates","crossfit","spinning","zumba","boxeo","box","funcional","entrenamiento"]},
+  {like:"Artes marciales",  kw:["artes marciales","taekwondo","karate","judo","jiu jitsu","jiujitsu","kickboxing","kung fu","muay thai"]},
+  {like:"Arte y cultura",   kw:["arte","pintura","dibujo","estudio de arte","manualidades","ceramica","escultura"]},
+  {like:"Heladería",        kw:["helado","helados","heladeria","gelato","paletas"]},
+  {like:"Casillero",        kw:["casillero","compras usa","reenvio de paquetes","freight forwarding"]},
+  {like:"Transporte de carga",kw:["carga","fletes","mudanzas","transporte de carga","camion","trucking"]},
   {like:"Spa / Masajes",    kw:["spa","masaje","masajes","relajacion","dia de spa"]},
   {like:"Uñas",             kw:["unas","manicure","manicura","pedicure","pedicura"]},
   {like:"Peluquería",       kw:["peluqueria","corte de cabello","estilista","tinte","alaciado","cabello"]},
@@ -1278,7 +1288,7 @@ function vacanciaPct(p){
 
 const TIPOS_NEGOCIO = Object.keys(ANCLAS);
 /* Negocios de cita/destino: funcionan bien en niveles altos, no dependen de vitrina en planta baja */
-const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental","Agencia de viajes","Spa / Masajes","Uñas","Peluquería","Cejas y pestañas","Laboratorio clínico","Dermatología"]);
+const CATS_SERVICIO = new Set(["Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Óptica","Academia","Coworking","Entretenimiento","Guardería","Dental","Agencia de viajes","Spa / Masajes","Uñas","Peluquería","Cejas y pestañas","Laboratorio clínico","Dermatología","Artes marciales","Arte y cultura"]);
 const fmt$ = new Intl.NumberFormat("es-PA",{style:"currency",currency:"USD",maximumFractionDigits:0});
 const TRAFICO = {1:"Tráfico moderado",2:"Tráfico alto",3:"Tráfico muy alto"};
 
