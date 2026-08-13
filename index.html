@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
   :root{
     /* Modern color palette - Professional blue scheme */
@@ -712,6 +714,9 @@
   .map-plaza-zona{font-size:12.5px; color:var(--muted); margin:0 0 8px}
   .map-plaza-info{display:flex; gap:14px; font-size:12.5px; color:var(--muted)}
 
+  .lmap-icon-wrapper, .opp-icon-wrapper{background:transparent !important; border:none !important;}
+  .leaflet-popup-content-wrapper{border-radius:var(--r); box-shadow:var(--shadow-lg)}
+
   .gmap-marker{
     background:var(--surface); border:2px solid var(--accent); border-radius:var(--r-lg);
     padding:6px 12px; font-size:12.5px; font-weight:600; color:var(--ink);
@@ -902,70 +907,70 @@ const CODIGO_ACCESO = "0010";
 
 const PLAZAS = [
   {
-    id:"plaza-68", nombre:"Plaza 68", zona:"San Francisco",
+    id:"plaza-68", nombre:"Plaza 68", zona:"San Francisco", lat:8.99389, lng:-79.5107,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:40, trafico:3,
     desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
     tenants:[{n:"Farmacia Metro Plus", cat:"Farmacia"},{n:"Pio Pio", cat:"Comida rápida"},{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Lavamático Burbujas", cat:"Lavandería"}],
     locales:[{id:"L-7", m2:35, precio:1100, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-8", m2:110, precio:3090, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
   },
   {
-    id:"plaza-san-francisco", nombre:"Plaza San Francisco", zona:"San Francisco",
+    id:"plaza-san-francisco", nombre:"Plaza San Francisco", zona:"San Francisco", lat:8.9923, lng:-79.50111,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:2,
     desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
     tenants:[{n:"Farmacias Arrocha Express", cat:"Farmacia"},{n:"Licores La Cava", cat:"Licorería"},{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Coworking La Base", cat:"Coworking"},{n:"Wok & Roll", cat:"Restaurante"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"Café Unido", cat:"Café"},{n:"Athanasiou", cat:"Café"}],
     locales:[{id:"L-19", m2:50, precio:1450, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-19", m2:50, precio:1300, nivel:"Planta baja", frente:"Interior"}]
   },
   {
-    id:"plaza-sf-69", nombre:"Plaza SF 69", zona:"San Francisco",
+    id:"plaza-sf-69", nombre:"Plaza SF 69", zona:"San Francisco", lat:8.99052, lng:-79.50933,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:3,
     desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
     tenants:[{n:"Napoli Pizza", cat:"Restaurante"},{n:"Boutique Camélia", cat:"Moda"},{n:"Pio Pio", cat:"Comida rápida"},{n:"Veterinaria Mundo Animal", cat:"Veterinaria"}],
     locales:[{id:"L-15", m2:140, precio:4100, nivel:"Planta baja", frente:"Interior"}]
   },
   {
-    id:"plaza-76", nombre:"Plaza 76", zona:"San Francisco",
+    id:"plaza-76", nombre:"Plaza 76", zona:"San Francisco", lat:8.99134, lng:-79.50305,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:40, trafico:2,
     desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
     tenants:[{n:"Licores La Cava", cat:"Licorería"},{n:"Óptica López", cat:"Óptica"},{n:"Subway", cat:"Comida rápida"},{n:"Boutique Camélia", cat:"Moda"}],
     locales:[{id:"L-3", m2:140, precio:3810, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
   },
   {
-    id:"la-peatonal-68", nombre:"La Peatonal 68", zona:"San Francisco",
+    id:"la-peatonal-68", nombre:"La Peatonal 68", zona:"San Francisco", lat:8.99434, lng:-79.51125,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:80, trafico:2,
     desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
     tenants:[{n:"Centro Médico San Judas", cat:"Clínica"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"Farmacia Metro Plus", cat:"Farmacia"},{n:"Salón Élite", cat:"Salón de belleza"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Boutique Camélia", cat:"Moda"}],
     locales:[{id:"L-3", m2:140, precio:3600, nivel:"Planta baja", frente:"Frente al estacionamiento"},{id:"L-23", m2:42, precio:1080, nivel:"Planta baja", frente:"Con terraza"}]
   },
   {
-    id:"city-plaza-san-francisco", nombre:"City Plaza San Francisco", zona:"San Francisco",
+    id:"city-plaza-san-francisco", nombre:"City Plaza San Francisco", zona:"San Francisco", lat:8.99362, lng:-79.51648,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:120, trafico:2,
     desc:"Plaza de barrio en San Francisco, una de las zonas gastronómicas y residenciales más activas de la ciudad, con fuerte tráfico peatonal.",
     tenants:[{n:"Barbería Don Juan", cat:"Barbería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Coworking La Base", cat:"Coworking"},{n:"Café Kotowa", cat:"Café"},{n:"Global Bank (agencia)", cat:"Banco"},{n:"Boutique Camélia", cat:"Moda"}],
     locales:[]
   },
   {
-    id:"royal-blue-plaza", nombre:"Royal Blue Plaza", zona:"Vía Porras",
+    id:"royal-blue-plaza", nombre:"Royal Blue Plaza", zona:"Vía Porras", lat:8.99361, lng:-79.51595,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:60, trafico:2,
     desc:"Plaza sobre Vía Porras, corredor de clínicas, oficinas y residencias con clientela fiel de la zona.",
     tenants:[{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Boutique Camélia", cat:"Moda"},{n:"Banco General (sucursal)", cat:"Banco"},{n:"Café Kotowa", cat:"Café"},{n:"Pet Plaza", cat:"Pet shop"}],
     locales:[{id:"L-27", m2:75, precio:2020, nivel:"Nivel 2", frente:"Junto a la entrada principal"},{id:"L-12", m2:75, precio:1940, nivel:"Nivel 2", frente:"Esquina"}]
   },
   {
-    id:"plaza-jolie", nombre:"Plaza Jolie", zona:"Vía Porras",
+    id:"plaza-jolie", nombre:"Plaza Jolie", zona:"Vía Porras", lat:8.99285, lng:-79.5191,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:40, trafico:2,
     desc:"Plaza sobre Vía Porras, corredor de clínicas, oficinas y residencias con clientela fiel de la zona.",
     tenants:[{n:"Wok & Roll", cat:"Restaurante"},{n:"Supermercado Riba Smith Express", cat:"Supermercado"},{n:"Boutique Camélia", cat:"Moda"},{n:"Coworking La Base", cat:"Coworking"},{n:"La Pulperia", cat:"Restaurante"}],
     locales:[{id:"L-14", m2:75, precio:1620, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
   },
   {
-    id:"plaza-boulevard-del-este", nombre:"Plaza Boulevard del Este", zona:"Costa del Este",
+    id:"plaza-boulevard-del-este", nombre:"Plaza Boulevard del Este", zona:"Costa del Este", lat:9.01618, lng:-79.46899,
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:40, trafico:3,
     desc:"Plaza en Costa del Este, zona corporativa y residencial de alto poder adquisitivo.",
     tenants:[{n:"Farmacias Arrocha Express", cat:"Farmacia"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Kids Academy", cat:"Academia"},{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Pio Pio", cat:"Comida rápida"},{n:"Subway", cat:"Comida rápida"},{n:"Urban Style", cat:"Moda"},{n:"Coworking La Base", cat:"Coworking"}],
     locales:[{id:"L-3", m2:110, precio:3220, nivel:"Planta baja", frente:"Frente al estacionamiento"},{id:"L-20", m2:50, precio:1480, nivel:"Planta baja", frente:"Frente a la calle"}]
   },
   {
-    id:"star-plaza", nombre:"Star Plaza", zona:"Costa del Este",
+    id:"star-plaza", nombre:"Star Plaza", zona:"Costa del Este", lat:9.02269, lng:-79.46181,
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:40, trafico:3,
     desc:"Plaza en Costa del Este, frente a Riba Smith y cerca de Novey y Santa María. Una de las plazas con mayor variedad comercial de la zona, con alto tráfico peatonal y vehicular.",
     tenants:[
@@ -988,14 +993,14 @@ const PLAZAS = [
     locales:[{id:"L-A", m2:98, precio:3800, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-B", m2:99, precio:3300, nivel:"Planta baja", frente:"Con estacionamiento"},{id:"L-C", m2:50, precio:1500, nivel:"Nivel 2", frente:"Esquina"}]
   },
   {
-    id:"shi-plaza", nombre:"Shi Plaza", zona:"Costa del Este",
+    id:"shi-plaza", nombre:"Shi Plaza", zona:"Costa del Este", lat:9.01136, lng:-79.46501,
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:60, trafico:1,
     desc:"Plaza en Costa del Este, zona corporativa y residencial de alto poder adquisitivo.",
     tenants:[{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Smart Fit", cat:"Gimnasio"},{n:"Do It Center Express", cat:"Ferretería"},{n:"Café Kotowa", cat:"Café"}],
     locales:[{id:"L-17", m2:35, precio:1070, nivel:"Planta baja", frente:"Esquina"},{id:"L-10", m2:35, precio:1220, nivel:"Planta baja", frente:"Con terraza"}]
   },
   {
-    id:"sky-plaza", nombre:"Sky Plaza", zona:"Costa del Este",
+    id:"sky-plaza", nombre:"Sky Plaza", zona:"Costa del Este", lat:9.01619, lng:-79.47318,
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:50, trafico:2,
     desc:"Plaza en Avenida Centenario, Costa del Este.",
     tenants:[
@@ -1016,98 +1021,98 @@ const PLAZAS = [
     locales:[{id:"L-2", m2:55, precio:1800, nivel:"Nivel 2", frente:"Junto a Mila Nail Art"}]
   },
   {
-    id:"plaza-obarrio", nombre:"Plaza Obarrio", zona:"Obarrio",
+    id:"plaza-obarrio", nombre:"Plaza Obarrio", zona:"Obarrio", lat:8.98578, lng:-79.52132,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:40, trafico:2,
     desc:"Plaza en Obarrio, en pleno distrito financiero — público de oficinas de lunes a viernes.",
     tenants:[{n:"Pio Pio", cat:"Comida rápida"},{n:"Urban Style", cat:"Moda"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Wok & Roll", cat:"Restaurante"},{n:"Máncora Ceviches", cat:"Restaurante"}],
     locales:[{id:"L-8", m2:110, precio:3580, nivel:"Planta baja", frente:"Junto a la entrada principal"}]
   },
   {
-    id:"plaza-downtown-at-obarrio", nombre:"Plaza Downtown at Obarrio", zona:"Obarrio",
+    id:"plaza-downtown-at-obarrio", nombre:"Plaza Downtown at Obarrio", zona:"Obarrio", lat:8.98803, lng:-79.51724,
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:25, trafico:1,
     desc:"Plaza en Obarrio, en pleno distrito financiero — público de oficinas de lunes a viernes.",
     tenants:[{n:"Do It Center Express", cat:"Ferretería"},{n:"Smart Fit", cat:"Gimnasio"},{n:"Máncora Ceviches", cat:"Restaurante"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Pet Plaza", cat:"Pet shop"},{n:"Pio Pio", cat:"Comida rápida"}],
     locales:[{id:"L-8", m2:42, precio:1200, nivel:"Nivel 2", frente:"Esquina"}]
   },
   {
-    id:"plaza-61-obarrio", nombre:"Plaza 61 Obarrio", zona:"Obarrio",
+    id:"plaza-61-obarrio", nombre:"Plaza 61 Obarrio", zona:"Obarrio", lat:8.98745, lng:-79.51631,
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:120, trafico:3,
     desc:"Plaza en Obarrio, en pleno distrito financiero — público de oficinas de lunes a viernes.",
     tenants:[{n:"Supermercado Riba Smith Express", cat:"Supermercado"},{n:"Do It Center Express", cat:"Ferretería"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Banco General (sucursal)", cat:"Banco"},{n:"Global Bank (agencia)", cat:"Banco"},{n:"Dry Clean Express", cat:"Lavandería"},{n:"Máncora Ceviches", cat:"Restaurante"},{n:"Parrillada El Corte", cat:"Restaurante"}],
     locales:[{id:"L-11", m2:110, precio:3620, nivel:"Planta baja", frente:"Con terraza"}]
   },
   {
-    id:"central-plaza-condado-del-rey", nombre:"Central Plaza Condado del Rey", zona:"Condado del Rey",
+    id:"central-plaza-condado-del-rey", nombre:"Central Plaza Condado del Rey", zona:"Condado del Rey", lat:9.03341, lng:-79.5271,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:100, trafico:1,
     desc:"Plaza en Condado del Rey, zona residencial en pleno crecimiento en el norte de la ciudad.",
     tenants:[{n:"Café Kotowa", cat:"Café"},{n:"Café Unido", cat:"Café"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Athanasiou", cat:"Café"},{n:"Coworking La Base", cat:"Coworking"}],
     locales:[{id:"L-20", m2:50, precio:1000, nivel:"Nivel 2", frente:"Con terraza"},{id:"L-18", m2:90, precio:1610, nivel:"Planta baja", frente:"Frente a la calle"}]
   },
   {
-    id:"condado-mall", nombre:"Condado Mall", zona:"Condado del Rey",
+    id:"condado-mall", nombre:"Condado Mall", zona:"Condado del Rey", lat:9.03177, lng:-79.52625,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:3,
     desc:"Plaza en Condado del Rey, zona residencial en pleno crecimiento en el norte de la ciudad.",
     tenants:[{n:"Veterinaria Mundo Animal", cat:"Veterinaria"},{n:"Máncora Ceviches", cat:"Restaurante"},{n:"Napoli Pizza", cat:"Restaurante"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Smart Fit", cat:"Gimnasio"}],
     locales:[{id:"L-25", m2:75, precio:1460, nivel:"Planta baja", frente:"Interior"}]
   },
   {
-    id:"plaza-altos-de-panama", nombre:"Plaza Altos de Panamá", zona:"Condado del Rey",
+    id:"plaza-altos-de-panama", nombre:"Plaza Altos de Panamá", zona:"Condado del Rey", lat:9.02735, lng:-79.52462,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:40, trafico:1,
     desc:"Plaza en Condado del Rey, zona residencial en pleno crecimiento en el norte de la ciudad.",
     tenants:[{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Subway", cat:"Comida rápida"},{n:"Centro Médico San Judas", cat:"Clínica"},{n:"Urban Style", cat:"Moda"},{n:"Café Unido", cat:"Café"},{n:"Athanasiou", cat:"Café"}],
     locales:[{id:"L-25", m2:35, precio:740, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-5", m2:35, precio:730, nivel:"Planta baja", frente:"Esquina"}]
   },
   {
-    id:"brisas-mall", nombre:"Brisas Mall", zona:"Brisas del Golf",
+    id:"brisas-mall", nombre:"Brisas Mall", zona:"Brisas del Golf", lat:9.07026, lng:-79.45459,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:30, trafico:3,
     desc:"Plaza comunitaria en Brisas del Golf, área residencial densa con demanda de servicios diarios.",
     tenants:[{n:"Salón Élite", cat:"Salón de belleza"},{n:"Subway", cat:"Comida rápida"},{n:"Kids Academy", cat:"Academia"},{n:"Do It Center Express", cat:"Ferretería"}],
     locales:[]
   },
   {
-    id:"ph-premier-plaza", nombre:"PH Premier Plaza", zona:"Brisas del Golf",
+    id:"ph-premier-plaza", nombre:"PH Premier Plaza", zona:"Brisas del Golf", lat:9.06978, lng:-79.46199,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:25, trafico:2,
     desc:"Plaza comunitaria en Brisas del Golf, área residencial densa con demanda de servicios diarios.",
     tenants:[{n:"PowerClub Express", cat:"Gimnasio"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Urban Style", cat:"Moda"},{n:"Pet Plaza", cat:"Pet shop"}],
     locales:[{id:"L-3", m2:35, precio:610, nivel:"Nivel 2", frente:"Interior"},{id:"L-15", m2:60, precio:1030, nivel:"Nivel 2", frente:"Junto a la entrada principal"}]
   },
   {
-    id:"plaza-del-golf", nombre:"Plaza del Golf", zona:"Brisas del Golf",
+    id:"plaza-del-golf", nombre:"Plaza del Golf", zona:"Brisas del Golf", lat:9.05836, lng:-79.4592,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:60, trafico:3,
     desc:"Plaza comunitaria en Brisas del Golf, área residencial densa con demanda de servicios diarios.",
     tenants:[{n:"Pet Plaza", cat:"Pet shop"},{n:"Café Unido", cat:"Café"},{n:"Centro Médico San Judas", cat:"Clínica"},{n:"Global Bank (agencia)", cat:"Banco"},{n:"Clínica Dental Sonrisa", cat:"Clínica"}],
     locales:[{id:"L-8", m2:90, precio:1320, nivel:"Nivel 2", frente:"Frente a la calle"},{id:"L-26", m2:60, precio:1020, nivel:"Planta baja", frente:"Esquina"}]
   },
   {
-    id:"dorado-city-center", nombre:"Dorado City Center", zona:"El Dorado",
+    id:"dorado-city-center", nombre:"Dorado City Center", zona:"El Dorado", lat:9.01563, lng:-79.53487,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:80, trafico:2,
     desc:"Plaza en El Dorado, corredor comercial tradicional con alto flujo vehicular y peatonal.",
     tenants:[{n:"Café Unido", cat:"Café"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Wok & Roll", cat:"Restaurante"},{n:"Banistmo (sucursal)", cat:"Banco"},{n:"Clínica Dental Sonrisa", cat:"Clínica"},{n:"Boutique Camélia", cat:"Moda"}],
     locales:[{id:"L-14", m2:60, precio:1020, nivel:"Nivel 2", frente:"Interior"}]
   },
   {
-    id:"la-galeria-el-dorado", nombre:"La Galería El Dorado", zona:"El Dorado",
+    id:"la-galeria-el-dorado", nombre:"La Galería El Dorado", zona:"El Dorado", lat:9.01083, lng:-79.53426,
     ciudad:"Ciudad de Panamá", tipo:"Comunitaria", estac:80, trafico:2,
     desc:"Plaza en El Dorado, corredor comercial tradicional con alto flujo vehicular y peatonal.",
     tenants:[{n:"Lavamático Burbujas", cat:"Lavandería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Kids Academy", cat:"Academia"}],
     locales:[{id:"L-13", m2:140, precio:2710, nivel:"Planta baja", frente:"Junto a la entrada principal"},{id:"L-3", m2:75, precio:1390, nivel:"Planta baja", frente:"Esquina"}]
   },
   {
-    id:"plaza-aventura", nombre:"Plaza Aventura", zona:"Vía Ricardo J. Alfaro",
+    id:"plaza-aventura", nombre:"Plaza Aventura", zona:"Vía Ricardo J. Alfaro", lat:9.01162, lng:-79.53438,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:30, trafico:1,
     desc:"Centro comercial sobre Tumba Muerto, vía de altísimo tráfico vehicular.",
     tenants:[{n:"PowerClub Express", cat:"Gimnasio"},{n:"Mini Súper El Vecino", cat:"Supermercado"},{n:"La Pulperia", cat:"Restaurante"},{n:"Coworking La Base", cat:"Coworking"},{n:"Café Unido", cat:"Café"},{n:"Veterinaria Mundo Animal", cat:"Veterinaria"}],
     locales:[{id:"L-18", m2:75, precio:1280, nivel:"Nivel 2", frente:"Con terraza"},{id:"L-2", m2:90, precio:1410, nivel:"Planta baja", frente:"Frente al estacionamiento"},{id:"L-1", m2:42, precio:690, nivel:"Planta baja", frente:"Interior"}]
   },
   {
-    id:"grand-plaza-punta-pacifica", nombre:"Grand Plaza Punta Pacífica", zona:"Punta Pacífica",
+    id:"grand-plaza-punta-pacifica", nombre:"Grand Plaza Punta Pacífica", zona:"Punta Pacífica", lat:8.97592, lng:-79.50768,
     ciudad:"Ciudad de Panamá", tipo:"Lifestyle", estac:50, trafico:1,
     desc:"Plaza en Punta Pacífica, junto a torres residenciales premium y el Pacífico.",
     tenants:[{n:"Global Bank (agencia)", cat:"Banco"},{n:"Panadería La Casa del Pan", cat:"Panadería"},{n:"Supermercado Riba Smith Express", cat:"Supermercado"},{n:"Nails & Co.", cat:"Salón de belleza"},{n:"Centro Médico San Judas", cat:"Clínica"},{n:"PowerClub Express", cat:"Gimnasio"}],
     locales:[{id:"L-23", m2:50, precio:1550, nivel:"Planta baja", frente:"Frente a la calle"},{id:"L-6", m2:50, precio:1640, nivel:"Planta baja", frente:"Interior"}]
   },
   {
-    id:"pacific-center", nombre:"Pacific Center", zona:"Punta Pacífica",
+    id:"pacific-center", nombre:"Pacific Center", zona:"Punta Pacífica", lat:8.9782, lng:-79.51137,
     ciudad:"Ciudad de Panamá", tipo:"Vecinal", estac:50, trafico:2,
     desc:"Plaza en Punta Pacífica, junto a torres residenciales premium y el Pacífico.",
     tenants:[{n:"Urban Style", cat:"Moda"},{n:"La Pulperia", cat:"Restaurante"},{n:"PowerClub Express", cat:"Gimnasio"},{n:"Barbería Don Juan", cat:"Barbería"},{n:"Super 99 Express", cat:"Supermercado"},{n:"Smart Fit", cat:"Gimnasio"},{n:"Mini Súper El Vecino", cat:"Supermercado"}],
@@ -1321,29 +1326,6 @@ function waBtn(pid, lid, cls){
   return `<a class="${cls}" href="${waLink(pid,lid)}" target="_blank" rel="noopener">${WA_ICON}WhatsApp</a>`;
 }
 
-/* ================= Google Maps Integration ================= */
-/* Aportado por Jonathan (UbicaPTY). Usa las plazas reales (PLAZAS) del
-   sitio, no un set de datos aparte — así nunca queda desincronizado con
-   Explorar, Oportunidades, Evaluación o Mi plaza. */
-
-/* IMPORTANTE: pon aquí tu llave real de Google Maps antes de usar el mapa.
-   No la subas a un repositorio público sin restricciones de dominio
-   configuradas en Google Cloud Console. */
-const GOOGLE_MAPS_API_KEY = 'TU_LLAVE_DE_GOOGLE_MAPS_AQUI';
-const GOOGLE_MAP_ID = 'b10820e6aabf2a4a52f8df1d';
-
-let gmap = null;
-let gmapMarkers = [];
-let gmapZoneMarkers = [];
-let gmapZonasData = {};
-let gmapPlacesService = null;
-let gmapFilterMarkers = [];
-let gmapBusinessMarkers = [];
-let gmapPlazaSeleccionada = null;
-
-/* Coordenadas aproximadas del centro de cada zona (ilustrativas, no
-   direcciones verificadas). Cada plaza se ubica cerca del centro de su
-   zona con un pequeño offset determinístico para no apilarse. */
 const ZONA_COORDS = {
   "San Francisco":{lat:9.0020,lng:-79.5080},
   "Vía Porras":{lat:8.9950,lng:-79.5165},
@@ -1356,6 +1338,7 @@ const ZONA_COORDS = {
   "Punta Pacífica":{lat:8.9850,lng:-79.5110}
 };
 function coordsPlaza(p){
+  if(p.lat!=null && p.lng!=null) return {lat:p.lat, lng:p.lng};
   const base = ZONA_COORDS[p.zona] || {lat:9.0, lng:-79.52};
   const h = hashStr(p.id);
   const jitterLat = ((h % 1000) / 1000 - 0.5) * 0.012;
@@ -1363,261 +1346,242 @@ function coordsPlaza(p){
   return {lat: base.lat + jitterLat, lng: base.lng + jitterLng};
 }
 
-const CADENAS_PANAMA = {
-  'riba smith':[{nombre:'Riba Smith - Bella Vista',direccion:'Calle 45, Bella Vista',lat:9.0012,lng:-79.5098},{nombre:'Riba Smith - Multiplaza',direccion:'Punta Pacífica',lat:8.9897,lng:-79.5117},{nombre:'Riba Smith - Costa del Este',direccion:'Av. Centenario',lat:9.0125,lng:-79.4695},{nombre:'Riba Smith - Clayton',direccion:'Ciudad del Saber',lat:9.0014,lng:-79.5831}],
-  'super 99':[{nombre:'Super 99 - Vía España',direccion:'Vía España',lat:9.0194,lng:-79.5244},{nombre:'Super 99 - Albrook Mall',direccion:'Albrook Mall',lat:8.9734,lng:-79.5532},{nombre:'Super 99 - San Francisco',direccion:'Calle 74',lat:8.9951,lng:-79.5034},{nombre:'Super 99 - Costa Verde',direccion:'Juan Díaz',lat:9.0512,lng:-79.4445}],
-  'farmacias arrocha':[{nombre:'Arrocha - Multiplaza',direccion:'Punta Pacífica',lat:8.9897,lng:-79.5117},{nombre:'Arrocha - Albrook',direccion:'Albrook Mall',lat:8.9734,lng:-79.5532},{nombre:'Arrocha - Vía España',direccion:'El Cangrejo',lat:9.0194,lng:-79.5244},{nombre:'Arrocha - Costa del Este',direccion:'Town Center',lat:9.0102,lng:-79.4678},{nombre:'Arrocha - AltaPlaza',direccion:'AltaPlaza Mall',lat:9.0345,lng:-79.5289}],
-  'arrocha':'farmacias arrocha',
-  'melo':[{nombre:'Melo - Vía España',direccion:'Vía Argentina',lat:9.0231,lng:-79.5258},{nombre:'Melo - Costa del Este',direccion:'Av. Centenario',lat:9.0118,lng:-79.4644},{nombre:'Melo - Multiplaza',direccion:'Punta Pacífica',lat:8.9905,lng:-79.5105},{nombre:'Melo - Albrook',direccion:'Albrook Mall',lat:8.9734,lng:-79.5532}],
-  "mcdonald's":[{nombre:"McDonald's - Vía España",direccion:'El Cangrejo',lat:9.0194,lng:-79.5244},{nombre:"McDonald's - Albrook Mall",direccion:'Food Court',lat:8.9734,lng:-79.5532},{nombre:"McDonald's - Multiplaza",direccion:'Food Court',lat:8.9897,lng:-79.5117},{nombre:"McDonald's - Costa del Este",direccion:'Town Center',lat:9.0102,lng:-79.4678}],
-  'mcdonalds':"mcdonald's",
-  'kfc':[{nombre:'KFC - Vía España',direccion:'Vía España',lat:9.0178,lng:-79.5234},{nombre:'KFC - Albrook Mall',direccion:'Food Court',lat:8.9734,lng:-79.5532},{nombre:'KFC - Multiplaza',direccion:'Food Court',lat:8.9897,lng:-79.5117}]
-};
+/* ========== MAPA INTERACTIVO (Leaflet + OpenStreetMap, sin llave de API) ========== */
 
-const FILTROS_MAPA = [
-  {id:'restaurant',nombre:'Restaurantes',icon:'🍽️',type:'restaurant'},
-  {id:'bank',nombre:'Bancos',icon:'🏦',type:'bank'},
-  {id:'transit',nombre:'Transporte',icon:'🚌',type:'transit_station'},
-  {id:'parking',nombre:'Parqueos',icon:'🅿️',type:'parking'},
-  {id:'gas',nombre:'Gasolineras',icon:'⛽',type:'gas_station'},
-  {id:'shopping',nombre:'Tiendas',icon:'🛍️',type:'shopping_mall'},
-  {id:'hospital',nombre:'Hospitales',icon:'🏥',type:'hospital'}
-];
+let lmap = null;
+let lmapMarkers = []; // {plazaId, marker, el}
 
-function cargarGoogleMapsAPI(){
-  return new Promise((resolve,reject)=>{
-    if(typeof google!=='undefined'&&google.maps&&google.maps.Map){resolve();return;}
-    window.initGoogleMapsCallback=function(){resolve();};
-    const script=document.createElement('script');
-    script.src=`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker,places&callback=initGoogleMapsCallback`;
-    script.async=true;script.defer=true;
-    script.onerror=()=>reject(new Error('No se pudo cargar Google Maps'));
-    document.head.appendChild(script);
+function crearLmapIcon(label, activo){
+  return L.divIcon({
+    className:'lmap-icon-wrapper',
+    html:`<div class="gmap-marker${activo?" active":""}">${esc(label)}</div>`,
+    iconSize:null, iconAnchor:[0,0]
   });
 }
 
-function initMapaIntegrado(){
-  const mapEl=document.getElementById('gmap');
-  if(!mapEl)return;
-  mapEl.innerHTML='';
+function initMapaLeaflet(){
+  const mapEl = document.getElementById('gmap');
+  if(!mapEl) return;
+  mapEl.innerHTML = '';
   try{
-    gmap=new google.maps.Map(mapEl,{
-      center:{lat:9.0,lng:-79.52},zoom:12,mapId:GOOGLE_MAP_ID,
-      mapTypeId:'hybrid',disableDefaultUI:false,zoomControl:true,
-      mapTypeControl:true,streetViewControl:false,fullscreenControl:true
-    });
-    crearGmapMarkers();
-    generarGmapTarjetas();
-    configurarGmapDrawer();
-    configurarGmapBusqueda();
-    configurarGmapFiltros();
-    gmapPlacesService=new google.maps.places.PlacesService(gmap);
-    configurarGmapCompetencia();
+    lmap = L.map(mapEl, {zoomControl:true}).setView([9.02, -79.50], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom:19, attribution:'&copy; OpenStreetMap contributors'
+    }).addTo(lmap);
+    crearLmapMarkers();
+    generarLmapTarjetas();
+    configurarLmapDrawer();
+    configurarLmapBusqueda();
+    if(lmapMarkers.length){
+      const bounds = L.latLngBounds(lmapMarkers.map(m=>m.marker.getLatLng()));
+      lmap.fitBounds(bounds, {padding:[40,40]});
+    }
   }catch(e){
-    mapEl.innerHTML=`<div class="map-loading">Error: ${e.message}</div>`;
+    mapEl.innerHTML = `<div class="map-loading">Error: ${e.message}</div>`;
   }
 }
 
-function crearGmapMarkers(){
-  gmapZonasData={};
+function crearLmapMarkers(){
+  lmapMarkers = [];
   PLAZAS.forEach(p=>{
-    const zn=p.zona;
-    if(!gmapZonasData[zn])gmapZonasData[zn]={nombre:zn,plazas:[],totalLocales:0,lat:0,lng:0};
-    gmapZonasData[zn].plazas.push(p);
-    gmapZonasData[zn].totalLocales+=p.locales.length;
-    const c=coordsPlaza(p);
-    gmapZonasData[zn].lat+=c.lat;
-    gmapZonasData[zn].lng+=c.lng;
-  });
-  PLAZAS.forEach(p=>{
-    const c=coordsPlaza(p);
-    const zn=p.zona;
+    const c = coordsPlaza(p);
     const label = p.locales.length ? `${p.locales.length} ${p.locales.length===1?"local":"locales"}` : "sin vacantes";
-    const mc=document.createElement('div');
-    mc.className='gmap-marker';mc.innerHTML=esc(label);mc.dataset.plazaId=p.id;
-    const marker=new google.maps.marker.AdvancedMarkerElement({
-      map:null,position:c,content:mc,title:p.nombre
-    });
-    marker.addListener('click',()=>seleccionarGmapPlaza(p.id));
-    gmapMarkers.push({plazaId:p.id,zonaNombre:zn,marker,content:mc});
-  });
-  Object.values(gmapZonasData).forEach(z=>{
-    z.lat=z.lat/z.plazas.length;z.lng=z.lng/z.plazas.length;
-    const mc=document.createElement('div');mc.className='gmap-zone-marker';
-    mc.innerHTML=`<strong>${esc(z.nombre)}</strong><span>${z.plazas.length} plaza${z.plazas.length>1?'s':''} · ${z.totalLocales} locales</span>`;
-    const marker=new google.maps.marker.AdvancedMarkerElement({
-      map:gmap,position:{lat:z.lat,lng:z.lng},content:mc,title:z.nombre
-    });
-    mc.addEventListener('mouseenter',()=>mostrarGmapLocalesZona(z.nombre));
-    mc.addEventListener('mouseleave',()=>ocultarGmapLocalesZona(z.nombre));
-    marker.addListener('click',()=>{gmap.setCenter({lat:z.lat,lng:z.lng});gmap.setZoom(15);});
-    gmapZoneMarkers.push({zonaNombre:z.nombre,marker,content:mc});
+    const marker = L.marker([c.lat, c.lng], {icon:crearLmapIcon(label,false)});
+    marker.on('click', ()=>seleccionarLmapPlaza(p.id));
+    marker.addTo(lmap);
+    lmapMarkers.push({plazaId:p.id, marker, label});
   });
 }
 
-function mostrarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=gmap;});}
-function ocultarGmapLocalesZona(zn){gmapMarkers.filter(m=>m.zonaNombre===zn).forEach(m=>{m.marker.map=null;});}
-
-function generarGmapTarjetas(){
-  const container=document.getElementById('gmapPlazaList');if(!container)return;
-  container.innerHTML='';
+function generarLmapTarjetas(){
+  const container = document.getElementById('gmapPlazaList');
+  if(!container) return;
+  container.innerHTML = '';
   PLAZAS.forEach(p=>{
     const desde = p.locales.length ? fmt$.format(Math.min(...p.locales.map(l=>l.precio))) : null;
-    const card=document.createElement('div');card.className='map-plaza-card';card.dataset.plazaId=p.id;
-    card.innerHTML=`<h4 class="map-plaza-nombre">${esc(p.nombre)}</h4><p class="map-plaza-zona">${esc(p.zona)}</p><div class="map-plaza-info"><span>${p.locales.length} local${p.locales.length===1?'':'es'}</span>${desde?`<span>Desde ${desde}/mes</span>`:""}</div>`;
-    card.addEventListener('click',()=>seleccionarGmapPlaza(p.id));
+    const card = document.createElement('div');
+    card.className = 'map-plaza-card'; card.dataset.plazaId = p.id;
+    card.innerHTML = `<h4 class="map-plaza-nombre">${esc(p.nombre)}</h4><p class="map-plaza-zona">${esc(p.zona)}</p><div class="map-plaza-info"><span>${p.locales.length} local${p.locales.length===1?'':'es'}</span>${desde?`<span>Desde ${desde}/mes</span>`:""}</div>`;
+    card.addEventListener('click', ()=>seleccionarLmapPlaza(p.id));
     container.appendChild(card);
   });
 }
 
-function seleccionarGmapPlaza(id){
-  const p=plaza(id);if(!p)return;
-  gmapPlazaSeleccionada=p;
-  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.toggle('active',c.dataset.plazaId===id));
-  gmapMarkers.forEach(m=>{m.content.classList.toggle('active',m.plazaId===id);m.marker.map=gmap;});
-  const c=coordsPlaza(p);
-  gmap.panTo(c);gmap.setZoom(15);
-  mostrarGmapDrawer(p);
+function seleccionarLmapPlaza(id){
+  const p = plaza(id); if(!p) return;
+  document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.toggle('active', c.dataset.plazaId===id));
+  lmapMarkers.forEach(m=>{
+    m.marker.setIcon(crearLmapIcon(m.label, m.plazaId===id));
+  });
+  const c = coordsPlaza(p);
+  lmap.setView([c.lat, c.lng], 16);
+  mostrarMapDrawer(p);
 }
 
-function configurarGmapDrawer(){
-  const overlay=document.getElementById('gmapDrawerOverlay');
-  const closeBtn=document.getElementById('gmapDrawerClose');
-  if(overlay)overlay.addEventListener('click',cerrarGmapDrawer);
-  if(closeBtn)closeBtn.addEventListener('click',cerrarGmapDrawer);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarGmapDrawer();});
+function configurarLmapDrawer(){
+  const overlay = document.getElementById('gmapDrawerOverlay');
+  const closeBtn = document.getElementById('gmapDrawerClose');
+  if(overlay) overlay.addEventListener('click', cerrarMapDrawer);
+  if(closeBtn) closeBtn.addEventListener('click', cerrarMapDrawer);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') cerrarMapDrawer(); });
 }
 
-function mostrarGmapDrawer(p){
-  const drawer=document.getElementById('gmapDrawer');
-  const overlay=document.getElementById('gmapDrawerOverlay');
-  const title=document.getElementById('gmapDrawerTitle');
-  const zona=document.getElementById('gmapDrawerZona');
-  const content=document.getElementById('gmapDrawerContent');
-  if(!drawer||!overlay)return;
-  title.textContent=p.nombre;zona.textContent=p.zona;
-  let html=`<p class="map-drawer-section">Locales disponibles</p>`;
-  if(!p.locales.length) html+=`<p style="font-size:13px;color:var(--muted)">Esta plaza no tiene vacantes por ahora.</p>`;
+function mostrarMapDrawer(p){
+  const drawer = document.getElementById('gmapDrawer');
+  const overlay = document.getElementById('gmapDrawerOverlay');
+  const title = document.getElementById('gmapDrawerTitle');
+  const zona = document.getElementById('gmapDrawerZona');
+  const content = document.getElementById('gmapDrawerContent');
+  if(!drawer || !overlay) return;
+  title.textContent = p.nombre; zona.textContent = p.zona;
+  let html = `<p class="map-drawer-section">Locales disponibles</p>`;
+  if(!p.locales.length) html += `<p style="font-size:13px;color:var(--muted)">Esta plaza no tiene vacantes por ahora.</p>`;
   p.locales.forEach(l=>{
-    html+=`<div class="map-local-card"><div class="map-local-header"><span class="map-local-numero">Local ${esc(l.id)} · ${esc(l.nivel)}</span><span class="map-local-precio">${fmt$.format(l.precio)}<span>/mes</span></span></div><div class="map-local-details"><span>${l.m2} m²</span><span>${esc(l.frente)}</span></div>${waBtn(p.id,l.id,'map-local-wa')}</div>`;
+    html += `<div class="map-local-card"><div class="map-local-header"><span class="map-local-numero">Local ${esc(l.id)} · ${esc(l.nivel)}</span><span class="map-local-precio">${fmt$.format(l.precio)}<span>/mes</span></span></div><div class="map-local-details"><span>${l.m2} m²</span><span>${esc(l.frente)}</span></div>${waBtn(p.id,l.id,'map-local-wa')}</div>`;
   });
-  html+=`<a href="#/plaza/${p.id}" class="map-view-profile" onclick="cerrarGmapDrawer()">Ver perfil completo</a>`;
-  content.innerHTML=html;
-  drawer.classList.add('active');overlay.classList.add('active');
+  html += `<a href="#/plaza/${p.id}" class="map-view-profile" onclick="cerrarMapDrawer()">Ver perfil completo</a>`;
+  content.innerHTML = html;
+  drawer.classList.add('active'); overlay.classList.add('active');
 }
 
-function cerrarGmapDrawer(){
-  const drawer=document.getElementById('gmapDrawer');
-  const overlay=document.getElementById('gmapDrawerOverlay');
-  if(drawer)drawer.classList.remove('active');
-  if(overlay)overlay.classList.remove('active');
+function cerrarMapDrawer(){
+  const drawer = document.getElementById('gmapDrawer');
+  const overlay = document.getElementById('gmapDrawerOverlay');
+  if(drawer) drawer.classList.remove('active');
+  if(overlay) overlay.classList.remove('active');
   document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.remove('active'));
-  gmapMarkers.forEach(m=>m.content.classList.remove('active'));
-  gmapPlazaSeleccionada=null;
 }
 
-function configurarGmapBusqueda(){
-  const input=document.getElementById('gmapSearchInput');
-  const clear=document.getElementById('gmapSearchClear');
-  if(!input)return;
-  input.addEventListener('input',e=>{
-    const q=e.target.value.trim().toLowerCase();
-    if(clear)clear.style.display=q?'block':'none';
-    filtrarGmapPlazas(q);
+function configurarLmapBusqueda(){
+  const input = document.getElementById('gmapSearchInput');
+  const clear = document.getElementById('gmapSearchClear');
+  if(!input) return;
+  input.addEventListener('input', e=>{
+    const q = e.target.value.trim().toLowerCase();
+    if(clear) clear.style.display = q ? 'block' : 'none';
+    filtrarLmapPlazas(q);
   });
-  if(clear)clear.addEventListener('click',()=>{input.value='';clear.style.display='none';filtrarGmapPlazas('');input.focus();});
+  if(clear) clear.addEventListener('click', ()=>{ input.value=''; clear.style.display='none'; filtrarLmapPlazas(''); input.focus(); });
 }
 
-function filtrarGmapPlazas(q){
-  if(!q){
-    document.querySelectorAll('.map-plaza-card').forEach(c=>c.style.display='block');
-    gmapMarkers.forEach(m=>{m.marker.map=null;});
-    gmapZoneMarkers.forEach(m=>{m.marker.map=gmap;});
-    return;
-  }
-  gmapZoneMarkers.forEach(m=>{m.marker.map=null;});
+function filtrarLmapPlazas(q){
   PLAZAS.forEach(p=>{
-    const card=document.querySelector(`.map-plaza-card[data-plaza-id="${p.id}"]`);
-    const markerData=gmapMarkers.find(m=>m.plazaId===p.id);
-    const match=p.nombre.toLowerCase().includes(q)||p.zona.toLowerCase().includes(q);
-    if(card)card.style.display=match?'block':'none';
-    if(markerData)markerData.marker.map=match?gmap:null;
-  });
-}
-
-function configurarGmapFiltros(){
-  const toggle=document.getElementById('gmapFiltersToggle');
-  const panel=document.getElementById('gmapFiltersPanel');
-  const grid=document.getElementById('gmapFiltersGrid');
-  if(!toggle||!panel||!grid)return;
-  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
-  FILTROS_MAPA.forEach(f=>{
-    const chip=document.createElement('button');chip.className='map-filter-chip';chip.dataset.filterId=f.id;
-    chip.innerHTML=`${f.icon} ${f.nombre}`;
-    chip.addEventListener('click',()=>{
-      const wasActive=chip.classList.contains('active');
-      document.querySelectorAll('.map-filter-chip').forEach(c=>c.classList.remove('active'));
-      limpiarGmapFilterMarkers();
-      if(!wasActive){chip.classList.add('active');buscarGmapPOIs(f);}
-    });
-    grid.appendChild(chip);
-  });
-}
-
-function buscarGmapPOIs(filtro){
-  if(!gmapPlacesService)return;
-  const request={query:filtro.nombre+' en Ciudad de Panama',location:new google.maps.LatLng(9.0,-79.5),radius:30000};
-  gmapPlacesService.textSearch(request,(results,status)=>{
-    if(status===google.maps.places.PlacesServiceStatus.OK&&results){
-      results.slice(0,15).forEach((place)=>{
-        const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=filtro.icon;
-        const marker=new google.maps.marker.AdvancedMarkerElement({
-          map:gmap,position:place.geometry.location,content:mc,title:place.name
-        });
-        gmapFilterMarkers.push(marker);
-      });
+    const card = document.querySelector(`.map-plaza-card[data-plaza-id="${p.id}"]`);
+    const markerData = lmapMarkers.find(m=>m.plazaId===p.id);
+    const match = !q || p.nombre.toLowerCase().includes(q) || p.zona.toLowerCase().includes(q);
+    if(card) card.style.display = match ? 'block' : 'none';
+    if(markerData){
+      if(match){ if(!lmap.hasLayer(markerData.marker)) markerData.marker.addTo(lmap); }
+      else { if(lmap.hasLayer(markerData.marker)) lmap.removeLayer(markerData.marker); }
     }
   });
 }
 
-function limpiarGmapFilterMarkers(){gmapFilterMarkers.forEach(m=>{m.map=null;});gmapFilterMarkers=[];}
+/* ---------- Mini-mapa de Oportunidades (mismo motor Leaflet) ---------- */
 
-function configurarGmapCompetencia(){
-  const toggle=document.getElementById('gmapCompToggle');
-  const panel=document.getElementById('gmapCompPanel');
-  const input=document.getElementById('gmapCompInput');
-  const btn=document.getElementById('gmapCompBtn');
-  if(!toggle||!panel)return;
-  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');panel.classList.toggle('active');});
-  if(btn)btn.addEventListener('click',()=>{if(input)buscarGmapCompetencia(input.value.trim());});
-  if(input)input.addEventListener('keypress',e=>{if(e.key==='Enter')buscarGmapCompetencia(input.value.trim());});
-}
+let oppMap = null;
+let oppMarkers = [];
 
-function buscarGmapCompetencia(q){
-  const results=document.getElementById('gmapCompResults');if(!results||!q)return;
-  limpiarGmapBusinessMarkers();
-  const qLower=q.toLowerCase();
-  let data=CADENAS_PANAMA[qLower];
-  if(typeof data==='string')data=CADENAS_PANAMA[data];
-  if(data&&Array.isArray(data)){
-    results.innerHTML='';
-    data.forEach((loc,i)=>{
-      const mc=document.createElement('div');mc.className='gmap-biz-marker';mc.textContent=i+1;
-      const marker=new google.maps.marker.AdvancedMarkerElement({
-        map:gmap,position:{lat:loc.lat,lng:loc.lng},content:mc,title:loc.nombre
+function initMapaOportunidades(cat){
+  const mapEl = document.getElementById('opp-gmap');
+  const legendList = document.getElementById('oppLegendList');
+  if(!mapEl) return;
+  mapEl.innerHTML = '';
+  try{
+    oppMap = L.map(mapEl, {zoomControl:true}).setView([9.02, -79.50], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom:19, attribution:'&copy; OpenStreetMap contributors'
+    }).addTo(oppMap);
+
+    const res = analizar(cat);
+    oppMarkers = [];
+    if(legendList) legendList.innerHTML = '';
+
+    res.forEach(({p,score,estado}, idx)=>{
+      const c = coordsPlaza(p);
+      const markerClass = estado==='abierta'?'open':estado==='competencia'?'comp':'idle';
+      const label = estado==='abierta' ? `${score}` : estado==='competencia' ? '✕' : '—';
+      const icon = L.divIcon({
+        className:'opp-icon-wrapper',
+        html:`<div class="opp-marker ${markerClass}">${label}</div>`,
+        iconSize:null, iconAnchor:[13,13]
       });
-      gmapBusinessMarkers.push(marker);
-      const item=document.createElement('div');item.className='map-comp-item';
-      item.innerHTML=`<span class="map-comp-num">${i+1}</span><span>${esc(loc.nombre)}</span>`;
-      item.addEventListener('click',()=>{gmap.panTo({lat:loc.lat,lng:loc.lng});gmap.setZoom(16);});
-      results.appendChild(item);
+      const marker = L.marker([c.lat, c.lng], {icon}).addTo(oppMap);
+      marker.on('click', ()=>mostrarOppDrawer(p, score, estado));
+      oppMarkers.push(marker);
+
+      if(idx<10 && legendList){
+        const item = document.createElement('div');
+        item.className = 'opp-legend-item';
+        item.innerHTML = `
+          <span class="opp-legend-dot ${markerClass}"></span>
+          <div class="opp-legend-info">
+            <div class="opp-legend-name">${esc(p.nombre)}</div>
+            <div class="opp-legend-score">${estado==='abierta'?`Score: ${score}/100`:estado==='competencia'?'Competencia':'Sin locales'}</div>
+          </div>`;
+        item.addEventListener('click', ()=>{
+          oppMap.setView([c.lat, c.lng], 15);
+          mostrarOppDrawer(p, score, estado);
+          document.querySelectorAll('.opp-legend-item').forEach(i=>i.classList.remove('active'));
+          item.classList.add('active');
+        });
+        legendList.appendChild(item);
+      }
     });
-  }else{
-    results.innerHTML=`<p style="font-size:12px;color:var(--muted);padding:8px">No encontrado en BD local. Prueba: Melo, Arrocha, McDonald's</p>`;
+
+    if(oppMarkers.length){
+      const bounds = L.latLngBounds(oppMarkers.map(m=>m.getLatLng()));
+      oppMap.fitBounds(bounds, {padding:[40,40]});
+    }
+
+    const overlay = document.getElementById('oppDrawerOverlay');
+    const closeBtn = document.getElementById('oppDrawerClose');
+    if(overlay) overlay.addEventListener('click', cerrarOppDrawer);
+    if(closeBtn) closeBtn.addEventListener('click', cerrarOppDrawer);
+  }catch(e){
+    mapEl.innerHTML = `<div class="map-loading">Error: ${e.message}</div>`;
   }
 }
 
-function limpiarGmapBusinessMarkers(){gmapBusinessMarkers.forEach(m=>{m.map=null;});gmapBusinessMarkers=[];}
+function mostrarOppDrawer(p, score, estado){
+  const drawer = document.getElementById('oppDrawer');
+  const overlay = document.getElementById('oppDrawerOverlay');
+  const title = document.getElementById('oppDrawerTitle');
+  const zona = document.getElementById('oppDrawerZona');
+  const content = document.getElementById('oppDrawerContent');
+  if(!drawer || !overlay) return;
+
+  title.textContent = p.nombre; zona.textContent = p.zona;
+
+  const statusHtml = estado==='abierta'
+    ? `<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <span style="font-size:32px;font-weight:700">${score}</span>
+        <div><div style="font-size:12px;color:var(--muted)">/100 puntos</div><span class="chip open">Oportunidad abierta</span></div>
+      </div>`
+    : estado==='competencia'
+    ? `<span class="chip block" style="margin-bottom:16px">Competencia directa</span>`
+    : `<span class="chip idle" style="margin-bottom:16px">Sin locales disponibles</span>`;
+
+  let localesHtml = '<p class="map-drawer-section">Locales disponibles</p>';
+  if(p.locales.length){
+    p.locales.forEach(l=>{
+      localesHtml += `<div class="map-local-card"><div class="map-local-header"><span class="map-local-numero">Local ${esc(l.id)} · ${esc(l.nivel)}</span><span class="map-local-precio">${fmt$.format(l.precio)}<span>/mes</span></span></div><div class="map-local-details"><span>${l.m2} m²</span><span>${esc(l.frente)}</span></div>${waBtn(p.id,l.id,'map-local-wa')}</div>`;
+    });
+  }else{
+    localesHtml += `<p style="color:var(--muted);font-size:14px">Esta plaza no tiene vacantes por ahora.</p>`;
+  }
+
+  content.innerHTML = statusHtml + localesHtml + `<a href="#/plaza/${p.id}" class="map-view-profile">Ver perfil completo</a>`;
+  drawer.classList.add('active'); overlay.classList.add('active');
+}
+
+function cerrarOppDrawer(){
+  const drawer = document.getElementById('oppDrawer');
+  const overlay = document.getElementById('oppDrawerOverlay');
+  if(drawer) drawer.classList.remove('active');
+  if(overlay) overlay.classList.remove('active');
+  document.querySelectorAll('.opp-legend-item').forEach(i=>i.classList.remove('active'));
+}
 
 /* ================= Estado ================= */
 
@@ -2255,158 +2219,6 @@ const ZONAS_MAPA = [
 ];
 
 
-function initMapaOportunidades(cat){
-  const mapEl=document.getElementById('opp-gmap');
-  const legendList=document.getElementById('oppLegendList');
-  if(!mapEl)return;
-  mapEl.innerHTML='';
-
-  try{
-    oppMap=new google.maps.Map(mapEl,{
-      center:{lat:9.0,lng:-79.52},zoom:12,mapId:GOOGLE_MAP_ID,
-      mapTypeId:'roadmap',disableDefaultUI:false,zoomControl:true,
-      mapTypeControl:false,streetViewControl:false,fullscreenControl:true
-    });
-
-    // Get analysis results
-    const res=analizar(cat);
-    const bounds=new google.maps.LatLngBounds();
-
-    // Clear previous markers
-    oppMarkers.forEach(m=>m.map=null);
-    oppMarkers=[];
-    if(legendList)legendList.innerHTML='';
-
-    // Create markers for each plaza based on score
-    res.forEach(({p,score,estado},idx)=>{
-      // Find plaza coordinates from PLAZAS_MAPA
-      const plazaMapa=PLAZAS_MAPA.find(pm=>
-        pm.nombre.toLowerCase().includes(p.nombre.toLowerCase().split(' ')[1]||p.nombre.toLowerCase()) ||
-        p.nombre.toLowerCase().includes(pm.nombre.toLowerCase().split(' ')[1]||pm.nombre.toLowerCase())
-      );
-
-      if(!plazaMapa)return;
-
-      const markerClass=estado==='abierta'?'open':estado==='competencia'?'comp':'idle';
-      const mc=document.createElement('div');
-      mc.className=`opp-marker ${markerClass}`;
-      mc.innerHTML=estado==='abierta'?`${score}`:estado==='competencia'?'✕':'—';
-
-      const marker=new google.maps.marker.AdvancedMarkerElement({
-        map:oppMap,
-        position:{lat:plazaMapa.lat,lng:plazaMapa.lng},
-        content:mc,
-        title:p.nombre
-      });
-
-      marker.addListener('click',()=>{
-        mostrarOppDrawer(p,plazaMapa,score,estado);
-      });
-
-      oppMarkers.push(marker);
-      bounds.extend({lat:plazaMapa.lat,lng:plazaMapa.lng});
-
-      // Add to legend (top 10)
-      if(idx<10&&legendList){
-        const item=document.createElement('div');
-        item.className='opp-legend-item';
-        item.innerHTML=`
-          <span class="opp-legend-dot ${markerClass}"></span>
-          <div class="opp-legend-info">
-            <div class="opp-legend-name">${p.nombre}</div>
-            <div class="opp-legend-score">${estado==='abierta'?`Score: ${score}/100`:estado==='competencia'?'Competencia':'Sin locales'}</div>
-          </div>
-        `;
-        item.addEventListener('click',()=>{
-          oppMap.panTo({lat:plazaMapa.lat,lng:plazaMapa.lng});
-          oppMap.setZoom(15);
-          mostrarOppDrawer(p,plazaMapa,score,estado);
-          document.querySelectorAll('.opp-legend-item').forEach(i=>i.classList.remove('active'));
-          item.classList.add('active');
-        });
-        legendList.appendChild(item);
-      }
-    });
-
-    // Fit map to show all markers
-    if(oppMarkers.length>0){
-      oppMap.fitBounds(bounds);
-      const listener=google.maps.event.addListener(oppMap,'idle',()=>{
-        if(oppMap.getZoom()>14)oppMap.setZoom(14);
-        google.maps.event.removeListener(listener);
-      });
-    }
-
-    // Setup drawer close
-    const overlay=document.getElementById('oppDrawerOverlay');
-    const closeBtn=document.getElementById('oppDrawerClose');
-    if(overlay)overlay.addEventListener('click',cerrarOppDrawer);
-    if(closeBtn)closeBtn.addEventListener('click',cerrarOppDrawer);
-
-  }catch(e){
-    mapEl.innerHTML=`<div class="map-loading">Error: ${e.message}</div>`;
-  }
-}
-
-function mostrarOppDrawer(plaza,plazaMapa,score,estado){
-  const drawer=document.getElementById('oppDrawer');
-  const overlay=document.getElementById('oppDrawerOverlay');
-  const title=document.getElementById('oppDrawerTitle');
-  const zona=document.getElementById('oppDrawerZona');
-  const content=document.getElementById('oppDrawerContent');
-  if(!drawer||!overlay)return;
-
-  title.textContent=plaza.nombre;
-  zona.textContent=plaza.zona;
-
-  const statusHtml=estado==='abierta'
-    ?`<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-        <span style="font-size:32px;font-weight:700">${score}</span>
-        <div>
-          <div style="font-size:12px;color:var(--muted)">/100 puntos</div>
-          <span class="chip open">Oportunidad abierta</span>
-        </div>
-      </div>`
-    :estado==='competencia'
-    ?`<span class="chip block" style="margin-bottom:16px">Competencia directa</span>`
-    :`<span class="chip idle" style="margin-bottom:16px">Sin locales disponibles</span>`;
-
-  let localesHtml='<p class="map-drawer-section">Locales disponibles</p>';
-  if(plazaMapa.locales&&plazaMapa.locales.length>0){
-    plazaMapa.locales.forEach(l=>{
-      const waUrl=`https://wa.me/${WHATSAPP_MAPA}?text=${encodeURIComponent(`Hola, me interesa el local ${l.numero} en ${plaza.nombre}`)}`;
-      localesHtml+=`<div class="map-local-card">
-        <div class="map-local-header">
-          <span class="map-local-numero">${l.numero}</span>
-          <span class="map-local-precio">$${l.precio}<span>/m²</span></span>
-        </div>
-        <div class="map-local-details">
-          <span>Área: ${l.m2} m²</span>
-          <span>Total: $${(l.m2*l.precio).toLocaleString()}/mes</span>
-        </div>
-        <a href="${waUrl}" target="_blank" class="map-local-wa">
-          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
-          Me interesa
-        </a>
-      </div>`;
-    });
-  }else{
-    localesHtml+=`<p style="color:var(--muted);font-size:14px">No hay información de locales disponibles.</p>`;
-  }
-
-  content.innerHTML=statusHtml+localesHtml+`<a href="#/plaza/${plaza.id}" class="map-view-profile">Ver perfil completo</a>`;
-
-  drawer.classList.add('active');
-  overlay.classList.add('active');
-}
-
-function cerrarOppDrawer(){
-  const drawer=document.getElementById('oppDrawer');
-  const overlay=document.getElementById('oppDrawerOverlay');
-  if(drawer)drawer.classList.remove('active');
-  if(overlay)overlay.classList.remove('active');
-  document.querySelectorAll('.opp-legend-item').forEach(i=>i.classList.remove('active'));
-}
 
 function viewMapa(){
   return `
@@ -2423,24 +2235,6 @@ function viewMapa(){
       <div class="map-search-box">
         <input type="text" class="map-search-input" id="gmapSearchInput" placeholder="Buscar plaza o zona..." autocomplete="off">
         <button id="gmapSearchClear" style="display:none;position:absolute;right:24px;top:50%;transform:translateY(-50%);border:none;background:var(--line);width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:12px">×</button>
-      </div>
-      <div class="map-filters-toggle" id="gmapFiltersToggle">
-        <span>🗺️ Mostrar en el mapa</span>
-        <span>▼</span>
-      </div>
-      <div class="map-filters-panel" id="gmapFiltersPanel">
-        <div class="map-filters-grid" id="gmapFiltersGrid"></div>
-      </div>
-      <div class="map-comp-toggle" id="gmapCompToggle">
-        <span>🔍 Buscar competencia</span>
-        <span>▼</span>
-      </div>
-      <div class="map-comp-panel" id="gmapCompPanel">
-        <div class="map-comp-content">
-          <input type="text" class="map-comp-input" id="gmapCompInput" placeholder="Ej: Melo, Arrocha, McDonald's...">
-          <button class="map-comp-btn" id="gmapCompBtn">Buscar</button>
-          <div class="map-comp-results" id="gmapCompResults"></div>
-        </div>
       </div>
       <div class="map-plaza-list" id="gmapPlazaList"></div>
     </aside>
@@ -2459,7 +2253,7 @@ function viewMapa(){
     </header>
     <div class="map-drawer-content" id="gmapDrawerContent"></div>
   </div>
-  <p class="map-note">Las plazas se ubican en el centro aproximado de su zona — no son direcciones verificadas.</p>`;
+  <p class="map-note">Ubicaciones reales verificadas en Google Maps.</p>`;
 }
 
 /* ---------- Oportunidades ---------- */
@@ -2627,25 +2421,12 @@ function render(){
   if(route==="plaza" && arg){ app.innerHTML = viewPlaza(arg); }
   else if(route==="oportunidades"){
     app.innerHTML = viewOportunidades();
-    // Si hay categoría seleccionada, cargar el mapa de oportunidades
-    if(state.oppCat){
-      cargarGoogleMapsAPI().then(()=>{
-        initMapaOportunidades(state.oppCat);
-      }).catch(err=>{
-        const mapEl=document.getElementById('opp-gmap');
-        if(mapEl)mapEl.innerHTML=`<div class="map-loading">Error al cargar mapa: ${err.message}</div>`;
-      });
-    }
+    if(state.oppCat) initMapaOportunidades(state.oppCat);
   }
   else if(route==="plazas"){ location.hash = "#/mapa"; return; }
   else if(route==="mapa"){
     app.innerHTML = viewMapa();
-    cargarGoogleMapsAPI().then(()=>{
-      initMapaIntegrado();
-    }).catch(err=>{
-      const mapEl = document.getElementById('gmap');
-      if(mapEl) mapEl.innerHTML = `<div class="map-loading">Error al cargar Google Maps: ${err.message}</div>`;
-    });
+    initMapaLeaflet();
   }
   else if(route==="evaluacion"){ app.innerHTML = viewEvaluacion(); }
   else if(route==="miplaza"){ app.innerHTML = viewMiPlaza(); }
