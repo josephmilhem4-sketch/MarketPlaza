@@ -625,15 +625,27 @@
     box-shadow:var(--shadow-md);
   }
   .map-sidebar{
-    width:360px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--line);
+    width:270px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--line);
     display:flex; flex-direction:column; overflow:hidden;
   }
   .map-main{flex:1; position:relative; background:#E5E7EB}
   #gmap{width:100%; height:100%}
 
-  .map-sidebar-header{padding:20px 20px 14px; border-bottom:1px solid var(--line)}
-  .map-sidebar-header h3{font-size:16px; font-weight:700; margin:0 0 5px; color:var(--ink)}
-  .map-sidebar-header p{font-size:12.5px; color:var(--muted); margin:0; line-height:1.5}
+  .map-sidebar-header{padding:16px 16px 10px; border-bottom:1px solid var(--line)}
+  .map-sidebar-header h3{font-size:14px; font-weight:700; margin:0 0 4px; color:var(--ink)}
+  .map-sidebar-header p{font-size:12px; color:var(--muted); margin:0; line-height:1.4}
+
+  .map-zona-list{display:flex; flex-direction:column; padding:8px; border-bottom:1px solid var(--line); max-height:220px; overflow-y:auto; flex-shrink:0}
+  .map-zona-chip{
+    display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%;
+    padding:8px 10px; border:none; background:transparent; border-radius:var(--r-sm);
+    font:inherit; font-size:13px; font-weight:500; color:var(--ink-light); text-align:left;
+    cursor:pointer; transition:all .15s;
+  }
+  .map-zona-chip:hover{background:var(--soft)}
+  .map-zona-chip.on{background:var(--accent-soft); color:var(--accent-dark); font-weight:700}
+  .map-zona-chip span{font-size:11.5px; color:var(--muted); font-weight:600}
+  .map-zona-chip.on span{color:var(--accent-dark)}
 
   .map-search-box{padding:14px 18px; border-bottom:1px solid var(--line)}
   .map-search-input{
@@ -1372,6 +1384,7 @@ function initMapaLeaflet(){
     generarLmapTarjetas();
     configurarLmapDrawer();
     configurarLmapBusqueda();
+    configurarLmapZonas();
     if(lmapMarkers.length){
       const bounds = L.latLngBounds(lmapMarkers.map(m=>m.marker.getLatLng()));
       lmap.fitBounds(bounds, {padding:[40,40]});
@@ -1385,11 +1398,10 @@ function crearLmapMarkers(){
   lmapMarkers = [];
   PLAZAS.forEach(p=>{
     const c = coordsPlaza(p);
-    const label = p.locales.length ? `${p.locales.length} ${p.locales.length===1?"local":"locales"}` : "sin vacantes";
-    const marker = L.marker([c.lat, c.lng], {icon:crearLmapIcon(label,false)});
+    const marker = L.marker([c.lat, c.lng], {icon:crearLmapIcon(p.nombre,false)});
     marker.on('click', ()=>seleccionarLmapPlaza(p.id));
     marker.addTo(lmap);
-    lmapMarkers.push({plazaId:p.id, marker, label});
+    lmapMarkers.push({plazaId:p.id, marker, label:p.nombre});
   });
 }
 
@@ -1398,10 +1410,9 @@ function generarLmapTarjetas(){
   if(!container) return;
   container.innerHTML = '';
   PLAZAS.forEach(p=>{
-    const desde = p.locales.length ? fmt$.format(Math.min(...p.locales.map(l=>l.precio))) : null;
     const card = document.createElement('div');
-    card.className = 'map-plaza-card'; card.dataset.plazaId = p.id;
-    card.innerHTML = `<h4 class="map-plaza-nombre">${esc(p.nombre)}</h4><p class="map-plaza-zona">${esc(p.zona)}</p><div class="map-plaza-info"><span>${p.locales.length} local${p.locales.length===1?'':'es'}</span>${desde?`<span>Desde ${desde}/mes</span>`:""}</div>`;
+    card.className = 'map-plaza-card'; card.dataset.plazaId = p.id; card.dataset.zona = p.zona;
+    card.innerHTML = `<h4 class="map-plaza-nombre">${esc(p.nombre)}</h4><p class="map-plaza-zona">${esc(p.zona)}</p>`;
     card.addEventListener('click', ()=>seleccionarLmapPlaza(p.id));
     container.appendChild(card);
   });
@@ -1452,29 +1463,49 @@ function cerrarMapDrawer(){
   document.querySelectorAll('.map-plaza-card').forEach(c=>c.classList.remove('active'));
 }
 
+let lmapZonaActiva = "";
+
 function configurarLmapBusqueda(){
   const input = document.getElementById('gmapSearchInput');
   const clear = document.getElementById('gmapSearchClear');
   if(!input) return;
   input.addEventListener('input', e=>{
-    const q = e.target.value.trim().toLowerCase();
-    if(clear) clear.style.display = q ? 'block' : 'none';
-    filtrarLmapPlazas(q);
+    if(clear) clear.style.display = e.target.value.trim() ? 'block' : 'none';
+    aplicarFiltrosLmap();
   });
-  if(clear) clear.addEventListener('click', ()=>{ input.value=''; clear.style.display='none'; filtrarLmapPlazas(''); input.focus(); });
+  if(clear) clear.addEventListener('click', ()=>{ input.value=''; clear.style.display='none'; aplicarFiltrosLmap(); input.focus(); });
 }
 
-function filtrarLmapPlazas(q){
+function configurarLmapZonas(){
+  document.querySelectorAll('.map-zona-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      lmapZonaActiva = chip.dataset.zona;
+      document.querySelectorAll('.map-zona-chip').forEach(c=>c.classList.toggle('on', c===chip));
+      aplicarFiltrosLmap();
+    });
+  });
+}
+
+function aplicarFiltrosLmap(){
+  const input = document.getElementById('gmapSearchInput');
+  const q = input ? input.value.trim().toLowerCase() : '';
   PLAZAS.forEach(p=>{
     const card = document.querySelector(`.map-plaza-card[data-plaza-id="${p.id}"]`);
     const markerData = lmapMarkers.find(m=>m.plazaId===p.id);
-    const match = !q || p.nombre.toLowerCase().includes(q) || p.zona.toLowerCase().includes(q);
+    const matchZona = !lmapZonaActiva || p.zona===lmapZonaActiva;
+    const matchQ = !q || p.nombre.toLowerCase().includes(q);
+    const match = matchZona && matchQ;
     if(card) card.style.display = match ? 'block' : 'none';
     if(markerData){
       if(match){ if(!lmap.hasLayer(markerData.marker)) markerData.marker.addTo(lmap); }
       else { if(lmap.hasLayer(markerData.marker)) lmap.removeLayer(markerData.marker); }
     }
   });
+  const visibles = lmapMarkers.filter(m=>lmap.hasLayer(m.marker));
+  if(visibles.length){
+    const bounds = L.latLngBounds(visibles.map(m=>m.marker.getLatLng()));
+    lmap.fitBounds(bounds, {padding:[40,40], maxZoom:16});
+  }
 }
 
 /* ---------- Mini-mapa de Oportunidades (mismo motor Leaflet) ---------- */
@@ -2221,19 +2252,26 @@ const ZONAS_MAPA = [
 
 
 function viewMapa(){
+  const zonas = [...new Set(PLAZAS.map(p=>p.zona))].sort((a,b)=>
+    PLAZAS.filter(p=>p.zona===b).length - PLAZAS.filter(p=>p.zona===a).length
+  );
   return `
   <div class="page-head">
     <h1>Mapa interactivo</h1>
-    <p>Explora las ${PLAZAS.length} plazas comerciales de Panamá en el mapa. Haz clic en una para ver sus locales.</p>
+    <p>Explora las ${PLAZAS.length} plazas comerciales de Panamá en el mapa.</p>
   </div>
   <div class="map-wrapper">
     <aside class="map-sidebar">
       <div class="map-sidebar-header">
-        <h3>Plazas disponibles</h3>
-        <p>${PLAZAS.length} plazas · ${PLAZAS.reduce((a,p)=>a+p.locales.length,0)} locales</p>
+        <h3>Zonas</h3>
+        <p>${PLAZAS.length} plazas en ${zonas.length} zonas</p>
+      </div>
+      <div class="map-zona-list" id="gmapZonaList">
+        <button class="map-zona-chip on" data-zona="">Todas <span>${PLAZAS.length}</span></button>
+        ${zonas.map(z=>`<button class="map-zona-chip" data-zona="${esc(z)}">${esc(z)} <span>${PLAZAS.filter(p=>p.zona===z).length}</span></button>`).join("")}
       </div>
       <div class="map-search-box">
-        <input type="text" class="map-search-input" id="gmapSearchInput" placeholder="Buscar plaza o zona..." autocomplete="off">
+        <input type="text" class="map-search-input" id="gmapSearchInput" placeholder="Buscar plaza..." autocomplete="off">
         <button id="gmapSearchClear" style="display:none;position:absolute;right:24px;top:50%;transform:translateY(-50%);border:none;background:var(--line);width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:12px">×</button>
       </div>
       <div class="map-plaza-list" id="gmapPlazaList"></div>
