@@ -1253,13 +1253,11 @@ function rubroSimilar(cat){
 /* Carácter de cada zona de la ciudad */
 const ZONA_INFO = {
   "San Francisco":"mixta",
-  "Vía Porras":"mixta",
   "Costa del Este":"mixta",
   "Obarrio":"oficinas",
   "Condado del Rey":"residencial",
   "Brisas del Golf":"residencial",
   "El Dorado":"mixta",
-  "Vía Ricardo J. Alfaro":"mixta",
   "Punta Pacífica":"residencial"
 };
 const CARACTER_L = {residencial:"Zona residencial", oficinas:"Zona de oficinas", mixta:"Zona mixta"};
@@ -1271,13 +1269,11 @@ const PREF_RESIDENCIAL = new Set(["Pet shop","Farmacia","Lavandería","Panaderí
 /* Poder adquisitivo de cada zona */
 const ZONA_PODER = {
   "San Francisco":"medio-alto",
-  "Vía Porras":"medio-alto",
   "Costa del Este":"alto",
   "Obarrio":"alto",
   "Condado del Rey":"medio",
   "Brisas del Golf":"medio",
   "El Dorado":"medio",
-  "Vía Ricardo J. Alfaro":"medio",
   "Punta Pacífica":"alto"
 };
 const PODER_L = {alto:"Alto poder adquisitivo", "medio-alto":"Poder adquisitivo medio-alto", medio:"Poder adquisitivo medio"};
@@ -1286,26 +1282,22 @@ const PODER_BONUS = {alto:6, "medio-alto":3, medio:0};
 /* Crecimiento proyectado de cada zona */
 const ZONA_CRECIMIENTO = {
   "San Francisco":"bajo",
-  "Vía Porras":"medio",
   "Costa del Este":"medio",
   "Obarrio":"bajo",
   "Condado del Rey":"alto",
   "Brisas del Golf":"alto",
   "El Dorado":"medio",
-  "Vía Ricardo J. Alfaro":"medio",
   "Punta Pacífica":"bajo"
 };
 const CRECIMIENTO_L = {alto:"Zona en crecimiento", medio:"Zona estable", bajo:"Zona consolidada"};
 
 /* Zonas vecinas de cada zona — define el radio de influencia real */
 const ZONA_VECINAS = {
-  "Vía Ricardo J. Alfaro": ["El Dorado","Condado del Rey"],
-  "El Dorado": ["Vía Ricardo J. Alfaro","Condado del Rey"],
-  "Condado del Rey": ["El Dorado","Vía Ricardo J. Alfaro","Brisas del Golf"],
+  "El Dorado": ["Condado del Rey"],
+  "Condado del Rey": ["El Dorado","Brisas del Golf"],
   "Brisas del Golf": ["Condado del Rey","Costa del Este"],
-  "Vía Porras": ["Obarrio","San Francisco"],
-  "Obarrio": ["Vía Porras","San Francisco","Punta Pacífica"],
-  "San Francisco": ["Obarrio","Vía Porras","Costa del Este"],
+  "Obarrio": ["San Francisco","Punta Pacífica"],
+  "San Francisco": ["Obarrio","Costa del Este"],
   "Punta Pacífica": ["Obarrio","San Francisco"],
   "Costa del Este": ["San Francisco","Brisas del Golf"]
 };
@@ -1350,13 +1342,11 @@ function waBtn(pid, lid, cls){
 
 const ZONA_COORDS = {
   "San Francisco":{lat:9.0020,lng:-79.5080},
-  "Vía Porras":{lat:8.9950,lng:-79.5165},
   "Costa del Este":{lat:9.0110,lng:-79.4680},
   "Obarrio":{lat:8.9880,lng:-79.5225},
   "Condado del Rey":{lat:9.0290,lng:-79.5330},
   "Brisas del Golf":{lat:9.0630,lng:-79.4790},
   "El Dorado":{lat:9.0090,lng:-79.5360},
-  "Vía Ricardo J. Alfaro":{lat:9.0230,lng:-79.5380},
   "Punta Pacífica":{lat:8.9850,lng:-79.5110}
 };
 function coordsPlaza(p){
@@ -2257,19 +2247,6 @@ function viewMiPlaza(){
 }
 
 /* ---------- Mapa ---------- */
-
-const ZONAS_MAPA = [
-  {area:"dorado",  nombre:"El Dorado"},
-  {area:"condado", nombre:"Condado del Rey"},
-  {area:"brisas",  nombre:"Brisas del Golf"},
-  {area:"alfaro",  nombre:"Vía Ricardo J. Alfaro"},
-  {area:"porras",  nombre:"Vía Porras"},
-  {area:"cde",     nombre:"Costa del Este"},
-  {area:"obarrio", nombre:"Obarrio"},
-  {area:"sf",      nombre:"San Francisco"},
-  {area:"pacifica",nombre:"Punta Pacífica"},
-];
-
 
 
 function viewMapa(){
