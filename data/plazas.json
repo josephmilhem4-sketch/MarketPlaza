@@ -161,10 +161,6 @@
         "cat": "Supermercado"
       },
       {
-        "n": "Meló Pets & Garden",
-        "cat": "Pet shop"
-      },
-      {
         "n": "Ostinato Pub",
         "cat": [
           "Restaurante",
@@ -501,10 +497,6 @@
     "tenants": [
       {
         "n": "Yakitori & Ramen Spot Panamá",
-        "cat": "Restaurante"
-      },
-      {
-        "n": "Sushi Kazoku",
         "cat": "Restaurante"
       },
       {
