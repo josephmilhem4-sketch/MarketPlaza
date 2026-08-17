@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editor de plazas — Plaza Marketplace</title>
+<style>
+  :root{
+    --bg:#f6f5f3; --panel:#fff; --border:#e3e0da; --text:#2a271f; --muted:#8a8477;
+    --accent:#b5652f; --accent-soft:#f2e3d5; --danger:#b3492f; --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .app{display:grid;grid-template-columns:320px 1fr;height:100vh;}
+  .sidebar{border-right:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;overflow:hidden;}
+  .sidebar-head{padding:16px 16px 10px;border-bottom:1px solid var(--border);}
+  .sidebar-head h1{font-size:16px;margin:0 0 8px;}
+  .stats{font-size:12px;color:var(--muted);margin-bottom:10px;}
+  input[type=search]{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);}
+  .zonas{flex:1;overflow-y:auto;padding:6px 8px 24px;}
+  .zona-head{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:14px 8px 4px;}
+  .plaza-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13.5px;}
+  .plaza-row:hover{background:var(--bg);}
+  .plaza-row.active{background:var(--accent-soft);}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;}
+  .dot.listo{background:#4c8c5b;}
+  .dot.revisar{background:#c98a2c;}
+  .dot.vacio{background:#c1bcb0;}
+  .plaza-row .nombre{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .plaza-row .count{color:var(--muted);font-size:11.5px;}
+  .main{overflow-y:auto;padding:28px 40px 60px;}
+  .main-inner{max-width:760px;margin:0 auto;}
+  .empty-state{max-width:420px;margin:80px auto;text-align:center;color:var(--muted);}
+  .header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:6px;}
+  .header-row h2{margin:0;font-size:22px;}
+  .zona-tag{color:var(--muted);font-size:13px;margin-bottom:18px;}
+  select.estado{border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12.5px;background:var(--panel);color:var(--text);}
+  .toolbar{display:flex;gap:8px;margin-bottom:6px;}
+  button{font:inherit;cursor:pointer;}
+  .btn{border:1px solid var(--border);background:var(--panel);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--text);}
+  .btn:hover{background:var(--bg);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn.primary:hover{opacity:.92;}
+  .btn.danger{color:var(--danger);}
+  .btn.small{padding:4px 8px;font-size:12px;}
+  .negocios{list-style:none;margin:18px 0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .negocio{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;}
+  .negocio .nombre-negocio{flex:none;width:220px;border:none;background:transparent;font-size:14px;font-weight:600;padding:2px 4px;border-radius:6px;}
+  .negocio .nombre-negocio:focus{background:var(--bg);outline:1px solid var(--border);}
+  .chips{flex:1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-soft);color:#7a4620;border-radius:999px;padding:3px 6px 3px 10px;font-size:12px;white-space:nowrap;}
+  .chip button{background:none;border:none;color:#7a4620;cursor:pointer;font-size:13px;line-height:1;padding:0 2px;}
+  .add-cat{border:1px dashed var(--border);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--muted);background:none;}
+  .del-negocio{flex:none;background:none;border:none;color:var(--muted);font-size:16px;padding:2px 6px;border-radius:6px;}
+  .del-negocio:hover{color:var(--danger);background:var(--bg);}
+  .add-form{display:flex;gap:8px;align-items:center;background:var(--panel);border:1px dashed var(--border);border-radius:var(--radius);padding:10px 12px;margin-top:10px;}
+  .add-form input[type=text]{border:1px solid var(--border);border-radius:8px;padding:7px 9px;font-size:13.5px;}
+  .add-form .add-nombre{width:220px;}
+  .add-form .add-cat-input{flex:1;}
+  .cat-picker{position:relative;}
+  .cat-menu{position:absolute;top:calc(100% + 4px);left:0;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08);max-height:220px;overflow-y:auto;z-index:5;min-width:200px;padding:4px;}
+  .cat-menu button{display:block;width:100%;text-align:left;padding:6px 8px;border:none;background:none;border-radius:6px;font-size:13px;}
+  .cat-menu button:hover{background:var(--bg);}
+  .hint{font-size:12px;color:var(--muted);margin-top:16px;}
+  .modal-bg{position:fixed;inset:0;background:rgba(20,18,14,.4);display:flex;align-items:center;justify-content:center;z-index:20;}
+  .modal{background:var(--panel);border-radius:14px;width:min(720px,92vw);max-height:82vh;display:flex;flex-direction:column;padding:20px;}
+  .modal h3{margin:0 0 4px;}
+  .modal .sub{color:var(--muted);font-size:13px;margin:0 0 14px;}
+  .tabs{display:flex;gap:6px;margin-bottom:10px;}
+  .tabs button{border:1px solid var(--border);background:var(--panel);border-radius:8px 8px 0 0;padding:6px 12px;font-size:13px;}
+  .tabs button.active{background:var(--accent-soft);border-color:var(--accent-soft);font-weight:600;}
+  textarea{width:100%;flex:1;min-height:320px;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;resize:vertical;background:var(--bg);}
+  .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
+  .hidden{display:none !important;}
+  ::selection{background:var(--accent-soft);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <h1>Plazas — editor</h1>
+      <div class="stats" id="stats"></div>
+      <input type="search" id="buscar" placeholder="Buscar plaza o negocio…">
+    </div>
+    <div class="zonas" id="zonas"></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;">
+      <button class="btn primary" id="btn-exportar" style="flex:1">Exportar</button>
+      <button class="btn danger" id="btn-reset" title="Volver a los datos originales">Reiniciar</button>
+    </div>
+  </div>
+  <div class="main"><div class="main-inner" id="main-inner"></div></div>
+</div>
+
+<div class="modal-bg hidden" id="modal-bg">
+  <div class="modal">
+    <h3>Exportar datos</h3>
+    <p class="sub">Copia esto y pásamelo cuando quieras que lo suba al sitio real y haga el commit.</p>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="md">Markdown</button>
+      <button class="tab-btn" data-tab="json">JSON (para el sitio)</button>
+    </div>
+    <textarea id="export-text" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn" id="btn-cerrar-modal">Cerrar</button>
+      <button class="btn" id="btn-descargar">Descargar archivo</button>
+      <button class="btn primary" id="btn-copiar">Copiar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATEGORIAS = ["Farmacia","Café","Restaurante","Gimnasio","Veterinaria","Salón de belleza","Barbería","Lavandería","Clínica","Ferretería","Óptica","Panadería","Pet shop","Academia","Comida rápida","Coworking","Licorería","Moda","Bar","Entretenimiento","Banco","Supermercado","Floristería","Guardería","Paquetería","Papelería","Dental","Carnicería","Joyería","Tienda naturista","Agencia de viajes","Spa / Masajes","Uñas","Peluquería","Cejas y pestañas","Laboratorio clínico","Dermatología","Artes marciales","Arte y cultura","Heladería","Casillero","Transporte de carga"];
+
+// estado: "listo" (✅ ya en el sistema) · "revisar" (🈳 investigado, falta confirmar) · "vacio" (🔲 sin datos)
+const SEED = [
+  {zona:"San Francisco", plazas:[
+    {id:"plaza-68", nombre:"Plaza 68", estado:"listo", tenants:[
+      {n:"Kaspet Boutique", cat:["Pet shop"]},{n:"Gelatólogo", cat:["Heladería"]},{n:"Grumpy Chicken", cat:["Restaurante"]},{n:"Barbería 68", cat:["Barbería"]},{n:"Da Vinci Deli Pastas Gourmet", cat:["Restaurante"]}
+    ]},
+    {id:"plaza-sf-69", nombre:"Plaza SF 69", estado:"listo", tenants:[
+      {n:"La Rana Dorada", cat:["Restaurante","Bar"]},{n:"Pastelería Venecia", cat:["Panadería"]},{n:"Taisei Ramen", cat:["Restaurante"]},{n:"We Fresh Market & Café", cat:["Café","Restaurante"]},{n:"Onde el Gringo", cat:["Restaurante"]},{n:"4 Bistro", cat:["Café","Restaurante"]},{n:"Infinity Salon", cat:["Salón de belleza"]}
+    ]},
+    {id:"plaza-76", nombre:"Plaza 76", estado:"listo", tenants:[
+      {n:"Nación Sushi", cat:["Restaurante"]},{n:"Pizza is Love", cat:["Restaurante"]},{n:"Leto Coffee Brew Bar", cat:["Café"]},{n:"Solo Cejas San Francisco", cat:["Cejas y pestañas"]}
+    ]},
+    {id:"la-peatonal-68", nombre:"La Peatonal 68", estado:"listo", tenants:[
+      {n:"Fratelli Pizza & Pasta Gourmet", cat:["Restaurante"]},{n:"Sushark", cat:["Restaurante"]},{n:"Padrón", cat:["Restaurante"]},{n:"Black Box Gym", cat:["Gimnasio"]}
+    ]},
+    {id:"royal-blue-plaza", nombre:"Royal Blue Plaza", estado:"listo", tenants:[
+      {n:"Metro Plus", cat:["Farmacia"]},{n:"Barrio Pizza", cat:["Restaurante"]},{n:"Yari Nails Artist", cat:["Uñas"]},{n:"McDonald's", cat:["Comida rápida"]}
+    ]},
+    {id:"plaza-jolie", nombre:"Plaza Jolie", estado:"listo", tenants:[
+      {n:"Shaky's Panama", cat:["Café"]},{n:"La Colombianita", cat:["Restaurante"]},{n:"Bocado & Sabores", cat:["Restaurante"]}
+    ]},
+    {id:"plaza-san-francisco", nombre:"Plaza San Francisco", estado:"revisar", tenants:[
+      {n:"Farmacias Revilla", cat:["Farmacia"]},{n:"Laboratorio Clínico Fernández", cat:["Laboratorio clínico"]},{n:"Mail Boxes Etc", cat:["Paquetería"]}
+    ]},
+    {id:"city-plaza-san-francisco", nombre:"City Plaza San Francisco", estado:"revisar", tenants:[
+      {n:"PGT Logistics", cat:["Transporte de carga"]},{n:"DHL Express", cat:["Paquetería"]},{n:"Pedro Navaja VIP Barber Shop", cat:["Barbería"]},{n:"AMPM", cat:["Supermercado"]},{n:"Meló Pets & Garden", cat:["Pet shop"]}
+    ]}
+  ]},
+  {zona:"Costa del Este", plazas:[
+    {id:"star-plaza", nombre:"Star Plaza", estado:"listo", tenants:[
+      {n:"American Pets", cat:["Pet shop"]},{n:"Mimosa Spa", cat:["Spa / Masajes"]},{n:"Dairy Queen", cat:["Heladería","Comida rápida"]},{n:"City Kids Learning and Care Center", cat:["Guardería"]},{n:"Blending Hairstudio", cat:["Peluquería"]},{n:"Sweet Blossom", cat:["Floristería"]},{n:"Carnicería gourmet", cat:["Carnicería"]},{n:"Kumon", cat:["Academia"]},{n:"Quick Box", cat:["Casillero"]},{n:"Uno Express", cat:["Transporte de carga"]},{n:"Arpafarma", cat:["Farmacia"]},{n:"HD Eyebrow Design", cat:["Cejas y pestañas"]},{n:"Dermamed", cat:["Dermatología"]},{n:"Corte Argentino", cat:["Barbería"]},{n:"Benjamin Moore", cat:["Ferretería"]}
+    ]},
+    {id:"sky-plaza", nombre:"Sky Plaza", estado:"listo", tenants:[
+      {n:"Metro Plus", cat:["Farmacia"]},{n:"Grand Deli Gourmet", cat:["Supermercado","Café","Panadería"]},{n:"Beautherapy Spa", cat:["Spa / Masajes"]},{n:"Barbman", cat:["Barbería"]},{n:"Laboratorio Clínico Raly", cat:["Laboratorio clínico"]},{n:"Taekwondo Bekho", cat:["Artes marciales"]},{n:"Mila Nail Art", cat:["Uñas"]},{n:"Secret Beauty", cat:["Salón de belleza"]},{n:"FedEx Ship Center", cat:["Paquetería"]},{n:"Happy Copy", cat:["Papelería"]},{n:"Sherwin-Williams", cat:["Ferretería"]},{n:"Pastas Frescas", cat:["Comida rápida"]},{n:"Estudio de Arte Artis", cat:["Arte y cultura"]}
+    ]},
+    {id:"plaza-boulevard-del-este", nombre:"Plaza Boulevard del Este", estado:"revisar", tenants:[
+      {n:"Nail Spot Costa del Este", cat:["Uñas"]},{n:"Made In Italy", cat:["Decoración y hogar"]},{n:"Maserati Panamá", cat:["Concesionario de autos"]},{n:"CasaTerrazza", cat:["Muebles y decoración de exterior"]}
+    ]},
+    {id:"shi-plaza", nombre:"Shi Plaza", estado:"revisar", tenants:[
+      {n:"Slabón Café Burger & Bistró", cat:["Restaurante"]},{n:"Café Bilal", cat:["Restaurante"]}
+    ]}
+  ]},
+  {zona:"Obarrio", plazas:[
+    {id:"plaza-downtown-at-obarrio", nombre:"Plaza Downtown at Obarrio", estado:"listo", tenants:[
+      {n:"Kava", cat:["Restaurante","Café"]},{n:"Stone Sport Cafe by Roberto Durán", cat:["Restaurante"]},{n:"PalettAmerica", cat:["Heladería"]},{n:"Nail Spot Obarrio", cat:["Uñas"]},{n:"Spring Clean", cat:["Lavandería"]}
+    ]},
+    {id:"plaza-61-obarrio", nombre:"Plaza 61 Obarrio", estado:"listo", tenants:[
+      {n:"Leto Coffee Brew Bar", cat:["Café","Panadería"]},{n:"Prime Salon", cat:["Salón de belleza"]},{n:"La Tóxica VIP", cat:["Bar","Entretenimiento"]}
+    ]},
+    {id:"plaza-obarrio", nombre:"Plaza Obarrio", estado:"revisar", tenants:[
+      {n:"Euforia", cat:["Bar","Entretenimiento"]},{n:"Larry Andrade", cat:["Bienes raíces"]},{n:"Keller Williams Obarrio", cat:["Bienes raíces"]},{n:"La Regional de Seguros", cat:["Agencia de seguros"]}
+    ]}
+  ]},
+  {zona:"Condado del Rey", plazas:[
+    {id:"central-plaza-condado-del-rey", nombre:"Central Plaza Condado del Rey", estado:"revisar", tenants:[
+      {n:"Smart Fit", cat:["Gimnasio"]},{n:"Wendy's", cat:["Comida rápida"]},{n:"STARLINX", cat:["Entretenimiento"]}
+    ]},
+    {id:"condado-mall", nombre:"Condado Mall", estado:"revisar", tenants:[
+      {n:"Yakitori & Ramen Spot Panamá", cat:["Restaurante"]},{n:"Sushi Kazoku", cat:["Restaurante"]},{n:"Restaurante Delicias Oriental (好好味餐厅)", cat:["Restaurante"]},{n:"El Tarrito de Azúcar", cat:["Café"]},{n:"Nail House Panamá", cat:["Uñas"]},{n:"Ballet Academy", cat:["Academia"]}
+    ]},
+    {id:"plaza-altos-de-panama", nombre:"Plaza Altos de Panamá", estado:"revisar", tenants:[
+      {n:"Pho Vietnam", cat:["Restaurante"]},{n:"Mary Nail Studio", cat:["Uñas"]},{n:"Panadería Pani Pedazo", cat:["Panadería"]},{n:"Arabian Dance Studio Rasheda", cat:["Academia"]}
+    ]}
+  ]},
+  {zona:"Brisas del Golf", plazas:[
+    {id:"brisas-mall", nombre:"Brisas Mall", estado:"revisar", tenants:[
+      {n:"Óptica Sosa y Arango", cat:["Óptica"]},{n:"La Locanda", cat:["Restaurante"]},{n:"El Brasero", cat:["Restaurante","Comida rápida"]},{n:"Oh-Toro", cat:["Restaurante"]},{n:"Nación Sushi", cat:["Restaurante"]},{n:"Moocha", cat:["Heladería","Café"]},{n:"Zublime Dreamfoods", cat:["Restaurante"]},{n:"The Nail Bar", cat:["Uñas"]},{n:"La Canastilla Ideal", cat:["Moda"]},{n:"Clean & Clean", cat:["Lavandería"]},{n:"Factory Fashion", cat:["Moda"]},{n:"Elite Martial Arts", cat:["Artes marciales"]},{n:"Brewjas Pub", cat:["Bar"]},{n:"DLP Salón", cat:["Salón de belleza"]},{n:"Kids Club Brisas Mall", cat:["Entretenimiento"]},{n:"Planet Fitness", cat:["Gimnasio"]},{n:"Q'Pepitos", cat:["Comida rápida"]},{n:"Mundo Princesa", cat:["Moda"]}
+    ]},
+    {id:"ph-premier-plaza", nombre:"PH Premier Plaza", estado:"revisar", tenants:[
+      {n:"Refugio Barbershop", cat:["Barbería"]},{n:"Los Toneles", cat:["Restaurante"]},{n:"Gary Ceviche Gourmet", cat:["Restaurante"]},{n:"Complot Academia de Baile", cat:["Academia"]},{n:"Cannondale Brisas del Golf", cat:["Tienda de bicicletas"]},{n:"Premier WorkSpace", cat:["Coworking"]}
+    ]},
+    {id:"plaza-del-golf", nombre:"Plaza del Golf", estado:"revisar", tenants:[
+      {n:"Centro Pediátrico y Especializado Plaza del Golf (CePed)", cat:["Clínica"]}
+    ]}
+  ]},
+  {zona:"El Dorado", plazas:[
+    {id:"dorado-city-center", nombre:"Dorado City Center", estado:"revisar", tenants:[
+      {n:"Multibank", cat:["Banco"]},{n:"Farmacias Revilla", cat:["Farmacia"]},{n:"Smart Fit", cat:["Gimnasio"]},{n:"Power Lab", cat:["Gimnasio"]},{n:"Barrio Pizza", cat:["Restaurante"]},{n:"Gong Cha", cat:["Café"]},{n:"Moli Deli Market", cat:["Café"]},{n:"Kid's World", cat:["Entretenimiento"]},{n:"Play Studio", cat:["Entretenimiento"]},{n:"Studio by Yaci", cat:["Salón de belleza"]},{n:"Karolina Vásquez Brows and Lashes", cat:["Cejas y pestañas"]},{n:"City Clinic", cat:["Clínica"]},{n:"Dorado Clinic Center", cat:["Clínica"]},{n:"FedEx", cat:["Paquetería"]},{n:"Be Productive", cat:["Coworking"]},{n:"MAPFRE El Dorado", cat:["Agencia de seguros"]}
+    ]},
+    {id:"la-galeria-el-dorado", nombre:"La Galería El Dorado", estado:"revisar", tenants:[
+      {n:"Krispy Kreme", cat:["Comida rápida","Café"]}
+    ]},
+    {id:"plaza-aventura", nombre:"Plaza Aventura", estado:"revisar", tenants:[
+      {n:"Athen's Pizza", cat:["Restaurante"]},{n:"Mia & Andy Boutique", cat:["Moda"]},{n:"Dafi Shop", cat:["Spa / Masajes","Salón de belleza"]},{n:"Panama Dental Aligners", cat:["Dental"]},{n:"Celulares Panamá", cat:["Tienda de celulares"]},{n:"Panama Office Services", cat:["Coworking"]},{n:"Centro del Cuidado de los Pies", cat:["Clínica"]}
+    ]}
+  ]},
+  {zona:"Punta Pacífica", plazas:[
+    {id:"grand-plaza-punta-pacifica", nombre:"Grand Plaza Punta Pacífica", estado:"revisar", tenants:[
+      {n:"Mystic India", cat:["Restaurante"]},{n:"Ciao Bella", cat:["Restaurante"]},{n:"KIKITOO", cat:["Restaurante"]},{n:"Saint-Honoré", cat:["Panadería","Café"]},{n:"The Coffee Bean & Tea Leaf", cat:["Café"]}
+    ]},
+    {id:"pacific-center", nombre:"Pacific Center", estado:"revisar", tenants:[
+      {n:"Texas de Brazil", cat:["Restaurante"]},{n:"Lung Fung", cat:["Restaurante"]},{n:"Stizzoli", cat:["Restaurante","Bar"]},{n:"Ajisen Ramen", cat:["Restaurante"]},{n:"Crushing Burgers", cat:["Comida rápida"]},{n:"Gong Cha", cat:["Café"]},{n:"Paul Bakery", cat:["Panadería"]},{n:"Super Kosher", cat:["Supermercado"]},{n:"Aliss", cat:["Moda"]},{n:"Cole Haan", cat:["Moda"]},{n:"FEMME", cat:["Salón de belleza"]},{n:"Mister Cut", cat:["Barbería"]},{n:"I See Group", cat:["Óptica"]},{n:"The Panama Clinic (Pharmacy)", cat:["Farmacia","Clínica"]},{n:"Panama Cancer Clinic", cat:["Clínica"]},{n:"Banesco", cat:["Banco"]},{n:"Credicorp Bank", cat:["Banco"]},{n:"Scotiabank", cat:["Banco"]},{n:"Cinemark", cat:["Entretenimiento"]},{n:"Jungla Bowling", cat:["Entretenimiento"]},{n:"Mandarina Garden", cat:["Guardería"]},{n:"Pacific Academies", cat:["Academia"]}
+    ]}
+  ]}
+];
+
+const ESTADO_LABEL = {listo:"✅ lista", revisar:"🈳 revisar", vacio:"🔲 sin empezar"};
+const STORAGE_KEY = "plaza-marketplace-editor-v1";
+
+function cargarDatos(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return JSON.parse(JSON.stringify(SEED));
+}
+function guardarDatos(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+}
+
+let DATA = cargarDatos();
+let plazaActivaId = null;
+let filtro = "";
+
+function todasLasPlazas(){
+  return DATA.flatMap(z => z.plazas.map(p => ({...p, zona:z.zona})));
+}
+function encontrarPlaza(id){
+  for(const z of DATA) for(const p of z.plazas) if(p.id===id) return {plaza:p, zona:z.zona};
+  return null;
+}
+
+function pintarSidebar(){
+  const cont = document.getElementById("zonas");
+  cont.innerHTML = "";
+  const f = filtro.trim().toLowerCase();
+  let total=0, listas=0;
+  for(const z of DATA){
+    const plazasFiltradas = z.plazas.filter(p=>{
+      if(!f) return true;
+      if(p.nombre.toLowerCase().includes(f)) return true;
+      return p.tenants.some(t=>t.n.toLowerCase().includes(f));
+    });
+    total += z.plazas.length;
+    listas += z.plazas.filter(p=>p.estado==="listo").length;
+    if(!plazasFiltradas.length) continue;
+    const head = document.createElement("div");
+    head.className = "zona-head";
+    head.textContent = z.zona;
+    cont.appendChild(head);
+    for(const p of plazasFiltradas){
+      const row = document.createElement("div");
+      row.className = "plaza-row" + (p.id===plazaActivaId ? " active" : "");
+      row.innerHTML = `<span class="dot ${p.estado}"></span><span class="nombre">${escapeHtml(p.nombre)}</span><span class="count">${p.tenants.length}</span>`;
+      row.addEventListener("click", ()=>{ plazaActivaId = p.id; render(); });
+      cont.appendChild(row);
+    }
+  }
+  document.getElementById("stats").textContent = `${listas}/${total} plazas listas · ${todasLasPlazas().reduce((n,p)=>n+p.tenants.length,0)} negocios`;
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function pintarPrincipal(){
+  const cont = document.getElementById("main-inner");
+  if(!plazaActivaId){
+    cont.innerHTML = `<div class="empty-state"><p>Elegí una plaza de la izquierda para ver y editar sus negocios.</p></div>`;
+    return;
+  }
+  const found = encontrarPlaza(plazaActivaId);
+  if(!found){ plazaActivaId=null; return pintarPrincipal(); }
+  const {plaza, zona} = found;
+
+  cont.innerHTML = "";
+
+  const headerRow = document.createElement("div");
+  headerRow.className = "header-row";
+  headerRow.innerHTML = `<div><h2>${escapeHtml(plaza.nombre)}</h2><div class="zona-tag">${escapeHtml(zona)}</div></div>`;
+  const selEstado = document.createElement("select");
+  selEstado.className = "estado";
+  for(const key of ["listo","revisar","vacio"]){
+    const opt = document.createElement("option");
+    opt.value = key; opt.textContent = ESTADO_LABEL[key];
+    if(plaza.estado===key) opt.selected = true;
+    selEstado.appendChild(opt);
+  }
+  selEstado.addEventListener("change", ()=>{ plaza.estado = selEstado.value; guardarDatos(); pintarSidebar(); });
+  headerRow.appendChild(selEstado);
+  cont.appendChild(headerRow);
+
+  const ul = document.createElement("ul");
+  ul.className = "negocios";
+  plaza.tenants.forEach((t, idx) => ul.appendChild(filaNegocio(plaza, t, idx)));
+  cont.appendChild(ul);
+
+  cont.appendChild(formularioAgregar(plaza));
+
+  const hint = document.createElement("p");
+  hint.className = "hint";
+  hint.textContent = "Los cambios se guardan solos en este navegador. Usá \"Exportar\" cuando quieras pasarme los datos.";
+  cont.appendChild(hint);
+}
+
+function filaNegocio(plaza, t, idx){
+  const li = document.createElement("li");
+  li.className = "negocio";
+
+  const nombreInput = document.createElement("input");
+  nombreInput.className = "nombre-negocio";
+  nombreInput.value = t.n;
+  nombreInput.addEventListener("change", ()=>{ t.n = nombreInput.value.trim() || t.n; guardarDatos(); pintarSidebar(); });
+  li.appendChild(nombreInput);
+
+  const chips = document.createElement("div");
+  chips.className = "chips";
+  t.cat.forEach((c, ci) => {
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.innerHTML = `${escapeHtml(c)} `;
+    const rm = document.createElement("button");
+    rm.textContent = "×";
+    rm.title = "Quitar categoría";
+    rm.addEventListener("click", ()=>{
+      if(t.cat.length<=1){ alert("Un negocio necesita al menos una categoría."); return; }
+      t.cat.splice(ci,1); guardarDatos(); render();
+    });
+    chip.appendChild(rm);
+    chips.appendChild(chip);
+  });
+  const addCatBtn = document.createElement("button");
+  addCatBtn.className = "add-cat";
+  addCatBtn.textContent = "+ categoría";
+  addCatBtn.addEventListener("click", (e)=> abrirCatMenu(e.currentTarget, (cat)=>{
+    if(!t.cat.includes(cat)) t.cat.push(cat);
+    guardarDatos(); render();
+  }));
+  chips.appendChild(addCatBtn);
+  li.appendChild(chips);
+
+  const del = document.createElement("button");
+  del.className = "del-negocio";
+  del.textContent = "🗑";
+  del.title = "Quitar negocio";
+  del.addEventListener("click", ()=>{
+    if(!confirm(`¿Quitar "${t.n}" de esta plaza?`)) return;
+    plaza.tenants.splice(idx,1); guardarDatos(); render();
+  });
+  li.appendChild(del);
+
+  return li;
+}
+
+function abrirCatMenu(anchorEl, onPick){
+  cerrarCatMenu();
+  const wrap = document.createElement("div");
+  wrap.className = "cat-picker";
+  wrap.style.position = "absolute";
+  const rect = anchorEl.getBoundingClientRect();
+  wrap.style.left = (rect.left + window.scrollX) + "px";
+  wrap.style.top = (rect.bottom + window.scrollY + 4) + "px";
+  const menu = document.createElement("div");
+  menu.className = "cat-menu";
+  menu.id = "cat-menu-flotante";
+  CATEGORIAS.forEach(c=>{
+    const b = document.createElement("button");
+    b.textContent = c;
+    b.addEventListener("click", ()=>{ onPick(c); cerrarCatMenu(); });
+    menu.appendChild(b);
+  });
+  wrap.appendChild(menu);
+  wrap.style.position = "fixed";
+  document.body.appendChild(wrap);
+  wrap.id = "cat-picker-flotante";
+  setTimeout(()=> document.addEventListener("click", cerrarCatMenuFuera), 0);
+}
+function cerrarCatMenu(){
+  const el = document.getElementById("cat-picker-flotante");
+  if(el) el.remove();
+  document.removeEventListener("click", cerrarCatMenuFuera);
+}
+function cerrarCatMenuFuera(e){
+  const el = document.getElementById("cat-picker-flotante");
+  if(el && !el.contains(e.target)) cerrarCatMenu();
+}
+
+function formularioAgregar(plaza){
+  const wrap = document.createElement("div");
+  wrap.className = "add-form";
+
+  const nombreInput = document.createElement("input");
+  nombreInput.type = "text";
+  nombreInput.className = "add-nombre";
+  nombreInput.placeholder = "Nombre del negocio";
+
+  const catInput = document.createElement("input");
+  catInput.type = "text";
+  catInput.className = "add-cat-input";
+  catInput.placeholder = "Categoría (o varias separadas por coma)";
+  const datalist = document.createElement("datalist");
+  datalist.id = "categorias-datalist";
+  CATEGORIAS.forEach(c=>{ const o=document.createElement("option"); o.value=c; datalist.appendChild(o); });
+  catInput.setAttribute("list","categorias-datalist");
+
+  const addBtn = document.createElement("button");
+  addBtn.className = "btn primary";
+  addBtn.textContent = "Agregar";
+
+  function submit(){
+    const nombre = nombreInput.value.trim();
+    const cats = catInput.value.split(",").map(s=>s.trim()).filter(Boolean);
+    if(!nombre){ nombreInput.focus(); return; }
+    if(!cats.length){ catInput.focus(); return; }
+    plaza.tenants.push({n:nombre, cat:cats});
+    guardarDatos();
+    render();
+  }
+  addBtn.addEventListener("click", submit);
+  [nombreInput, catInput].forEach(inp=> inp.addEventListener("keydown", e=>{ if(e.key==="Enter") submit(); }));
+
+  wrap.appendChild(nombreInput);
+  wrap.appendChild(catInput);
+  wrap.appendChild(datalist);
+  wrap.appendChild(addBtn);
+  return wrap;
+}
+
+function render(){
+  pintarSidebar();
+  pintarPrincipal();
+}
+
+document.getElementById("buscar").addEventListener("input", (e)=>{ filtro = e.target.value; pintarSidebar(); });
+
+document.getElementById("btn-reset").addEventListener("click", ()=>{
+  if(!confirm("Esto borra tus cambios en este navegador y vuelve a los datos originales. ¿Seguro?")) return;
+  DATA = JSON.parse(JSON.stringify(SEED));
+  guardarDatos();
+  plazaActivaId = null;
+  render();
+});
+
+function generarMarkdown(){
+  let out = "# Plazas — info real\n\n";
+  for(const z of DATA){
+    out += `## ${z.zona}\n\n`;
+    for(const p of z.plazas){
+      const icon = p.estado==="listo" ? "✅" : (p.estado==="revisar" ? "🈳" : "🔲");
+      out += `### ${p.nombre} ${icon}\n`;
+      if(!p.tenants.length){ out += "-\n\n"; continue; }
+      for(const t of p.tenants) out += `- ${t.n} — ${t.cat.join(", ")}\n`;
+      out += "\n";
+    }
+    out += "---\n\n";
+  }
+  return out.trim()+"\n";
+}
+function generarJSON(){
+  const obj = {};
+  for(const z of DATA) for(const p of z.plazas){
+    obj[p.id] = p.tenants.map(t => ({n:t.n, cat: t.cat.length===1 ? t.cat[0] : t.cat}));
+  }
+  return JSON.stringify(obj, null, 2);
+}
+
+const modalBg = document.getElementById("modal-bg");
+const exportText = document.getElementById("export-text");
+let tabActiva = "md";
+function refrescarExport(){
+  exportText.value = tabActiva==="md" ? generarMarkdown() : generarJSON();
+}
+document.getElementById("btn-exportar").addEventListener("click", ()=>{
+  modalBg.classList.remove("hidden");
+  refrescarExport();
+});
+document.getElementById("btn-cerrar-modal").addEventListener("click", ()=> modalBg.classList.add("hidden"));
+modalBg.addEventListener("click", (e)=>{ if(e.target===modalBg) modalBg.classList.add("hidden"); });
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    tabActiva = btn.dataset.tab;
+    refrescarExport();
+  });
+});
+document.getElementById("btn-copiar").addEventListener("click", async ()=>{
+  await navigator.clipboard.writeText(exportText.value);
+  const btn = document.getElementById("btn-copiar");
+  const orig = btn.textContent; btn.textContent = "¡Copiado!";
+  setTimeout(()=> btn.textContent = orig, 1200);
+});
+document.getElementById("btn-descargar").addEventListener("click", ()=>{
+  const isMd = tabActiva==="md";
+  const blob = new Blob([exportText.value], {type: isMd ? "text/markdown" : "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = isMd ? "investigacion-plazas.md" : "plazas-tenants.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+render();
+</script>
+</body>
+</html>

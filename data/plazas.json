@@ -1,0 +1,913 @@
+[
+  {
+    "id": "plaza-68",
+    "nombre": "Plaza 68",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "Kaspet Boutique",
+        "cat": "Pet shop"
+      },
+      {
+        "n": "Gelatólogo",
+        "cat": "Heladería"
+      },
+      {
+        "n": "Grumpy Chicken",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Barbería 68",
+        "cat": "Barbería"
+      },
+      {
+        "n": "Da Vinci Deli Pastas Gourmet",
+        "cat": "Restaurante"
+      }
+    ]
+  },
+  {
+    "id": "plaza-san-francisco",
+    "nombre": "Plaza San Francisco",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "Farmacias Revilla",
+        "cat": "Farmacia"
+      },
+      {
+        "n": "Laboratorio Clínico Fernández",
+        "cat": "Laboratorio clínico"
+      },
+      {
+        "n": "Mail Boxes Etc",
+        "cat": "Paquetería"
+      }
+    ]
+  },
+  {
+    "id": "plaza-sf-69",
+    "nombre": "Plaza SF 69",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "La Rana Dorada",
+        "cat": [
+          "Restaurante",
+          "Bar"
+        ]
+      },
+      {
+        "n": "Pastelería Venecia",
+        "cat": "Panadería"
+      },
+      {
+        "n": "Taisei Ramen",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "We Fresh Market & Café",
+        "cat": [
+          "Café",
+          "Restaurante"
+        ]
+      },
+      {
+        "n": "Onde el Gringo",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "4 Bistro",
+        "cat": [
+          "Café",
+          "Restaurante"
+        ]
+      },
+      {
+        "n": "Infinity Salon",
+        "cat": "Salón de belleza"
+      }
+    ]
+  },
+  {
+    "id": "plaza-76",
+    "nombre": "Plaza 76",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "Nación Sushi",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Pizza is Love",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Leto Coffee Brew Bar",
+        "cat": "Café"
+      },
+      {
+        "n": "Solo Cejas San Francisco",
+        "cat": "Cejas y pestañas"
+      }
+    ]
+  },
+  {
+    "id": "la-peatonal-68",
+    "nombre": "La Peatonal 68",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "Fratelli Pizza & Pasta Gourmet",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Sushark",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Padrón",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Black Box Gym",
+        "cat": "Gimnasio"
+      }
+    ]
+  },
+  {
+    "id": "city-plaza-san-francisco",
+    "nombre": "City Plaza San Francisco",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "PGT Logistics",
+        "cat": "Transporte de carga"
+      },
+      {
+        "n": "DHL Express",
+        "cat": "Paquetería"
+      },
+      {
+        "n": "Pedro Navaja VIP Barber Shop",
+        "cat": "Barbería"
+      },
+      {
+        "n": "AMPM",
+        "cat": "Supermercado"
+      },
+      {
+        "n": "Meló Pets & Garden",
+        "cat": "Pet shop"
+      }
+    ]
+  },
+  {
+    "id": "royal-blue-plaza",
+    "nombre": "Royal Blue Plaza",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "Metro Plus",
+        "cat": "Farmacia"
+      },
+      {
+        "n": "Barrio Pizza",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Yari Nails Artist",
+        "cat": "Uñas"
+      },
+      {
+        "n": "McDonald's",
+        "cat": "Comida rápida"
+      }
+    ]
+  },
+  {
+    "id": "plaza-jolie",
+    "nombre": "Plaza Jolie",
+    "zona": "San Francisco",
+    "tenants": [
+      {
+        "n": "Shaky's Panama",
+        "cat": "Café"
+      },
+      {
+        "n": "La Colombianita",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Bocado & Sabores",
+        "cat": "Restaurante"
+      }
+    ]
+  },
+  {
+    "id": "plaza-boulevard-del-este",
+    "nombre": "Plaza Boulevard del Este",
+    "zona": "Costa del Este",
+    "tenants": [
+      {
+        "n": "Nail Spot Costa del Este",
+        "cat": "Uñas"
+      },
+      {
+        "n": "Made In Italy",
+        "cat": "Decoración y hogar"
+      },
+      {
+        "n": "Maserati Panamá",
+        "cat": "Concesionario de autos"
+      },
+      {
+        "n": "CasaTerrazza",
+        "cat": "Muebles y decoración de exterior"
+      }
+    ]
+  },
+  {
+    "id": "star-plaza",
+    "nombre": "Star Plaza",
+    "zona": "Costa del Este",
+    "tenants": [
+      {
+        "n": "American Pets",
+        "cat": "Pet shop"
+      },
+      {
+        "n": "Mimosa Spa",
+        "cat": "Spa / Masajes"
+      },
+      {
+        "n": "Dairy Queen",
+        "cat": [
+          "Heladería",
+          "Comida rápida"
+        ]
+      },
+      {
+        "n": "City Kids Learning and Care Center",
+        "cat": "Guardería"
+      },
+      {
+        "n": "Blending Hairstudio",
+        "cat": "Peluquería"
+      },
+      {
+        "n": "Sweet Blossom",
+        "cat": "Floristería"
+      },
+      {
+        "n": "Carnicería gourmet",
+        "cat": "Carnicería"
+      },
+      {
+        "n": "Kumon",
+        "cat": "Academia"
+      },
+      {
+        "n": "Quick Box",
+        "cat": "Casillero"
+      },
+      {
+        "n": "Uno Express",
+        "cat": "Transporte de carga"
+      },
+      {
+        "n": "Arpafarma",
+        "cat": "Farmacia"
+      },
+      {
+        "n": "HD Eyebrow Design",
+        "cat": "Cejas y pestañas"
+      },
+      {
+        "n": "Dermamed",
+        "cat": "Dermatología"
+      },
+      {
+        "n": "Corte Argentino",
+        "cat": "Barbería"
+      },
+      {
+        "n": "Benjamin Moore",
+        "cat": "Ferretería"
+      }
+    ]
+  },
+  {
+    "id": "shi-plaza",
+    "nombre": "Shi Plaza",
+    "zona": "Costa del Este",
+    "tenants": [
+      {
+        "n": "Slabón Café Burger & Bistró",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Café Bilal",
+        "cat": "Restaurante"
+      }
+    ]
+  },
+  {
+    "id": "sky-plaza",
+    "nombre": "Sky Plaza",
+    "zona": "Costa del Este",
+    "tenants": [
+      {
+        "n": "Metro Plus",
+        "cat": "Farmacia"
+      },
+      {
+        "n": "Grand Deli Gourmet",
+        "cat": [
+          "Supermercado",
+          "Café",
+          "Panadería"
+        ]
+      },
+      {
+        "n": "Beautherapy Spa",
+        "cat": "Spa / Masajes"
+      },
+      {
+        "n": "Barbman",
+        "cat": "Barbería"
+      },
+      {
+        "n": "Laboratorio Clínico Raly",
+        "cat": "Laboratorio clínico"
+      },
+      {
+        "n": "Taekwondo Bekho",
+        "cat": "Artes marciales"
+      },
+      {
+        "n": "Mila Nail Art",
+        "cat": "Uñas"
+      },
+      {
+        "n": "Secret Beauty",
+        "cat": "Salón de belleza"
+      },
+      {
+        "n": "FedEx Ship Center",
+        "cat": "Paquetería"
+      },
+      {
+        "n": "Happy Copy",
+        "cat": "Papelería"
+      },
+      {
+        "n": "Sherwin-Williams",
+        "cat": "Ferretería"
+      },
+      {
+        "n": "Pastas Frescas",
+        "cat": "Comida rápida"
+      },
+      {
+        "n": "Estudio de Arte Artis",
+        "cat": "Arte y cultura"
+      }
+    ]
+  },
+  {
+    "id": "plaza-obarrio",
+    "nombre": "Plaza Obarrio",
+    "zona": "Obarrio",
+    "tenants": [
+      {
+        "n": "Euforia",
+        "cat": [
+          "Bar",
+          "Entretenimiento"
+        ]
+      },
+      {
+        "n": "Larry Andrade",
+        "cat": "Bienes raíces"
+      },
+      {
+        "n": "Keller Williams Obarrio",
+        "cat": "Bienes raíces"
+      },
+      {
+        "n": "La Regional de Seguros",
+        "cat": "Agencia de seguros"
+      }
+    ]
+  },
+  {
+    "id": "plaza-downtown-at-obarrio",
+    "nombre": "Plaza Downtown at Obarrio",
+    "zona": "Obarrio",
+    "tenants": [
+      {
+        "n": "Kava",
+        "cat": [
+          "Restaurante",
+          "Café"
+        ]
+      },
+      {
+        "n": "Stone Sport Cafe by Roberto Durán",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "PalettAmerica",
+        "cat": "Heladería"
+      },
+      {
+        "n": "Nail Spot Obarrio",
+        "cat": "Uñas"
+      },
+      {
+        "n": "Spring Clean",
+        "cat": "Lavandería"
+      }
+    ]
+  },
+  {
+    "id": "plaza-61-obarrio",
+    "nombre": "Plaza 61 Obarrio",
+    "zona": "Obarrio",
+    "tenants": [
+      {
+        "n": "Leto Coffee Brew Bar",
+        "cat": [
+          "Café",
+          "Panadería"
+        ]
+      },
+      {
+        "n": "Prime Salon",
+        "cat": "Salón de belleza"
+      },
+      {
+        "n": "La Tóxica VIP",
+        "cat": [
+          "Bar",
+          "Entretenimiento"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "central-plaza-condado-del-rey",
+    "nombre": "Central Plaza Condado del Rey",
+    "zona": "Condado del Rey",
+    "tenants": [
+      {
+        "n": "Smart Fit",
+        "cat": "Gimnasio"
+      },
+      {
+        "n": "Wendy's",
+        "cat": "Comida rápida"
+      },
+      {
+        "n": "STARLINX",
+        "cat": "Entretenimiento"
+      }
+    ]
+  },
+  {
+    "id": "condado-mall",
+    "nombre": "Condado Mall",
+    "zona": "Condado del Rey",
+    "tenants": [
+      {
+        "n": "Yakitori & Ramen Spot Panamá",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Sushi Kazoku",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Restaurante Delicias Oriental (好好味餐厅)",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "El Tarrito de Azúcar",
+        "cat": "Café"
+      },
+      {
+        "n": "Nail House Panamá",
+        "cat": "Uñas"
+      },
+      {
+        "n": "Ballet Academy",
+        "cat": "Academia"
+      }
+    ]
+  },
+  {
+    "id": "plaza-altos-de-panama",
+    "nombre": "Plaza Altos de Panamá",
+    "zona": "Condado del Rey",
+    "tenants": [
+      {
+        "n": "Pho Vietnam",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Mary Nail Studio",
+        "cat": "Uñas"
+      },
+      {
+        "n": "Panadería Pani Pedazo",
+        "cat": "Panadería"
+      },
+      {
+        "n": "Arabian Dance Studio Rasheda",
+        "cat": "Academia"
+      }
+    ]
+  },
+  {
+    "id": "brisas-mall",
+    "nombre": "Brisas Mall",
+    "zona": "Brisas del Golf",
+    "tenants": [
+      {
+        "n": "Óptica Sosa y Arango",
+        "cat": "Óptica"
+      },
+      {
+        "n": "La Locanda",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "El Brasero",
+        "cat": [
+          "Restaurante",
+          "Comida rápida"
+        ]
+      },
+      {
+        "n": "Oh-Toro",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Nación Sushi",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Moocha",
+        "cat": [
+          "Heladería",
+          "Café"
+        ]
+      },
+      {
+        "n": "Zublime Dreamfoods",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "The Nail Bar",
+        "cat": "Uñas"
+      },
+      {
+        "n": "La Canastilla Ideal",
+        "cat": "Moda"
+      },
+      {
+        "n": "Clean & Clean",
+        "cat": "Lavandería"
+      },
+      {
+        "n": "Factory Fashion",
+        "cat": "Moda"
+      },
+      {
+        "n": "Elite Martial Arts",
+        "cat": "Artes marciales"
+      },
+      {
+        "n": "Brewjas Pub",
+        "cat": "Bar"
+      },
+      {
+        "n": "DLP Salón",
+        "cat": "Salón de belleza"
+      },
+      {
+        "n": "Kids Club Brisas Mall",
+        "cat": "Entretenimiento"
+      },
+      {
+        "n": "Planet Fitness",
+        "cat": "Gimnasio"
+      },
+      {
+        "n": "Q'Pepitos",
+        "cat": "Comida rápida"
+      },
+      {
+        "n": "Mundo Princesa",
+        "cat": "Moda"
+      }
+    ]
+  },
+  {
+    "id": "ph-premier-plaza",
+    "nombre": "PH Premier Plaza",
+    "zona": "Brisas del Golf",
+    "tenants": [
+      {
+        "n": "Refugio Barbershop",
+        "cat": "Barbería"
+      },
+      {
+        "n": "Los Toneles",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Gary Ceviche Gourmet",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Complot Academia de Baile",
+        "cat": "Academia"
+      },
+      {
+        "n": "Cannondale Brisas del Golf",
+        "cat": "Tienda de bicicletas"
+      },
+      {
+        "n": "Premier WorkSpace",
+        "cat": "Coworking"
+      }
+    ]
+  },
+  {
+    "id": "plaza-del-golf",
+    "nombre": "Plaza del Golf",
+    "zona": "Brisas del Golf",
+    "tenants": [
+      {
+        "n": "Centro Pediátrico y Especializado Plaza del Golf (CePed)",
+        "cat": "Clínica"
+      }
+    ]
+  },
+  {
+    "id": "dorado-city-center",
+    "nombre": "Dorado City Center",
+    "zona": "El Dorado",
+    "tenants": [
+      {
+        "n": "Multibank",
+        "cat": "Banco"
+      },
+      {
+        "n": "Farmacias Revilla",
+        "cat": "Farmacia"
+      },
+      {
+        "n": "Smart Fit",
+        "cat": "Gimnasio"
+      },
+      {
+        "n": "Power Lab",
+        "cat": "Gimnasio"
+      },
+      {
+        "n": "Barrio Pizza",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Gong Cha",
+        "cat": "Café"
+      },
+      {
+        "n": "Moli Deli Market",
+        "cat": "Café"
+      },
+      {
+        "n": "Kid's World",
+        "cat": "Entretenimiento"
+      },
+      {
+        "n": "Play Studio",
+        "cat": "Entretenimiento"
+      },
+      {
+        "n": "Studio by Yaci",
+        "cat": "Salón de belleza"
+      },
+      {
+        "n": "Karolina Vásquez Brows and Lashes",
+        "cat": "Cejas y pestañas"
+      },
+      {
+        "n": "City Clinic",
+        "cat": "Clínica"
+      },
+      {
+        "n": "Dorado Clinic Center",
+        "cat": "Clínica"
+      },
+      {
+        "n": "FedEx",
+        "cat": "Paquetería"
+      },
+      {
+        "n": "Be Productive",
+        "cat": "Coworking"
+      },
+      {
+        "n": "MAPFRE El Dorado",
+        "cat": "Agencia de seguros"
+      }
+    ]
+  },
+  {
+    "id": "la-galeria-el-dorado",
+    "nombre": "La Galería El Dorado",
+    "zona": "El Dorado",
+    "tenants": [
+      {
+        "n": "Krispy Kreme",
+        "cat": [
+          "Comida rápida",
+          "Café"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plaza-aventura",
+    "nombre": "Plaza Aventura",
+    "zona": "El Dorado",
+    "tenants": [
+      {
+        "n": "Athen's Pizza",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Mia & Andy Boutique",
+        "cat": "Moda"
+      },
+      {
+        "n": "Dafi Shop",
+        "cat": [
+          "Spa / Masajes",
+          "Salón de belleza"
+        ]
+      },
+      {
+        "n": "Panama Dental Aligners",
+        "cat": "Dental"
+      },
+      {
+        "n": "Celulares Panamá",
+        "cat": "Tienda de celulares"
+      },
+      {
+        "n": "Panama Office Services",
+        "cat": "Coworking"
+      },
+      {
+        "n": "Centro del Cuidado de los Pies",
+        "cat": "Clínica"
+      }
+    ]
+  },
+  {
+    "id": "grand-plaza-punta-pacifica",
+    "nombre": "Grand Plaza Punta Pacífica",
+    "zona": "Punta Pacífica",
+    "tenants": [
+      {
+        "n": "Mystic India",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Ciao Bella",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "KIKITOO",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Saint-Honoré",
+        "cat": [
+          "Panadería",
+          "Café"
+        ]
+      },
+      {
+        "n": "The Coffee Bean & Tea Leaf",
+        "cat": "Café"
+      }
+    ]
+  },
+  {
+    "id": "pacific-center",
+    "nombre": "Pacific Center",
+    "zona": "Punta Pacífica",
+    "tenants": [
+      {
+        "n": "Texas de Brazil",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Lung Fung",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Stizzoli",
+        "cat": [
+          "Restaurante",
+          "Bar"
+        ]
+      },
+      {
+        "n": "Ajisen Ramen",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Crushing Burgers",
+        "cat": "Comida rápida"
+      },
+      {
+        "n": "Gong Cha",
+        "cat": "Café"
+      },
+      {
+        "n": "Paul Bakery",
+        "cat": "Panadería"
+      },
+      {
+        "n": "Super Kosher",
+        "cat": "Supermercado"
+      },
+      {
+        "n": "Aliss",
+        "cat": "Moda"
+      },
+      {
+        "n": "Cole Haan",
+        "cat": "Moda"
+      },
+      {
+        "n": "FEMME",
+        "cat": "Salón de belleza"
+      },
+      {
+        "n": "Mister Cut",
+        "cat": "Barbería"
+      },
+      {
+        "n": "I See Group",
+        "cat": "Óptica"
+      },
+      {
+        "n": "The Panama Clinic (Pharmacy)",
+        "cat": [
+          "Farmacia",
+          "Clínica"
+        ]
+      },
+      {
+        "n": "Panama Cancer Clinic",
+        "cat": "Clínica"
+      },
+      {
+        "n": "Banesco",
+        "cat": "Banco"
+      },
+      {
+        "n": "Credicorp Bank",
+        "cat": "Banco"
+      },
+      {
+        "n": "Scotiabank",
+        "cat": "Banco"
+      },
+      {
+        "n": "Cinemark",
+        "cat": "Entretenimiento"
+      },
+      {
+        "n": "Jungla Bowling",
+        "cat": "Entretenimiento"
+      },
+      {
+        "n": "Mandarina Garden",
+        "cat": "Guardería"
+      },
+      {
+        "n": "Pacific Academies",
+        "cat": "Academia"
+      }
+    ]
+  }
+]
