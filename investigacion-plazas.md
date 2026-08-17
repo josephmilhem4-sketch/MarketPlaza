@@ -112,10 +112,15 @@ Si necesitas una que no está en la lista, ponla igual y la agregamos.
 - Made In Italy — Decoración y hogar
 - Maserati Panamá — Concesionario de autos
 - CasaTerrazza — Muebles y decoración de exterior
+- Catalina Córdoba Boutique — Decoración y hogar
+
+> Nota: Google Maps le cuenta 10 negocios en su directorio propio (Health & Beauty 3, Home & Kitchen 3, Other 4), pero ese directorio requiere sesión iniciada en Google para ver el listado completo — no lo pude abrir sin loguearme. Nos faltan ~5 negocios más ahí. Descartados por estar en edificios vecinos, no en esta plaza: Supermercados Rey (Edificio Comercial Rey), Hikaru (plus code distinto), Dream Nails & Spa y Prime Salon (Plaza Emporio / Dream Plaza). "Virtù Atelier Legal" (bufete) tiene un plus code muy cercano pero no confirmé si es esta plaza u otro edificio — revisar en persona.
 
 ### Shi Plaza / The Corner Plaza 🈳
 - Slabón Café Burger & Bistró — Restaurante
 - Café Bilal — Restaurante
+- Leto Coffee Brew Bar — Café
+- Gelarti — Heladería
 -
 
 ---

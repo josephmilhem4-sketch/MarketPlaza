@@ -235,6 +235,10 @@
       {
         "n": "CasaTerrazza",
         "cat": "Muebles y decoración de exterior"
+      },
+      {
+        "n": "Catalina Córdoba Boutique",
+        "cat": "Decoración y hogar"
       }
     ]
   },
@@ -320,6 +324,14 @@
       {
         "n": "Café Bilal",
         "cat": "Restaurante"
+      },
+      {
+        "n": "Leto Coffee Brew Bar",
+        "cat": "Café"
+      },
+      {
+        "n": "Gelarti",
+        "cat": "Heladería"
       }
     ]
   },
