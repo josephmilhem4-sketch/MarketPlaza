@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Plaza Marketplace — Panamá</title>
+<title>Local.iA — Panamá</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -849,7 +849,7 @@
 
 <div id="gate">
   <div class="gate-card">
-    <span class="brand-name" style="color:var(--accent); font-weight:700">plazamarket</span>
+    <span class="brand-name" style="color:var(--accent); font-weight:700">Local.iA</span>
     <h2>Demo privada</h2>
     <p>Este es un prototipo en desarrollo. Ingresa el código de acceso que te compartieron.</p>
     <form id="gate-form">
@@ -862,13 +862,13 @@
 
 <header class="topbar">
   <div class="topbar-in">
-    <a class="brand" href="#/inicio" aria-label="Plaza Marketplace">
+    <a class="brand" href="#/inicio" aria-label="Local.iA">
       <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
         <rect x="1.5" y="9" width="23" height="15" rx="2.5" fill="var(--accent)"/>
         <path d="M2 10 L13 2 L24 10" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         <rect x="10" y="15" width="6" height="9" rx="1" fill="var(--bg)"/>
       </svg>
-      <span class="brand-name">plazamarket</span>
+      <span class="brand-name">Local.iA</span>
     </a>
     <nav class="tabs" id="tabs">
       <a href="#/explorar" data-r="explorar">Explorar locales</a>
@@ -883,7 +883,7 @@
 
 <main id="app"></main>
 
-<footer>Prototipo de demostración — los negocios, locales y precios son ilustrativos y no representan la oferta real de cada plaza · Plaza Marketplace · Panamá, 2026</footer>
+<footer>Prototipo de demostración — los negocios, locales y precios son ilustrativos y no representan la oferta real de cada plaza · Local.iA · Panamá, 2026</footer>
 
 <dialog id="dlg-contacto">
   <form class="dlg-in" id="form-contacto" method="dialog">
@@ -1340,8 +1340,8 @@ function waLink(pid, lid){
   const p = plaza(pid); if(!p) return "#";
   const l = lid ? p.locales.find(x=>x.id===lid) : null;
   const msg = l
-    ? `Hola! Vi Plaza Marketplace y me interesa el local ${l.id} en ${p.nombre} (${l.m2} m², ${fmt$.format(l.precio)}/mes). ¿Me pueden dar más información?`
-    : `Hola! Vi Plaza Marketplace y me interesa conocer más sobre los locales disponibles en ${p.nombre}.`;
+    ? `Hola! Vi Local.iA y me interesa el local ${l.id} en ${p.nombre} (${l.m2} m², ${fmt$.format(l.precio)}/mes). ¿Me pueden dar más información?`
+    : `Hola! Vi Local.iA y me interesa conocer más sobre los locales disponibles en ${p.nombre}.`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
 function waBtn(pid, lid, cls){
