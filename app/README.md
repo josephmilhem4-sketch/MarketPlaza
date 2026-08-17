@@ -1,4 +1,4 @@
-# Plaza Marketplace
+# Local.iA
 
 Prototipo de una plataforma que ayuda a decidir en qué plaza comercial de
 Panamá conviene abrir un negocio. Cruza el tipo de negocio que alguien
