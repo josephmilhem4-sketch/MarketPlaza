@@ -132,6 +132,10 @@
       {
         "n": "Black Box Gym",
         "cat": "Gimnasio"
+      },
+      {
+        "n": "Churrería Manolo",
+        "cat": "Restaurante"
       }
     ]
   },
@@ -159,6 +163,13 @@
       {
         "n": "Meló Pets & Garden",
         "cat": "Pet shop"
+      },
+      {
+        "n": "Ostinato Pub",
+        "cat": [
+          "Restaurante",
+          "Bar"
+        ]
       }
     ]
   },
@@ -180,7 +191,7 @@
         "cat": "Uñas"
       },
       {
-        "n": "McDonald's",
+        "n": "Wendy's",
         "cat": "Comida rápida"
       }
     ]
@@ -201,6 +212,10 @@
       {
         "n": "Bocado & Sabores",
         "cat": "Restaurante"
+      },
+      {
+        "n": "Mimado Pets Pty",
+        "cat": "Pet shop"
       }
     ]
   },
@@ -453,6 +468,10 @@
           "Bar",
           "Entretenimiento"
         ]
+      },
+      {
+        "n": "Valerias Couture",
+        "cat": "Moda"
       }
     ]
   },
@@ -503,6 +522,18 @@
       {
         "n": "Ballet Academy",
         "cat": "Academia"
+      },
+      {
+        "n": "Sumin K-Beauty Panamá",
+        "cat": "Tienda naturista"
+      },
+      {
+        "n": "Hello Store",
+        "cat": "Bazar y hogar"
+      },
+      {
+        "n": "Nail Design Panamá",
+        "cat": "Uñas"
       }
     ]
   },
@@ -675,7 +706,7 @@
       },
       {
         "n": "Power Lab",
-        "cat": "Gimnasio"
+        "cat": "Tienda de suplementos"
       },
       {
         "n": "Barrio Pizza",
@@ -906,6 +937,62 @@
       },
       {
         "n": "Pacific Academies",
+        "cat": "Academia"
+      },
+      {
+        "n": "Miznon",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Athanasiou",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Suvlas",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Tasty",
+        "cat": "Restaurante"
+      },
+      {
+        "n": "Growing Up",
+        "cat": "Moda"
+      },
+      {
+        "n": "La Bottega",
+        "cat": "Moda"
+      },
+      {
+        "n": "Luxury Uniforms",
+        "cat": "Moda"
+      },
+      {
+        "n": "Outdoor",
+        "cat": "Equipo outdoor"
+      },
+      {
+        "n": "Krafty Kids",
+        "cat": "Academia"
+      },
+      {
+        "n": "Little Minds",
+        "cat": "Academia"
+      },
+      {
+        "n": "Beat Entertainment",
+        "cat": "Academia"
+      },
+      {
+        "n": "Classic Studio GXNGZ",
+        "cat": "Arte y cultura"
+      },
+      {
+        "n": "Teatro Pacific",
+        "cat": "Arte y cultura"
+      },
+      {
+        "n": "Facultad de Medicina",
         "cat": "Academia"
       }
     ]
